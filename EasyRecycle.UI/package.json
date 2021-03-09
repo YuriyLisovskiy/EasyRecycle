@@ -30,7 +30,7 @@
   "scripts": {
     "start": "react-app-env start",
     "build": "react-app-env build",
-    "test": "react-app-env test",
+    "test": "react-scripts test",
     "eject": "react-scripts eject",
     "docker-build": "docker build -t easyrecycle-ui:test .",
     "docker-run": "docker run -p 3000:80 easyrecycle-ui:test"
@@ -55,5 +55,8 @@
   },
   "devDependencies": {
     "redux-devtools-extension": "^2.13.8"
+  },
+  "jest": {
+    "coverageReporters": ["text", "cobertura"]
   }
 }
