@@ -161,4 +161,5 @@ dmypy.json
 
 media-root/
 /EasyRecycle/cert/
+coverage/
 

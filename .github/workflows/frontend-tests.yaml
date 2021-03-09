@@ -18,5 +18,14 @@ jobs:
       run: |
         cd EasyRecycle.UI/ && \
         npm install && \
-        npm test
+        npm test -- --coverage --watchAll=false
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./cobertura-coverage.xml
+        directory: ./EasyRecycle.UI/coverage/
+        flags: frontend
+        fail_ci_if_error: true
+        verbose: true
 
