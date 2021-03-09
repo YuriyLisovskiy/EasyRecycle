@@ -4,6 +4,8 @@
 
 [![Frontend Tests](https://github.com/YuriyLisovskiy/EasyRecycle/actions/workflows/frontend-tests.yaml/badge.svg)](https://github.com/YuriyLisovskiy/EasyRecycle/actions/workflows/frontend-tests.yaml)
 
+* [![Coverage](https://codecov.io/gh/YuriyLisovskiy/EasyRecycle/branch/master/graph/badge.svg?token=6JS87S34XM)](https://codecov.io/gh/YuriyLisovskiy/EasyRecycle)
+
 ### Team:
 * [Olena Shipka](https://github.com/oshipka)
 * [Yuriy Lisovskiy](https://github.com/YuriyLisovskiy)
