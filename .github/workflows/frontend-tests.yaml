@@ -25,6 +25,7 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./EasyRecycle.UI/coverage/cobertura-coverage.xml
         flags: frontend
+        name: frontend
         fail_ci_if_error: true
         verbose: true
 

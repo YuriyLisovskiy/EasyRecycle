@@ -23,5 +23,15 @@ jobs:
     - name: Run tests
       run: |
         cd EasyRecycle/ && \
-        python3 manage.py test tests
+        coverage run manage.py test && \
+        coverage xml
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./EasyRecycle/coverage.xml
+        flags: backend
+        name: backend
+        fail_ci_if_error: true
+        verbose: true
 
