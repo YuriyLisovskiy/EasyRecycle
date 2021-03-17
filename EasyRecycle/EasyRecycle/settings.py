@@ -41,6 +41,12 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+	'rest_framework',
+	'corsheaders',
+	'api_v1',
+	'authentication',
+	'core',
+	'core.administration',
 ]
 
 MIDDLEWARE = [
@@ -127,7 +133,7 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = BASE_DIR / 'media-root'
 MEDIA_URL = '/media/'
 
-# AUTH_USER_MODEL = 'core.UserModel'
+AUTH_USER_MODEL = 'core.UserModel'
 
 REST_FRAMEWORK = {
 	'DEFAULT_PERMISSION_CLASSES': (
@@ -156,6 +162,6 @@ TIME_FORMAT = '%H:%M'
 DATE_FORMAT = '%d/%m/%Y'
 
 try:
-	from StudArt.local_settings import *
+	from EasyRecycle.local_settings import *
 except ImportError:
 	pass
