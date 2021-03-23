@@ -7,4 +7,5 @@ omit =
    EasyRecycle/asgi.py
    EasyRecycle/wsgi.py
    */urls.py
-
+   tests/*
+   */migrations/*
