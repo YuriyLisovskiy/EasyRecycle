@@ -57,6 +57,9 @@
     "redux-devtools-extension": "^2.13.8"
   },
   "jest": {
-    "coverageReporters": ["text", "cobertura"]
+    "coverageReporters": [
+      "text",
+      "cobertura"
+    ]
   }
 }
