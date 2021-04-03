@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 	'authentication',
 	'core',
 	'core.administration',
+	'service',
 ]
 
 MIDDLEWARE = [
