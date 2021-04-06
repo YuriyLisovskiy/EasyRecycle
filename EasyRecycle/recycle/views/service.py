@@ -26,7 +26,7 @@ class ServicesAPIView(generics.ListAPIView):
 
 # /api/v1/recycle/services/<pk>
 # path args:
-#   - pk <int>: primary key of location object
+#   - pk <int>: primary key of Service object
 # methods:
 #   - get
 # returns (success status - 200):
@@ -66,7 +66,7 @@ class CreateServiceAPIView(generics.CreateAPIView):
 
 # /api/v1/recycle/services/<pk>/manage
 # path args:
-#   - pk <int>: primary key of location object
+#   - pk <int>: primary key of Service object
 # methods:
 #   - put:
 #       - garbage_type: string

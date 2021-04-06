@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase, APIRequestFactory
 
 from core.models import UserModel
-from service.models import Location
+from recycle.models import Location
 
 
 class APIFactoryTestCase(APITestCase):

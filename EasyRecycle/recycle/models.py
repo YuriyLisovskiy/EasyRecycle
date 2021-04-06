@@ -10,7 +10,7 @@ class Location(models.Model):
 	close_time = models.TimeField()
 
 	# Garbage collector
-	owner = models.ForeignKey(to=UserModel, on_delete=models.CASCADE)
+	owner = models.ForeignKey(to=UserModel, on_delete=models.CASCADE, related_name='locations')
 
 
 class Service(models.Model):
@@ -25,10 +25,12 @@ class Service(models.Model):
 class CommercialRequest(models.Model):
 	QUEUED = 'Q'
 	IN_PROGRESS = 'A'
+	REJECTED = 'R'
 	DONE = 'D'
 	STATUS_CHOICES = [
 		(QUEUED, 'Queued'),
 		(IN_PROGRESS, 'In Progress'),
+		(REJECTED, 'Rejected'),
 		(DONE, 'Done')
 	]
 

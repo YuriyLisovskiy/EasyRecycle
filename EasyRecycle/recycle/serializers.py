@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from recycle.models import Location, Service
-from recycle.validators import IsGarbageCollectorValidator
+from recycle.models import Location, Service, CommercialRequest
+from recycle.validators import IsGarbageCollectorValidator, IsCommercialValidator
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -89,4 +89,57 @@ class EditServiceSerializer(serializers.ModelSerializer):
 			'service_name': {'required': False},
 			'price_per_kg': {'required': False},
 			'location': {'required': False}
+		}
+
+
+class CommercialRequestSerializer(serializers.ModelSerializer):
+	id = serializers.ReadOnlyField()
+	service_id = serializers.SerializerMethodField()
+	user_id = serializers.SerializerMethodField()
+
+	@staticmethod
+	def get_service_id(obj):
+		return obj.service.id if obj.service else -1
+
+	@staticmethod
+	def get_user_id(obj):
+		return obj.user.id if obj.user else -1
+
+	class Meta:
+		model = CommercialRequest
+		fields = (
+			'id', 'date', 'garbage_type', 'status', 'service_id', 'user_id'
+		)
+
+
+class CreateCommercialRequestSerializer(serializers.ModelSerializer):
+	id = serializers.ReadOnlyField()
+
+	class Meta:
+		model = CommercialRequest
+		fields = (
+			'id', 'date', 'garbage_type', 'status', 'service', 'user'
+		)
+		validators = (
+			IsCommercialValidator('user'),
+		)
+
+
+class EditCommercialRequestSerializer(serializers.ModelSerializer):
+	id = serializers.ReadOnlyField()
+
+	class Meta:
+		model = CommercialRequest
+		fields = (
+			'id', 'date', 'garbage_type', 'status', 'service', 'user'
+		)
+		validators = (
+			IsCommercialValidator('user'),
+		)
+		extra_kwargs = {
+			'date': {'required': False},
+			'garbage_type': {'required': False},
+			'status': {'required': False},
+			'service': {'required': False},
+			'user': {'required': False}
 		}
