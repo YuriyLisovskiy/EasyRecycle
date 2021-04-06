@@ -3,8 +3,8 @@ from rest_framework import status
 from rest_framework.test import force_authenticate
 
 from core.models import UserModel
-from service.models import Location
-from service.views.location import ManageLocationAPIView
+from recycle.models import Location
+from recycle.views.location import ManageLocationAPIView
 from tests.unittests.common import APIFactoryTestCase
 
 
@@ -19,13 +19,13 @@ class ManageLocationAPIViewUpdateTestCase(APIFactoryTestCase):
 		self.view = ManageLocationAPIView.as_view()
 
 	def check_permission_denied(self):
-		request = self.request_factory.put(reverse('api_v1:service:manage_location', args=[self.location.pk]))
+		request = self.request_factory.put(reverse('api_v1:recycle:manage_location', args=[self.location.pk]))
 		force_authenticate(request, self.user)
 		response = self.view(request, pk=self.location.pk)
 		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 	def test_UpdateLocation_AnonymousUser(self):
-		request = self.request_factory.put(reverse('api_v1:service:manage_location', args=[self.location.pk]))
+		request = self.request_factory.put(reverse('api_v1:recycle:manage_location', args=[self.location.pk]))
 		response = self.view(request, pk=self.location.pk)
 		self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -45,7 +45,7 @@ class ManageLocationAPIViewUpdateTestCase(APIFactoryTestCase):
 			'close_time': '15:00',
 			'owner': self.user.pk
 		}
-		request = self.request_factory.put(reverse('api_v1:service:manage_location', args=[self.location.pk]), data=input_data)
+		request = self.request_factory.put(reverse('api_v1:recycle:manage_location', args=[self.location.pk]), data=input_data)
 		force_authenticate(request, self.super_user)
 		response = self.view(request, pk=self.location.pk)
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -57,7 +57,7 @@ class ManageLocationAPIViewUpdateTestCase(APIFactoryTestCase):
 			'close_time': '15:00',
 			'owner': self.gc_user.pk
 		}
-		request = self.request_factory.put(reverse('api_v1:service:manage_location', args=[self.location.pk]), data=input_data)
+		request = self.request_factory.put(reverse('api_v1:recycle:manage_location', args=[self.location.pk]), data=input_data)
 		force_authenticate(request, self.super_user)
 		response = self.view(request, pk=self.location.pk)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -69,7 +69,7 @@ class ManageLocationAPIViewUpdateTestCase(APIFactoryTestCase):
 		self.assertEqual(input_data['owner'], actual_location['owner'])
 
 	def run_update_field(self, data):
-		request = self.request_factory.put(reverse('api_v1:service:manage_location', args=[self.location.pk]), data=data)
+		request = self.request_factory.put(reverse('api_v1:recycle:manage_location', args=[self.location.pk]), data=data)
 		force_authenticate(request, self.super_user)
 		response = self.view(request, pk=self.location.pk)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)

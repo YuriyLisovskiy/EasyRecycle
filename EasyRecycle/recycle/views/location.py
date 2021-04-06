@@ -1,10 +1,10 @@
 from rest_framework import generics, permissions
 
-from service.models import Location
-from service.serializers import LocationSerializer, CreateLocationSerializer, EditLocationSerializer
+from recycle.models import Location
+from recycle.serializers import LocationSerializer, CreateLocationSerializer, EditLocationSerializer
 
 
-# /api/v1/service/locations
+# /api/v1/recycle/locations
 # methods:
 #   - get
 # returns (success status - 200):
@@ -24,7 +24,7 @@ class LocationsAPIView(generics.ListAPIView):
 	serializer_class = LocationSerializer
 
 
-# /api/v1/service/locations/<pk>
+# /api/v1/recycle/locations/<pk>
 # path args:
 #   - pk <int>: primary key of location object
 # methods:
@@ -43,7 +43,7 @@ class LocationDetailsAPIView(generics.RetrieveAPIView):
 	serializer_class = LocationSerializer
 
 
-# /api/v1/service/locations/create
+# /api/v1/recycle/locations/create
 # methods:
 #   - post:
 #       - address: string
@@ -64,7 +64,7 @@ class CreateLocationAPIView(generics.CreateAPIView):
 	serializer_class = CreateLocationSerializer
 
 
-# /api/v1/service/locations/<pk>/manage
+# /api/v1/recycle/locations/<pk>/manage
 # path args:
 #   - pk <int>: primary key of location object
 # methods:

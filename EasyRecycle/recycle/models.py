@@ -1,7 +1,7 @@
 from django.db import models
 
 from core.models import UserModel
-from service import garbage
+from recycle import garbage
 
 
 class Location(models.Model):

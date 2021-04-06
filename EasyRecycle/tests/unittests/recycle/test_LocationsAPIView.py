@@ -3,8 +3,8 @@ from rest_framework import status
 from rest_framework.test import force_authenticate
 
 from core.models import UserModel
-from service.models import Location
-from service.views.location import LocationsAPIView
+from recycle.models import Location
+from recycle.views.location import LocationsAPIView
 from tests.unittests.common import APIFactoryTestCase
 
 
@@ -34,10 +34,10 @@ class LocationsAPITestCase(APIFactoryTestCase):
 			i += 1
 
 	def test_GetListAnonymousUser(self):
-		request = self.request_factory.get(reverse('api_v1:service:get_locations'))
+		request = self.request_factory.get(reverse('api_v1:recycle:get_locations'))
 		self.run_GetList_test(request)
 
 	def test_GetInfoAuthenticatedUser(self):
-		request = self.request_factory.get(reverse('api_v1:service:get_locations'))
+		request = self.request_factory.get(reverse('api_v1:recycle:get_locations'))
 		force_authenticate(request, self.user)
 		self.run_GetList_test(request)
