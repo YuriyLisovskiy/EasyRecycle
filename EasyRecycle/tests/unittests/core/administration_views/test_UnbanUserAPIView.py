@@ -13,17 +13,18 @@ class UnbanUserAPITestCase(APIFactoryTestCase):
 		self.view = UnbanUserAPIView.as_view()
 		self.admin_user = User.objects.get(username='admin')
 		self.user = User.objects.get(username='User')
-	
+		self.banned_user = User.objects.get(username='banned')
+
 	def test_UnbanUser(self):
-		request = self.request_factory.put(reverse('api_v1:core:core.administration:unban_user', args=[6]))
+		request = self.request_factory.put(reverse('api_v1:core:core.administration:unban_user', args=[self.banned_user.pk]))
 		force_authenticate(request, self.admin_user)
-		response = self.view(request, pk=6)
+		response = self.view(request, pk=self.banned_user.pk)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 	
 	def test_UnbanUserNonAdmin(self):
-		request = self.request_factory.put(reverse('api_v1:core:core.administration:unban_user', args=[6]))
+		request = self.request_factory.put(reverse('api_v1:core:core.administration:unban_user', args=[self.banned_user.pk]))
 		force_authenticate(request, self.user)
-		response = self.view(request, pk=6)
+		response = self.view(request, pk=self.banned_user.pk)
 		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 	
 	def test_UnbanNonexistentUser(self):
@@ -33,22 +34,22 @@ class UnbanUserAPITestCase(APIFactoryTestCase):
 		self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 	
 	def test_UnbanUserUnauthenticated(self):
-		request = self.request_factory.put(reverse('api_v1:core:core.administration:unban_user', args=[6]))
-		response = self.view(request, pk=6)
+		request = self.request_factory.put(reverse('api_v1:core:core.administration:unban_user', args=[self.banned_user.pk]))
+		response = self.view(request, pk=self.banned_user.pk)
 		self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 	
 	def test_UnbanUserTwice(self):
-		request = self.request_factory.put(reverse('api_v1:core:core.administration:unban_user', args=[6]))
+		request = self.request_factory.put(reverse('api_v1:core:core.administration:unban_user', args=[self.banned_user.pk]))
 		force_authenticate(request, self.admin_user)
-		response = self.view(request, pk=6)
+		response = self.view(request, pk=self.banned_user.pk)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
-		response = self.view(request, pk=6)
+		response = self.view(request, pk=self.banned_user.pk)
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 	
 	def test_UnbanSelf(self):
-		request = self.request_factory.put(reverse('api_v1:core:core.administration:unban_user', args=[5]))
+		request = self.request_factory.put(reverse('api_v1:core:core.administration:unban_user', args=[self.admin_user.pk]))
 		force_authenticate(request, self.admin_user)
-		response = self.view(request, pk=5)
+		response = self.view(request, pk=self.admin_user.pk)
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 		
 	def test_UnbanNotBanned(self):

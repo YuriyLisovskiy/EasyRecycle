@@ -46,7 +46,7 @@ class BanUserAPITestCase(APIFactoryTestCase):
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 	def test_BanSelf(self):
-		request = self.request_factory.put(reverse('api_v1:core:core.administration:ban_user', args=[5]))
+		request = self.request_factory.put(reverse('api_v1:core:core.administration:ban_user', args=[self.admin_user.pk]))
 		force_authenticate(request, self.admin_user)
-		response = self.view(request, pk=5)
+		response = self.view(request, pk=self.admin_user.pk)
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
