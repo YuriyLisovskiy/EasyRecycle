@@ -18,8 +18,8 @@ _PERMISSION_CLASSES = (permissions.IsAuthenticated & (
 # /api/v1/recycle/commercial-requests
 # methods:
 #   - get:
-#       - user_pk: int (for superuser and garbage collectors only)
-#       - service_pk: int (for superuser and garbage collectors only)
+#       - user_pk: int (for superusers and garbage collectors only)
+#       - service_pk: int (for superusers and garbage collectors only)
 # returns (success status - 200):
 #   [
 #     {
@@ -58,7 +58,7 @@ class CommercialRequestsAPIView(generics.ListAPIView):
 
 			return queryset
 
-		return CommercialRequest.objects.filter(user=self.request.user)
+		return queryset.filter(user=self.request.user)
 
 
 # /api/v1/recycle/commercial-requests/<pk>

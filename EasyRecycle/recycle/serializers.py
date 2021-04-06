@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from recycle.models import Location, Service, CommercialRequest
+from recycle.models import Location, Service, CommercialRequest, Transaction
 from recycle.validators import IsGarbageCollectorValidator, IsCommercialValidator
 
 
@@ -143,3 +143,37 @@ class EditCommercialRequestSerializer(serializers.ModelSerializer):
 			'service': {'required': False},
 			'user': {'required': False}
 		}
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+	id = serializers.ReadOnlyField()
+	user_id = serializers.SerializerMethodField()
+	collector_id = serializers.SerializerMethodField()
+
+	@staticmethod
+	def get_user_id(obj):
+		return obj.user.id if obj.user else -1
+
+	@staticmethod
+	def get_collector_id(obj):
+		return obj.collector.id if obj.collector else -1
+
+	class Meta:
+		model = Transaction
+		fields = (
+			'id', 'datetime', 'garbage_type', 'points', 'user_id', 'collector_id'
+		)
+
+
+class CreateTransactionSerializer(serializers.ModelSerializer):
+	id = serializers.ReadOnlyField()
+	datetime = serializers.ReadOnlyField()
+
+	class Meta:
+		model = Transaction
+		fields = (
+			'id', 'datetime', 'garbage_type', 'points', 'user', 'collector'
+		)
+		validators = (
+			IsGarbageCollectorValidator('collector'),
+		)

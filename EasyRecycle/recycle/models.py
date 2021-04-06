@@ -46,6 +46,7 @@ class CommercialRequest(models.Model):
 
 
 class Transaction(models.Model):
+	datetime = models.DateTimeField(auto_now=True)
 	garbage_type = models.CharField(
 		max_length=2, choices=garbage.TYPE_CHOICES, default=garbage.ORGANIC
 	)
