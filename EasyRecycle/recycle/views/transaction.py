@@ -132,7 +132,7 @@ class CreateTransactionAPIView(generics.CreateAPIView):
 # methods:
 #   - delete
 # returns success status: 204 (on delete)
-class ManageTransactionAPIView(generics.DestroyAPIView):
+class DeleteTransactionAPIView(generics.DestroyAPIView):
 	permission_classes = (permissions.IsAdminUser,)
 	queryset = Transaction.objects.all()
 

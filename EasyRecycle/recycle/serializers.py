@@ -57,7 +57,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 	@staticmethod
 	def get_location_id(obj):
-		return obj.owner.id
+		return obj.location.id
 
 	class Meta:
 		model = Service
