@@ -8,6 +8,8 @@ class Location(models.Model):
 	address = models.CharField(max_length=350)
 	open_time = models.TimeField()
 	close_time = models.TimeField()
+
+	# Garbage collector
 	owner = models.ForeignKey(to=UserModel, on_delete=models.CASCADE)
 
 
@@ -36,6 +38,8 @@ class CommercialRequest(models.Model):
 	)
 	status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=QUEUED)
 	service = models.ForeignKey(to=Service, on_delete=models.SET_NULL, null=True, blank=True)
+
+	# Commercial user
 	user = models.ForeignKey(to=UserModel, on_delete=models.SET_NULL, null=True, blank=True)
 
 
@@ -44,9 +48,13 @@ class Transaction(models.Model):
 		max_length=2, choices=garbage.TYPE_CHOICES, default=garbage.ORGANIC
 	)
 	points = models.IntegerField(default=0)
+
+	# Registered user
 	user = models.ForeignKey(
 		to=UserModel, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions'
 	)
+
+	# Garbage collector
 	collector = models.ForeignKey(
 		to=UserModel, on_delete=models.SET_NULL, null=True, blank=True, related_name='collections'
 	)

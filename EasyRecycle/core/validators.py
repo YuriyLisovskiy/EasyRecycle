@@ -5,7 +5,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.utils.representation import smart_repr
 
 
-class _Validator:
+class ValidatorBase:
 
 	def __init__(self, fields):
 		self.fields = fields
@@ -23,7 +23,7 @@ class _Validator:
 		)
 
 
-class RequiredValidator(_Validator):
+class RequiredValidator(ValidatorBase):
 	error_message = _('This field is required')
 
 	def perform_validation(self, attrs):
@@ -36,7 +36,7 @@ class RequiredValidator(_Validator):
 			raise ValidationError(missing)
 
 
-class UsernameValidator(_Validator):
+class UsernameValidator(ValidatorBase):
 	username_key = 'username'
 	char_error_message = 'Username must contain only upper and (or) lower case letters, numbers and underscore symbol'
 	len_error_message = 'Username must be at least {} and up to {} characters long'
@@ -76,7 +76,7 @@ class UsernameValidator(_Validator):
 			raise ValidationError(err)
 
 
-class PasswordValidator(_Validator):
+class PasswordValidator(ValidatorBase):
 	password_key = 'password'
 	len_error_message = 'Password must be at least {} characters long'
 	min_len = 8

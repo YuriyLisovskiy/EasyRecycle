@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions
 
 from service.models import Location
-from service.serializers import LocationSerializer, ManageLocationSerializer
+from service.serializers import LocationSerializer, CreateLocationSerializer, EditLocationSerializer
 
 
 # /api/v1/service/locations
@@ -20,7 +20,7 @@ from service.serializers import LocationSerializer, ManageLocationSerializer
 #   ]
 class LocationsAPIView(generics.ListAPIView):
 	permission_classes = (permissions.AllowAny,)
-	queryset = Location.objects.all()
+	queryset = Location.objects.order_by('address')
 	serializer_class = LocationSerializer
 
 
@@ -61,7 +61,7 @@ class LocationDetailsAPIView(generics.RetrieveAPIView):
 class CreateLocationAPIView(generics.CreateAPIView):
 	permission_classes = (permissions.IsAdminUser,)
 	queryset = Location.objects.all()
-	serializer_class = ManageLocationSerializer
+	serializer_class = CreateLocationSerializer
 
 
 # /api/v1/service/locations/<pk>/manage
@@ -74,7 +74,7 @@ class CreateLocationAPIView(generics.CreateAPIView):
 #       - close_time: string
 #       - owner: int
 #   - delete
-# returns (success status: 200 (on update), 201 (on delete)):
+# returns (success status: 204 (on delete), 200 (on update)):
 #   {
 #     "id": <int>,
 #     "address": <string>,
@@ -85,4 +85,4 @@ class CreateLocationAPIView(generics.CreateAPIView):
 class ManageLocationAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
 	permission_classes = (permissions.IsAdminUser,)
 	queryset = Location.objects.all()
-	serializer_class = ManageLocationSerializer
+	serializer_class = EditLocationSerializer

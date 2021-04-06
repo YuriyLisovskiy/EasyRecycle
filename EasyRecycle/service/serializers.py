@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from service.models import Location
+from service.validators import IsGarbageCollectorValidator
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -18,7 +19,7 @@ class LocationSerializer(serializers.ModelSerializer):
 		)
 
 
-class ManageLocationSerializer(serializers.ModelSerializer):
+class CreateLocationSerializer(serializers.ModelSerializer):
 	id = serializers.ReadOnlyField()
 
 	class Meta:
@@ -26,3 +27,25 @@ class ManageLocationSerializer(serializers.ModelSerializer):
 		fields = (
 			'id', 'address', 'open_time', 'close_time', 'owner'
 		)
+		validators = (
+			IsGarbageCollectorValidator('owner'),
+		)
+
+
+class EditLocationSerializer(serializers.ModelSerializer):
+	id = serializers.ReadOnlyField()
+
+	class Meta:
+		model = Location
+		fields = (
+			'id', 'address', 'open_time', 'close_time', 'owner'
+		)
+		validators = (
+			IsGarbageCollectorValidator('owner'),
+		)
+		extra_kwargs = {
+			'address': {'required': False},
+			'open_time': {'required': False},
+			'close_time': {'required': False},
+			'owner': {'required': False}
+		}
