@@ -32,7 +32,7 @@ class UserDetailsSerializer(serializers.ModelSerializer):
 		fields = (
 			'id', 'first_name', 'last_name', 'username', 'email',
 			'avatar_link', 'is_superuser', 'rating', 'is_banned',
-			'is_garbage_collector', 'show_full_name', 'show_rating',
+			'is_garbage_collector', 'is_commercial', 'show_full_name',
 		)
 
 
@@ -41,7 +41,7 @@ class EditSelfUserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = UserModel
 		fields = (
-			'first_name', 'last_name', 'show_full_name', 'show_rating',
+			'first_name', 'last_name', 'show_full_name',
 		)
 
 

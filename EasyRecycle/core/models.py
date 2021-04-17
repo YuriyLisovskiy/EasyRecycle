@@ -9,4 +9,3 @@ class UserModel(AbstractUser):
 	avatar = models.ImageField(null=True, blank=True, upload_to='media')
 	rating = models.IntegerField(default=0)
 	show_full_name = models.BooleanField(default=True)
-	show_rating = models.BooleanField(default=True)

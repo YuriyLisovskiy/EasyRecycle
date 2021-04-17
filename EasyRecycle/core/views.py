@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 from core.mixins import UpdateUserModelMixin, APIViewValidationMixin
 from core.models import UserModel
-from core.serializers.user_model import (
+from core.serializers import (
 	UserDetailsSerializer, EditSelfUserSerializer, EditSelfUserAvatarSerializer
 )
 from core.validators import RequiredValidator, PasswordValidator
@@ -29,8 +29,8 @@ from core.validators import RequiredValidator, PasswordValidator
 #       "is_superuser": <bool>,
 #       "is_banned": <bool>,
 #       "is_garbage_collector": <bool>,
-#       "show_full_name": <bool>,
-#       "show_rating": <bool>
+#       "is_commercial": <bool>,
+#       "show_full_name": <bool>
 #   }
 class UserDetailsAPIView(generics.RetrieveAPIView):
 	permission_classes = (permissions.AllowAny,)
@@ -44,13 +44,11 @@ class UserDetailsAPIView(generics.RetrieveAPIView):
 #       - first_name: string
 #       - last_name: string
 #       - show_full_name: bool
-#       - show_rating: bool
 # returns (success status - 200):
 #   {
 #       "first_name": <string>,
 #       "last_name": <string>,
-#       "show_full_name": <bool>,
-#       "show_rating": <bool>
+#       "show_full_name": <bool>
 #   }
 class EditSelfAPIView(APIView, UpdateUserModelMixin):
 	serializer_class = EditSelfUserSerializer
@@ -171,7 +169,8 @@ class DeactivateSelfAPIView(APIView, UpdateUserModelMixin, APIViewValidationMixi
 #       "avatar_link": <string (full url)>,
 #       "rating": <int>,
 #       "is_superuser": <bool>,
-#       "is_garbage_collector": <bool>
+#       "is_garbage_collector": <bool>,
+#       "is_commercial": <bool>
 #   }
 class SelfUserAPIView(generics.RetrieveAPIView):
 	serializer_class = UserDetailsSerializer
