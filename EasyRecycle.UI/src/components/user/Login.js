@@ -131,7 +131,7 @@ export default class LoginComponent extends Component {
 						</div>
 						<div className="form-group">
 							<button
-								className="btn btn-primary btn-block"
+								className="btn btn-success btn-block"
 								onClick={this._onClickLogin}
 								disabled={this.state.loading}>
 								{

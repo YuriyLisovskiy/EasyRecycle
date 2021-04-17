@@ -58,13 +58,7 @@ export default class AccountSettingsComponent extends Component {
 				<div className="col-12 text-right">
 					<PasswordVerificationComponent description={
 						<div className="text-left text-justify">
-							<ul>
-								<li>
-									Deactivating your account will not delete the content of posts and
-									comments you've made on StudArt. To do so please delete them individually.
-								</li>
-								<li className="mt-3">Deactivated accounts are not recoverable.</li>
-							</ul>
+							<p className="mt-3 text-center">Deactivated accounts are not recoverable!</p>
 						</div>
 					}
 					                               ref={this.confirmDeactivateRef}

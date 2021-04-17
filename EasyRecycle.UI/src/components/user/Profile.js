@@ -140,28 +140,28 @@ export default class ProfileComponent extends Component {
 								}
 								<div className="row">
 									{
-										hasFirstAndLastName &&
-										<div className="col-sm-7">
-											<h5 className="mb-2 text-left">{user.first_name} {user.last_name}</h5>
-										</div>
-									}
-									{
-										((
-											this.state.currentUser && this.state.currentUser.id === user.id
-										) || user.show_rating) &&
-										<div className="col-sm-5">
-											<h5 className={"text-" + (hasFirstAndLastName ? "right" : "left")}>
-												Rating: {user.rating}
-											</h5>
-										</div>
+										hasFirstAndLastName ? (
+											<div className="col-sm-12">
+												<h4 className="mb-2 text-center">
+													{user.first_name} {user.last_name}
+												</h4>
+											</div>
+										) : (
+											<h5 className="text-center">{user.username}</h5>
+										)
 									}
 								</div>
-								<h6>{user.username}</h6>
 							</div>
 							<div className="col-md-8">
-								<div className="mx-auto text-center text-muted mb-2">
-									GARBAGE COLLECTION
-								</div>
+								{user.is_commercial ? (
+									<div className="mx-auto text-center text-muted mb-2">
+										ORDERS
+									</div>
+								) : (
+									<div className="mx-auto text-center text-muted mb-2">
+										TOTAL POINTS ACCUMULATED: {user.rating}
+									</div>
+								)}
 							</div>
 						</div>
 					)

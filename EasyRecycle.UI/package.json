@@ -60,6 +60,12 @@
     "coverageReporters": [
       "text",
       "cobertura"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!/node_modules/",
+      "!src/index.js",
+      "!src/reportWebVitals.js"
     ]
   }
 }

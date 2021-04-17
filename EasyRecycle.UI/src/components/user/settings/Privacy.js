@@ -22,22 +22,6 @@ export default class PrivacySettingsComponent extends Component {
 		);
 	}
 
-	_onToggleShowRating = (value, handler) => {
-		UserService.editUser(
-			this.props.user.id, null, null, null, value, (data, err) => {
-				if (!err) {
-					let user = this.props.user;
-					user.show_rating = data.show_rating;
-					UserService._setCurrentUser(user);
-					handler(data.show_rating);
-				}
-				else {
-					handler(!value);
-				}
-			}
-		);
-	}
-
 	render() {
 		return <div className="p-3">
 			<div className="row">
@@ -49,12 +33,6 @@ export default class PrivacySettingsComponent extends Component {
 					                        subtitle="Display first and last name on your account page."
 					                        initialValue={this.props.user.show_full_name}
 					                        onToggle={this._onToggleShowFullName}/>
-				</div>
-				<div className="col-12 mt-3">
-					<ToggleSettingComponent title="Show rating"
-					                        subtitle="Display rating on your account page."
-					                        initialValue={this.props.user.show_rating}
-					                        onToggle={this._onToggleShowRating}/>
 				</div>
 			</div>
 		</div>;

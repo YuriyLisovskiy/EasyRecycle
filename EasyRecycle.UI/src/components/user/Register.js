@@ -315,7 +315,7 @@ export default class RegisterComponent extends Component {
 					</div>
 					<div className="form-group">
 						<button
-							className="btn btn-primary btn-block"
+							className="btn btn-success btn-block"
 							onClick={this._onClickRegister}
 							disabled={this.state.loading}>
 							{

@@ -17,6 +17,12 @@ import LoginComponent from "./components/user/Login";
 import RegisterComponent from "./components/user/Register";
 import SettingsComponent from "./components/user/settings/Settings";
 import UserService from "./services/user";
+import HowToRecycleComponent from "./components/info/HowToRecycle";
+import WhereToBringGarbageComponent from "./components/info/WhereToBringGarbage";
+import RequestInfoComponent from "./components/info/Request";
+import RatingComponent from "./components/Rating";
+import ScanQrCodeComponent from "./components/user/ScanQrCode";
+import FinishTransactionComponent from "./components/user/FinishTransaction";
 
 export default class App extends Component {
 
@@ -28,7 +34,8 @@ export default class App extends Component {
 		this.state = {
 			currentUser: undefined,
 			loginIsOpen: false,
-			registerIsOpen: false
+			registerIsOpen: false,
+			scanQrCodeIsOpen: false
 		};
 	}
 
@@ -110,6 +117,13 @@ export default class App extends Component {
 		});
 	}
 
+	_onClickScanQrCodeToggle = () => {
+		let {scanQrCodeIsOpen} = this.state;
+		this.setState({
+			scanQrCodeIsOpen: !scanQrCodeIsOpen
+		});
+	}
+
 	render() {
 		const user = this.state.currentUser;
 		return <BrowserRouter>
@@ -122,6 +136,8 @@ export default class App extends Component {
 								   open={this.state.registerIsOpen}
 								   onRequestClose={this._onClickRegisterToggle}
 								   onClickSwitchToLogin={this._onClickLoginToggle}/>
+				<ScanQrCodeComponent open={this.state.scanQrCodeIsOpen}
+								     onRequestClose={this._onClickScanQrCodeToggle}/>
 				<nav className="navbar navbar-expand-md bg-light navbar-light">
 					<Link className="navbar-brand" to='/'>
 						<img height={50} src={process.env.PUBLIC_URL + '/logo225.png'} alt="LOGO"/>
@@ -132,9 +148,21 @@ export default class App extends Component {
 						<span className="navbar-toggler-icon"/>
 					</button>
 					<div className="collapse navbar-collapse" id="collapsibleNavbar">
-						{user ? (
-							<ul className="navbar-nav ml-auto">
-								<li className="nav-item dropdown">
+						<ul className="navbar-nav ml-auto">
+							<li className="nav-item mr-2">
+								<Link to="/rating" className="mt-2 mx-2 text-success"
+									  style={{fontSize: 34}} title="Show Rating">
+									<i className="fa fa-trophy" aria-hidden="true"/>
+								</Link>
+							</li>
+							{user ? (
+								<li className="nav-item mr-2 d-inline text-success cursor-pointer">
+									<i className="fa fa-qrcode mt-2 mx-2" aria-hidden="true"
+									   style={{fontSize: 34}} title="My QR-Code" onClick={this._onClickScanQrCodeToggle}/>
+								</li>
+							) : "" }
+							{user ? (
+								<li className="nav-item dropdown d-inline">
 									<div id="navbardrop"
 										 className="nav-link dropdown-toggle select-none cursor-pointer"
 										 data-toggle="dropdown">
@@ -170,23 +198,23 @@ export default class App extends Component {
 										</div>
 									</div>
 								</li>
-							</ul>
-						) : (
-							<ul className='navbar-nav ml-auto'>
-								<li className="nav-item mr-2">
-									<button className="btn btn-outline-primary"
-											onClick={this._onClickLoginToggle}>
-										LOGIN
-									</button>
-								</li>
-								<li className="nav-item">
-									<button className="btn btn-primary"
-											onClick={this._onClickRegisterToggle}>
-										SIGN UP
-									</button>
-								</li>
-							</ul>
-						)}
+							) : (
+								<span>
+									<li className="nav-item mr-2 d-inline">
+										<button className="btn btn-outline-success mt-1"
+												onClick={this._onClickLoginToggle}>
+											LOGIN
+										</button>
+									</li>
+									<li className="nav-item d-inline">
+										<button className="btn btn-success mt-1"
+												onClick={this._onClickRegisterToggle}>
+											SIGN UP
+										</button>
+									</li>
+								</span>
+							)}
+						</ul>
 					</div>
 				</nav>
 				<div className="container mt-3 w-65">
@@ -197,6 +225,11 @@ export default class App extends Component {
 						{this._makeSubSettingRoute('profile')}
 						{this._makeSubSettingRoute('privacy')}
 						<Route path='/home' component={HomeComponent} />
+						<Route path='/rating' component={RatingComponent} />
+						<Route path='/info/how' component={HowToRecycleComponent} />
+						<Route path='/info/where' component={WhereToBringGarbageComponent} />
+						<Route path='/info/request' component={RequestInfoComponent} />
+						<Route path='/finish-transaction-for/:username' component={FinishTransactionComponent} />
 						<Route path='/page-not-found' component={Errors.NotFound} />
 						<Route path={['/', '/index']} component={IndexComponent} />
 					</Switch>
