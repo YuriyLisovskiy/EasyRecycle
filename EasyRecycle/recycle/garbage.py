@@ -12,3 +12,11 @@ TYPE_CHOICES = [
 	(PAPER, 'Paper'),
 	(PLASTIC, 'Plastic')
 ]
+
+GARBAGE_TO_POINTS = {
+	ORGANIC: 1,
+	GLASS: 2,
+	METAL: 3,
+	PAPER: 4,
+	PLASTIC: 5
+}

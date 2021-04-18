@@ -26,6 +26,7 @@ _PERMISSION_CLASSES = (permissions.IsAuthenticated & (
 #       "id": <int>,
 #       "date": <string>,
 #       "garbage_type": <string>,
+#       "mass": <float>,
 #       "status": <string>,
 #       "service_id": <int>,
 #       "user_id": <int>
@@ -71,6 +72,7 @@ class CommercialRequestsAPIView(generics.ListAPIView):
 #     "id": <int>,
 #     "date": <string>,
 #     "garbage_type": <string>,
+#     "mass": <float>,
 #     "status": <string>,
 #     "service_id": <int>,
 #     "user_id": <int>
@@ -94,6 +96,7 @@ class CommercialRequestDetailsAPIView(generics.RetrieveAPIView):
 #   - post:
 #       - date: string
 #       - garbage_type: string
+#       - mass: float
 #       - status: string
 #       - service: int
 #       - user: int
@@ -102,6 +105,7 @@ class CommercialRequestDetailsAPIView(generics.RetrieveAPIView):
 #     "id": <int>,
 #     "date": <string>,
 #     "garbage_type": <string>,
+#     "mass": <float>,
 #     "status": <string>,
 #     "service": <int>,
 #     "user": <int>
@@ -119,6 +123,7 @@ class CreateCommercialRequestAPIView(generics.CreateAPIView):
 #   - put:
 #       - date: string
 #       - garbage_type: string
+#       - mass: float
 #       - status: string
 #       - service: int
 #       - user: int
@@ -127,6 +132,7 @@ class CreateCommercialRequestAPIView(generics.CreateAPIView):
 #     "id": <int>,
 #     "date": <string>,
 #     "garbage_type": <string>,
+#     "mass": <float>,
 #     "status": <string>,
 #     "service": <int>,
 #     "user": <int>

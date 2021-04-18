@@ -38,6 +38,7 @@ class CommercialRequest(models.Model):
 	garbage_type = models.CharField(
 		max_length=2, choices=garbage.TYPE_CHOICES, default=garbage.ORGANIC
 	)
+	mass = models.FloatField()
 	status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=QUEUED)
 	service = models.ForeignKey(to=Service, on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -50,6 +51,7 @@ class Transaction(models.Model):
 	garbage_type = models.CharField(
 		max_length=2, choices=garbage.TYPE_CHOICES, default=garbage.ORGANIC
 	)
+	mass = models.FloatField(default=0.0)
 	points = models.IntegerField(default=0)
 
 	# Registered user

@@ -108,7 +108,7 @@ class CommercialRequestSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CommercialRequest
 		fields = (
-			'id', 'date', 'garbage_type', 'status', 'service_id', 'user_id'
+			'id', 'date', 'garbage_type', 'mass', 'status', 'service_id', 'user_id'
 		)
 
 
@@ -118,7 +118,7 @@ class CreateCommercialRequestSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CommercialRequest
 		fields = (
-			'id', 'date', 'garbage_type', 'status', 'service', 'user'
+			'id', 'date', 'garbage_type', 'mass', 'status', 'service', 'user'
 		)
 		validators = (
 			IsCommercialValidator('user'),
@@ -131,7 +131,7 @@ class EditCommercialRequestSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CommercialRequest
 		fields = (
-			'id', 'date', 'garbage_type', 'status', 'service', 'user'
+			'id', 'date', 'garbage_type', 'mass', 'status', 'service', 'user'
 		)
 		validators = (
 			IsCommercialValidator('user'),
@@ -139,6 +139,7 @@ class EditCommercialRequestSerializer(serializers.ModelSerializer):
 		extra_kwargs = {
 			'date': {'required': False},
 			'garbage_type': {'required': False},
+			'mass': {'required': False},
 			'status': {'required': False},
 			'service': {'required': False},
 			'user': {'required': False}
@@ -161,7 +162,7 @@ class TransactionSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Transaction
 		fields = (
-			'id', 'datetime', 'garbage_type', 'points', 'user_id', 'collector_id'
+			'id', 'datetime', 'garbage_type', 'mass', 'points', 'user_id', 'collector_id'
 		)
 
 
@@ -172,7 +173,7 @@ class CreateTransactionSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Transaction
 		fields = (
-			'id', 'datetime', 'garbage_type', 'points', 'user', 'collector'
+			'id', 'datetime', 'garbage_type', 'mass', 'points', 'user', 'collector'
 		)
 		validators = (
 			IsGarbageCollectorValidator('collector'),

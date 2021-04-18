@@ -156,6 +156,35 @@ class DeactivateSelfAPIView(APIView, UpdateUserModelMixin, APIViewValidationMixi
 		return Response(status=200)
 
 
+# /api/v1/core/users/self/become-commercial
+# methods:
+#   - put
+#       - password: string
+# returns (success status - 200):
+#   {}
+class BecomeCommercialAPIView(APIView, UpdateUserModelMixin, APIViewValidationMixin):
+	validators = (
+		RequiredValidator(fields=('password',)),
+	)
+
+	def put(self, request, *args, **kwargs):
+		result = self.validate_data(request)
+		if isinstance(result, exceptions.ValidationError):
+			raise result
+
+		validated_data = result
+		user = self.get_object()
+		if not user.check_password(validated_data['password']):
+			raise exceptions.ValidationError('Password is incorrect.')
+
+		if user.is_commercial:
+			raise exceptions.ValidationError('Account is already commercial')
+
+		user.is_commercial = True
+		user.save()
+		return Response(status=200)
+
+
 # /api/v1/core/users/self
 # methods:
 #   - get

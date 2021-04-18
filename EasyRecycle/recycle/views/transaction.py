@@ -4,6 +4,7 @@ from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 
 from core.models import UserModel
+from recycle import garbage
 from recycle.models import Transaction
 from recycle.permissions import IsGarbageCollector
 from recycle.serializers import TransactionSerializer, CreateTransactionSerializer
@@ -25,6 +26,7 @@ _PERMISSION_CLASSES = (permissions.IsAuthenticated & (
 #       "id": <int>,
 #       "datetime": <string>,
 #       "garbage_type": <string>,
+#       "mass": <float>,
 #       "points": <int>,
 #       "user_id": <int>,
 #       "collector_id": <int>
@@ -70,6 +72,7 @@ class TransactionsAPIView(generics.ListAPIView):
 #     "id": <int>,
 #     "datetime": <string>,
 #     "garbage_type": <string>,
+#     "mass": <float>,
 #     "points": <int>,
 #     "user_id": <int>,
 #     "collector_id": <int>
@@ -92,12 +95,14 @@ class TransactionDetailsAPIView(generics.RetrieveAPIView):
 # methods:
 #   - post:
 #       - garbage_type: string
+#       - float: mass
 #       - user: int
 # returns (success status - 201):
 #   {
 #     "id": <int>,
 #     "datetime": <string>,
 #     "garbage_type": <string>,
+#     "mass": <mass>,
 #     "points": <int>,
 #     "user": <int>
 #     "collector": <int>
@@ -111,7 +116,7 @@ class CreateTransactionAPIView(generics.CreateAPIView):
 		data = request.data.copy()
 
 		# TODO: calculate points according to garbage type.
-		data['points'] = 1
+		data['points'] = int(garbage.GARBAGE_TO_POINTS[data['garbage_type']] * data['mass'])
 		data['collector'] = request.user.pk
 		serializer = self.get_serializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
