@@ -93,7 +93,7 @@ export default class AccountSettingsComponent extends Component {
 													   onRequestClose={this._onClickBecomeCommercialToggle}
 													   onClickConfirm={this._onClickBecomeCommercialConfirm}/>
 						<button className="btn btn-outline-danger" onClick={this._onClickBecomeCommercialToggle}>
-							BECOME COMMERCIAL USER
+							BECOME A COMMERCIAL USER
 						</button>
 					</div>
 				</div>

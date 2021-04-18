@@ -139,17 +139,17 @@ export default class ProfileComponent extends Component {
 									</div>
 								}
 								<div className="row">
+									<div className="col-sm-12">
 									{
 										hasFirstAndLastName ? (
-											<div className="col-sm-12">
-												<h4 className="mb-2 text-center">
-													{user.first_name} {user.last_name}
-												</h4>
-											</div>
+											<h4 className="mb-2 text-center">
+												{user.first_name} {user.last_name}
+											</h4>
 										) : (
 											<h5 className="text-center">{user.username}</h5>
 										)
 									}
+									</div>
 								</div>
 							</div>
 							<div className="col-md-8">

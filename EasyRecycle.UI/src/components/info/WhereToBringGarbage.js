@@ -124,7 +124,14 @@ export default class WhereToBringGarbageComponent extends Component {
 	render () {
 		let user = UserService.getCurrentUser();
 		return this.state.loading ? (<SpinnerComponent/>) : (
-			<div>{this._makeRows(this.state.locations, user && user.is_commercial)}</div>
+			<div>
+				<div className="row">
+					<h2 className="col-md-12 text-center">
+						Choose the nearest location with the appropriate garbage type and bring it for recycling
+					</h2>
+				</div>
+				{this._makeRows(this.state.locations, user && user.is_commercial)}
+			</div>
 		);
 	}
 }

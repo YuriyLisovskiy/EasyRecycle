@@ -3,7 +3,7 @@ import DrawerComponent from "../Drawer";
 import PropTypes from "prop-types";
 import "../../styles/common.css";
 import UserService from "../../services/user";
-import {Link} from "react-router-dom";
+import QRCode from "qrcode.react";
 
 export default class ScanQrCodeComponent extends Component {
 
@@ -28,6 +28,7 @@ export default class ScanQrCodeComponent extends Component {
 				user_title = user.username
 			}
 
+			let hostName = window.location.href.replace(window.location.pathname, "");
 			return <DrawerComponent title="QR-CODE"
 									open={this.props.open}
 									onRequestClose={this.props.onRequestClose}
@@ -37,11 +38,8 @@ export default class ScanQrCodeComponent extends Component {
 						<div className="text-center">
 							Let garbage collector scan this code to give you points.
 						</div>
-						<Link to={"/finish-transaction-for/" + user.username}>
-							[DEBUG] Click here to finish transaction!
-						</Link>
-						<div className="text-center h-100">
-							<img src="/qr-code-test.png" alt="QR-Code"/>
+						<div className="text-center h-100 mt-3">
+							<QRCode value={hostName + "/finish-transaction-for/" + user.username} />
 						</div>
 					</div>
 				</div>

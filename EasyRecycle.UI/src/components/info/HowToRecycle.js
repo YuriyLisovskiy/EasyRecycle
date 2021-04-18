@@ -8,7 +8,17 @@ export default class HowToRecycleComponent extends Component {
 		this.garbageTypesData = [
 			{
 				text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vel eleifend ante. Duis efficitur auctor dui eu tempus. Nullam egestas libero a urna euismod, nec sagittis sapien facilisis. Nulla efficitur nibh viverra faucibus iaculis. Suspendisse fringilla commodo lectus in vehicula. Suspendisse accumsan quis erat et tincidunt. Donec ullamcorper semper auctor. Vivamus molestie dui a dolor fringilla, ac ornare urna accumsan. Nam tincidunt, lacus suscipit hendrerit gravida, urna lorem laoreet arcu, id pharetra tellus ex et justo. Phasellus eget tristique nulla. Duis nisl odio, euismod eu sapien id, varius faucibus leo.",
-				image: "/plastic-waste.png",
+				image: "/organic-waste.png",
+				placeImgLeft: false
+			},
+			{
+				text: "Suspendisse potenti. Vivamus consequat tincidunt mattis. In nulla felis, aliquet eu arcu nec, mollis eleifend ex. Sed mi dui, rhoncus in dolor at, blandit malesuada dui. Aenean at viverra purus. Nulla condimentum sit amet quam in molestie. Donec iaculis purus nec interdum tristique. Phasellus sit amet egestas turpis. Maecenas imperdiet mattis lorem id blandit. Sed a orci turpis. Praesent gravida sem ligula, sit amet vehicula orci feugiat eu. Mauris vel aliquet ipsum. Ut euismod enim lobortis, fringilla nulla id, lacinia magna. Donec facilisis ultrices augue, et vulputate arcu vulputate vitae.",
+				image: "/glass-waste.png",
+				placeImgLeft: true
+			},
+			{
+				text: "Nulla porttitor mauris non molestie accumsan. Nunc pharetra ligula nec lacus vehicula vehicula. Phasellus commodo orci eros, sed sodales enim commodo eu. Mauris eget felis finibus, pretium quam quis, facilisis tellus. Aliquam porta id ipsum ullamcorper semper. Nulla id quam et neque dignissim pellentesque id molestie tellus. Mauris a eros ultrices, finibus est sit amet, tincidunt sapien. Fusce pharetra turpis nisi. Nam in fringilla massa, quis venenatis ex. Cras odio eros, venenatis vel malesuada in, aliquam ut neque. Mauris mi arcu, mollis luctus efficitur a, finibus id sem. Pellentesque mauris eros, malesuada id nibh a, tempus interdum est. In ullamcorper massa eget diam tristique iaculis. Pellentesque eget luctus est. Donec pellentesque purus vel mauris convallis, ut ultrices mi feugiat.",
+				image: "/metal-waste.png",
 				placeImgLeft: false
 			},
 			{
@@ -17,8 +27,8 @@ export default class HowToRecycleComponent extends Component {
 				placeImgLeft: true
 			},
 			{
-				text: "Vestibulum sed laoreet odio, quis dictum orci. Fusce vitae mauris dictum, tristique nulla ac, posuere leo. Morbi tincidunt justo quam, eget aliquet ante tempor at. Nam et orci est. Maecenas eu mi et nisl ultricies rutrum vel non odio. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Pellentesque cursus mi a felis fringilla volutpat. Aliquam a sollicitudin neque. Donec mattis arcu in mi consectetur pulvinar. Nunc ac egestas mi. Vestibulum quis ipsum sed mauris pretium aliquet. Suspendisse at lectus libero. Curabitur vitae ultrices libero.",
-				image: "/glass-waste.png",
+				text: "Nulla sed cursus ex, sed consectetur nisl. Vestibulum at elit iaculis, porta lorem vel, pretium ligula. Morbi suscipit neque ac vulputate interdum. Nam rutrum purus eu arcu tempor, sed ultrices nisi lobortis. Phasellus cursus rhoncus leo, sit amet iaculis ligula iaculis nec. Sed congue, dui in eleifend dictum, diam mauris aliquet ex, at ultricies eros lorem in magna. Curabitur nec venenatis leo.",
+				image: "/plastic-waste.png",
 				placeImgLeft: false
 			},
 		];
