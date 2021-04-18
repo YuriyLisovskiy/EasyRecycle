@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase, APIRequestFactory
 
 from core.models import UserModel
 from recycle import garbage
-from recycle.models import Location, Service
+from recycle.models import Location
 
 
 class APIFactoryTestCase(APITestCase):
@@ -29,8 +29,6 @@ class APIFactoryTestCase(APITestCase):
 		UserModel.objects.create(username='banned', is_active=False)
 		UserModel.objects.create(username='GCUser', is_active=False, is_garbage_collector=True)
 
-		loc1 = Location.objects.create(address='Some st. 7', open_time='09:00', close_time='20:00', owner=user1)
-		Location.objects.create(address='Second st. 1', open_time='10:00', close_time='18:00', owner=user1)
-		Location.objects.create(address='Some Another st. 18', open_time='09:00', close_time='19:00', owner=user2)
-
-		Service.objects.create(garbage_type=garbage.ORGANIC, service_name='Some service', price_per_kg=12.7, location=loc1)
+		Location.objects.create(address='Some st. 7', open_time='09:00', close_time='20:00', price_per_kg=7.5, owner=user1)
+		Location.objects.create(address='Second st. 1', open_time='10:00', close_time='18:00', price_per_kg=12.1, owner=user1)
+		Location.objects.create(address='Some Another st. 18', open_time='09:00', close_time='19:00', price_per_kg=12.7, owner=user2)

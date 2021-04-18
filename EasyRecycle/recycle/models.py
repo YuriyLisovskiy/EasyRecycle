@@ -9,16 +9,17 @@ class Location(models.Model):
 	open_time = models.TimeField()
 	close_time = models.TimeField()
 
-	# Garbage collector
+	# For commercial users.
+	price_per_kg = models.FloatField(default=0)
+
+	# Garbage collector.
 	owner = models.ForeignKey(to=UserModel, on_delete=models.CASCADE, related_name='locations')
 
 
-class Service(models.Model):
+class GarbageType(models.Model):
 	garbage_type = models.CharField(
 		max_length=2, choices=garbage.TYPE_CHOICES, default=garbage.ORGANIC
 	)
-	service_name = models.CharField(max_length=150)
-	price_per_kg = models.FloatField(default=0)
 	location = models.ForeignKey(to=Location, on_delete=models.CASCADE)
 
 
@@ -40,7 +41,7 @@ class CommercialRequest(models.Model):
 	)
 	mass = models.FloatField()
 	status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=QUEUED)
-	service = models.ForeignKey(to=Service, on_delete=models.SET_NULL, null=True, blank=True)
+	location = models.ForeignKey(to=Location, on_delete=models.SET_NULL, null=True, blank=True)
 
 	# Commercial user
 	user = models.ForeignKey(to=UserModel, on_delete=models.SET_NULL, null=True, blank=True)

@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.test import force_authenticate
 
 from core.models import UserModel
+from recycle import garbage
 from recycle.views.location import CreateLocationAPIView
 from tests.unittests.common import APIFactoryTestCase
 
@@ -21,6 +22,7 @@ class CreateLocationAPITestCase(APIFactoryTestCase):
 			'address': 'Hello St. 10',
 			'open_time': '11:00',
 			'close_time': '15:00',
+			'garbage_types': [garbage.METAL, garbage.GLASS],
 			'owner': self.gc_user.pk
 		})
 		force_authenticate(request, self.user)
@@ -46,6 +48,8 @@ class CreateLocationAPITestCase(APIFactoryTestCase):
 			'address': 'Hello St. 10',
 			'open_time': '11:00',
 			'close_time': '15:00',
+			'price_per_kg': 11.7,
+			'garbage_types': [garbage.METAL, garbage.GLASS],
 			'owner': self.user.pk
 		}
 		request = self.request_factory.post(reverse('api_v1:recycle:create_location'), data=input_data)
@@ -58,6 +62,8 @@ class CreateLocationAPITestCase(APIFactoryTestCase):
 			'address': 'Hello St. 10',
 			'open_time': '11:00',
 			'close_time': '15:00',
+			'price_per_kg': 11.7,
+			'garbage_types': [garbage.METAL, garbage.GLASS],
 			'owner': self.gc_user.pk
 		}
 		request = self.request_factory.post(reverse('api_v1:recycle:create_location'), data=input_data)
@@ -76,6 +82,8 @@ class CreateLocationAPITestCase(APIFactoryTestCase):
 			'address': 'Hello St. 10',
 			'open_time': '11:00',
 			'close_time': '15:00',
+			'price_per_kg': 11.7,
+			'garbage_types': [garbage.METAL, garbage.GLASS],
 			'owner': self.gc_user.pk
 		}
 		input_data.pop(field)
@@ -92,6 +100,9 @@ class CreateLocationAPITestCase(APIFactoryTestCase):
 
 	def test_MissingCloseTime(self):
 		self.run_missing_field('close_time')
+
+	def test_MissingGarbageTypes(self):
+		self.run_missing_field('garbage_types')
 
 	def test_MissingOwner(self):
 		self.run_missing_field('owner')

@@ -1,31 +1,37 @@
 from rest_framework import serializers
 
-from recycle.models import Location, Service, CommercialRequest, Transaction
+from recycle.models import Location, CommercialRequest, Transaction
 from recycle.validators import IsGarbageCollectorValidator, IsCommercialValidator
 
 
 class LocationSerializer(serializers.ModelSerializer):
 	id = serializers.ReadOnlyField()
 	owner_id = serializers.SerializerMethodField()
+	garbage_types = serializers.SerializerMethodField()
 
 	@staticmethod
 	def get_owner_id(obj):
 		return obj.owner.id
 
+	@staticmethod
+	def get_garbage_types(obj):
+		return [gt.get_garbage_type_display() for gt in obj.garbagetype_set.all()]
+
 	class Meta:
 		model = Location
 		fields = (
-			'id', 'address', 'open_time', 'close_time', 'owner_id'
+			'id', 'address', 'open_time', 'close_time', 'price_per_kg', 'garbage_types', 'owner_id'
 		)
 
 
 class CreateLocationSerializer(serializers.ModelSerializer):
 	id = serializers.ReadOnlyField()
+	garbage_types = serializers.ListField(required=False)
 
 	class Meta:
 		model = Location
 		fields = (
-			'id', 'address', 'open_time', 'close_time', 'owner'
+			'id', 'address', 'open_time', 'close_time', 'price_per_kg', 'garbage_types', 'owner'
 		)
 		validators = (
 			IsGarbageCollectorValidator('owner'),
@@ -34,11 +40,12 @@ class CreateLocationSerializer(serializers.ModelSerializer):
 
 class EditLocationSerializer(serializers.ModelSerializer):
 	id = serializers.ReadOnlyField()
+	garbage_types = serializers.ListField(required=False)
 
 	class Meta:
 		model = Location
 		fields = (
-			'id', 'address', 'open_time', 'close_time', 'owner'
+			'id', 'address', 'open_time', 'close_time', 'price_per_kg', 'garbage_types', 'owner'
 		)
 		validators = (
 			IsGarbageCollectorValidator('owner'),
@@ -47,48 +54,9 @@ class EditLocationSerializer(serializers.ModelSerializer):
 			'address': {'required': False},
 			'open_time': {'required': False},
 			'close_time': {'required': False},
-			'owner': {'required': False}
-		}
-
-
-class ServiceSerializer(serializers.ModelSerializer):
-	id = serializers.ReadOnlyField()
-	location_id = serializers.SerializerMethodField()
-
-	@staticmethod
-	def get_location_id(obj):
-		return obj.location.id
-
-	class Meta:
-		model = Service
-		fields = (
-			'id', 'garbage_type', 'service_name', 'price_per_kg', 'location_id'
-		)
-
-
-class CreateServiceSerializer(serializers.ModelSerializer):
-	id = serializers.ReadOnlyField()
-
-	class Meta:
-		model = Service
-		fields = (
-			'id', 'garbage_type', 'service_name', 'price_per_kg', 'location'
-		)
-
-
-class EditServiceSerializer(serializers.ModelSerializer):
-	id = serializers.ReadOnlyField()
-
-	class Meta:
-		model = Service
-		fields = (
-			'id', 'garbage_type', 'service_name', 'price_per_kg', 'location'
-		)
-		extra_kwargs = {
-			'garbage_type': {'required': False},
-			'service_name': {'required': False},
 			'price_per_kg': {'required': False},
-			'location': {'required': False}
+			'garbage_types': {'required': False},
+			'owner': {'required': False}
 		}
 
 
