@@ -23,6 +23,7 @@ import RequestInfoComponent from "./components/info/Request";
 import RatingComponent from "./components/Rating";
 import ScanQrCodeComponent from "./components/user/ScanQrCode";
 import FinishTransactionComponent from "./components/user/FinishTransaction";
+import CommercialRequestComponent from "./components/CommercialRequest";
 
 export default class App extends Component {
 
@@ -155,7 +156,7 @@ export default class App extends Component {
 									<i className="fa fa-trophy" aria-hidden="true"/>
 								</Link>
 							</li>
-							{user ? (
+							{user && !user.is_commercial && !user.is_garbage_collector ? (
 								<li className="nav-item mr-2 d-inline text-success cursor-pointer">
 									<i className="fa fa-qrcode mt-2 mx-2" aria-hidden="true"
 									   style={{fontSize: 34}} title="My QR-Code" onClick={this._onClickScanQrCodeToggle}/>
@@ -229,6 +230,7 @@ export default class App extends Component {
 						<Route path='/info/how' component={HowToRecycleComponent} />
 						<Route path='/info/where' component={WhereToBringGarbageComponent} />
 						<Route path='/info/request' component={RequestInfoComponent} />
+						<Route path='/commercial-request' component={CommercialRequestComponent} />
 						<Route path='/finish-transaction-for/:username' component={FinishTransactionComponent} />
 						<Route path='/page-not-found' component={Errors.NotFound} />
 						<Route path={['/', '/index']} component={IndexComponent} />

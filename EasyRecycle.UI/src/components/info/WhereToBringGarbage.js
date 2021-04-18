@@ -62,9 +62,7 @@ export default class WhereToBringGarbageComponent extends Component {
 
 	_makeLocationCard = (id, address, openTime, closeTime, garbageTypes, userIsCommercial = false) => {
 		return <Card className="h-100">
-			<Card.Header>
-				<Link to={"/" + id.toString()}>{address}</Link>
-			</Card.Header>
+			<Card.Header>{address}</Card.Header>
 			<Card.Body>
 				<h6 className="text-center">We collects</h6>
 				<div className="text-center">
@@ -79,7 +77,7 @@ export default class WhereToBringGarbageComponent extends Component {
 				{
 					userIsCommercial &&
 					<div className="ml-3 pull-right">
-						<Button variant="success" className="btn-sm">Commercial Order</Button>
+						<Link to="/commercial-request" className="btn btn-success btn-sm">Commercial Order</Link>
 					</div>
 				}
 			</Card.Footer>

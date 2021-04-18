@@ -12,9 +12,11 @@ export default class AccountSettingsComponent extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			deactivateDrawerIsOpen: false
+			deactivateDrawerIsOpen: false,
+			becomeCommercialDrawerIsOpen: false
 		};
 		this.confirmDeactivateRef = React.createRef();
+		this.confirmBecomeCommercialRef = React.createRef();
 	}
 
 	_onClickDeactivateToggle = () => {
@@ -38,7 +40,31 @@ export default class AccountSettingsComponent extends Component {
 		});
 	}
 
+	_onClickBecomeCommercialToggle = () => {
+		let {becomeCommercialDrawerIsOpen} = this.state;
+		this.setState({
+			becomeCommercialDrawerIsOpen: !becomeCommercialDrawerIsOpen
+		});
+	}
+
+	_onClickBecomeCommercialConfirm = (_, password, finished) => {
+		UserService.becomeCommercial(this.props.user.id, password, (resp, err) => {
+			if (err) {
+				this.confirmBecomeCommercialRef.current.setError(getErrorMessage(err));
+			}
+			else {
+				let user = UserService.getCurrentUser();
+				user.is_commercial = true;
+				UserService._setCurrentUser(user);
+			}
+
+			finished();
+		});
+	}
+
 	render() {
+		let user = UserService.getCurrentUser();
+		console.log(user);
 		return <div className="p-3">
 			<div className="row">
 				<div className="col-12 border-bottom mb-4">
@@ -51,6 +77,27 @@ export default class AccountSettingsComponent extends Component {
 					<ChangePasswordComponent user={this.props.user}/>
 				</div>
 			</div>
+			{
+				!user.is_commercial &&
+				<div className="row mt-4">
+					<div className="col-12 border-bottom my-4">
+						<small className="text-muted font-weight-bold">COMMERCIAL</small>
+					</div>
+					<div className="col-12 text-right">
+						<PasswordVerificationComponent description={<div className="text-left text-justify">
+								<p className="mt-3 text-center">This action is not recoverable.</p>
+							</div>}
+													   ref={this.confirmBecomeCommercialRef}
+													   open={this.state.becomeCommercialDrawerIsOpen}
+													   modalElementClass="container w-30 min-w-300"
+													   onRequestClose={this._onClickBecomeCommercialToggle}
+													   onClickConfirm={this._onClickBecomeCommercialConfirm}/>
+						<button className="btn btn-outline-danger" onClick={this._onClickBecomeCommercialToggle}>
+							BECOME COMMERCIAL USER
+						</button>
+					</div>
+				</div>
+			}
 			<div className="row mt-4">
 				<div className="col-12 border-bottom my-4">
 					<small className="text-muted font-weight-bold">DEACTIVATE ACCOUNT</small>

@@ -131,6 +131,15 @@ class UserService extends BaseService {
 		}, handler);
 	}
 
+	becomeCommercial = (id, password, handler) => {
+		this.put({
+			url: this._URL_SELF + '/become-commercial',
+			data: {
+				password: password
+			}
+		}, handler);
+	}
+
 	// Administration privileges are required.
 	// returns:
 	// {}
