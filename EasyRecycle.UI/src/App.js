@@ -18,12 +18,13 @@ import RegisterComponent from "./components/user/Register";
 import SettingsComponent from "./components/user/settings/Settings";
 import UserService from "./services/user";
 import HowToRecycleComponent from "./components/info/HowToRecycle";
-import WhereToBringGarbageComponent from "./components/info/WhereToBringGarbage";
+import LocationsComponent from "./components/info/Locations";
 import RequestInfoComponent from "./components/info/Request";
 import RatingComponent from "./components/Rating";
 import ScanQrCodeComponent from "./components/user/ScanQrCode";
 import FinishTransactionComponent from "./components/user/FinishTransaction";
 import CommercialRequestComponent from "./components/CommercialRequest";
+import EditLocationComponent from "./components/EditLocation";
 
 export default class App extends Component {
 
@@ -36,7 +37,7 @@ export default class App extends Component {
 			currentUser: undefined,
 			loginIsOpen: false,
 			registerIsOpen: false,
-			scanQrCodeIsOpen: false
+			scanQrCodeIsOpen: false,
 		};
 	}
 
@@ -228,10 +229,11 @@ export default class App extends Component {
 						<Route path='/home' component={HomeComponent} />
 						<Route path='/rating' component={RatingComponent} />
 						<Route path='/info/how' component={HowToRecycleComponent} />
-						<Route path='/info/where' component={WhereToBringGarbageComponent} />
+						<Route path='/info/locations' component={LocationsComponent} />
 						<Route path='/info/request' component={RequestInfoComponent} />
 						<Route path='/commercial-request' component={CommercialRequestComponent} />
 						<Route path='/finish-transaction-for/:username' component={FinishTransactionComponent} />
+						<Route path='/location/:id' component={EditLocationComponent} />
 						<Route path='/page-not-found' component={Errors.NotFound} />
 						<Route path={['/', '/index']} component={IndexComponent} />
 					</Switch>

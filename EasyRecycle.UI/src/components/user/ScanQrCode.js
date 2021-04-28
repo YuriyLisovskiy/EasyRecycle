@@ -18,16 +18,6 @@ export default class ScanQrCodeComponent extends Component {
 		let user = this.state.user;
 		if (user)
 		{
-			let user_title;
-			if (user.first_name && user.last_name)
-			{
-				user_title = user.first_name + " " + user.last_name;
-			}
-			else
-			{
-				user_title = user.username
-			}
-
 			let hostName = window.location.href.replace(window.location.pathname, "");
 			return <DrawerComponent title="QR-CODE"
 									open={this.props.open}
