@@ -3,7 +3,7 @@ from django.urls import re_path, include
 from core.views import (
 	UserDetailsAPIView, EditSelfAPIView, SelfUserAPIView,
 	EditSelfAvatarAPIView, EditSelfEmailAPIView, EditSelfPasswordAPIView,
-	DeactivateSelfAPIView, BecomeCommercialAPIView
+	DeactivateSelfAPIView, BecomeCommercialAPIView, UsersAPIView
 )
 
 app_name = 'core'
@@ -17,5 +17,6 @@ urlpatterns = [
 	re_path(r'^users/self/become-commercial/?', BecomeCommercialAPIView.as_view(), name='become_commercial'),
 	re_path(r'^users/self/?', SelfUserAPIView.as_view(), name='get_self'),
 	re_path(r'^users/(?P<pk>\d+)/?', UserDetailsAPIView.as_view(), name='get_user'),
+	re_path(r'^users/?', UsersAPIView.as_view(), name='get_users'),
 	re_path(r'^admin/', include('core.administration.urls', namespace='administration'))
 ]

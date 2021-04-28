@@ -14,6 +14,9 @@ class IsGarbageCollectorValidator(ValidatorBase):
 
 	def perform_validation(self, attrs):
 		if self.user_field in attrs:
+			if attrs[self.user_field].is_superuser:
+				return
+
 			if not attrs[self.user_field].is_garbage_collector:
 				raise ValidationError(self.error_message)
 

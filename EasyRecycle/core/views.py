@@ -38,6 +38,33 @@ class UserDetailsAPIView(generics.RetrieveAPIView):
 	serializer_class = UserDetailsSerializer
 
 
+# /api/v1/core/users
+# methods:
+#   - get
+# returns (success status - 200):
+#   [
+#       {
+#           "id": <int>,
+#           "first_name": <string>,
+#           "last_name": <string>,
+#           "username": <string>,
+#           "email": <string>,
+#           "avatar_link": <string (full url)>,
+#           "rating": <int>,
+#           "is_superuser": <bool>,
+#           "is_banned": <bool>,
+#           "is_garbage_collector": <bool>,
+#           "is_commercial": <bool>,
+#           "show_full_name": <bool>
+#       },
+#       ...
+#   ]
+class UsersAPIView(generics.ListAPIView):
+	permission_classes = (permissions.IsAdminUser,)
+	queryset = UserModel.objects.all()
+	serializer_class = UserDetailsSerializer
+
+
 # /api/v1/core/users/self/edit
 # methods:
 #   - put:
