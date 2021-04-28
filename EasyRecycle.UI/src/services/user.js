@@ -32,6 +32,28 @@ class UserService extends BaseService {
 	}
 
 	// returns:
+	//  [
+	//    {
+	//      "id": <int>,
+	//      "first_name": <string>,
+	//      "last_name": <string>,
+	//      "username": <string>,
+	//      "email": <string>,
+	//      "avatar_link": <string (full url)>,
+	//      "is_superuser": <bool>,
+	//      "is_banned": <bool>,
+	//      "is_garbage_collector": <bool>,
+	//      "is_commercial": <bool>,
+	//      "rating": <int>,
+	//      "show_full_name": <bool>
+	//    },
+	//    ...
+	//  ]
+	getUsers = (handler) => {
+		return this.get({url: this._URL_USERS}, handler);
+	}
+
+	// returns:
 	//  {
 	//    "id": <int>,
 	//    "first_name": <string>,

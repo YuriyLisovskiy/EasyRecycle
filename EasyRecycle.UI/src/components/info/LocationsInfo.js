@@ -57,7 +57,7 @@ export default class LocationsComponent extends Component {
 				{
 					user && (user.is_superuser || user.id === location.owner_id) &&
 					<div className="d-inline float-right ml-1">
-						<Link to={'/location/' + location.id.toString()}>
+						<Link to={'/locations/' + location.id.toString() + "/edit"}>
 							<i className="fa fa-edit text-secondary"
 							   title="Click to edit this location"
 							   aria-hidden="true"/>
@@ -79,15 +79,24 @@ export default class LocationsComponent extends Component {
 					</Link>)}
 				</div>
 			</Card.Body>
-			<Card.Footer className="text-muted">
-				<p className="pull-left">Working hours: {location.open_time} - {location.close_time}</p>
-				{
-					user && user.is_commercial &&
-					<div className="ml-3 pull-right">
-						<Link to="/commercial-request" className="btn btn-success btn-sm">Commercial Order</Link>
-					</div>
-				}
+			<Card.Footer className="text-muted text-center">
+				Working hours: {location.open_time} - {location.close_time}
 			</Card.Footer>
+			{
+				user && user.is_commercial &&
+				<Card.Footer>
+					<p className="pull-left">$ {location.price_per_kg} / kg</p>
+					<div className="ml-3 pull-right">
+						<Link to="/info/collection" className="btn btn-primary btn-sm mr-2"
+						      title="Learn what a commercial request is">
+							<i className="fa fa-question" aria-hidden="true"/>
+						</Link>
+						<Link to="/commercial-order" className="btn btn-success btn-sm">
+							Create Commercial Order
+						</Link>
+					</div>
+				</Card.Footer>
+			}
 		</Card>;
 	}
 

@@ -2,9 +2,9 @@ import React, {Component} from "react";
 import LocationService from "../services/location";
 import UserService from "../services/user";
 import SpinnerComponent from "./Spinner";
-import history from "../services/history";
 import DrawerComponent from "./Drawer";
 import Errors from "./Errors";
+import {GarbageTypes} from "../utils/misc";
 
 export default class EditLocationComponent extends Component {
 
@@ -16,28 +16,9 @@ export default class EditLocationComponent extends Component {
 			newGarbageTypes: [],
 			hasChanges: false,
 			confirmIsOpen: false,
-			garbageTypesList: [
-				{
-					src: '/organic-waste-bin.png',
-					value: 'OR'
-				},
-				{
-					src: '/glass-waste-bin.png',
-					value: 'GL'
-				},
-				{
-					src: '/metal-waste-bin.png',
-					value: 'ME'
-				},
-				{
-					src: '/paper-waste-bin.png',
-					value: 'PA'
-				},
-				{
-					src: '/plastic-waste-bin.png',
-					value: 'PL'
-				}
-			]
+			saveLoading: false,
+			loadingUsers: true,
+			users: undefined,
 		};
 	}
 
@@ -56,6 +37,19 @@ export default class EditLocationComponent extends Component {
 				});
 			}
 		});
+		UserService.getUsers((data, err) => {
+			if (err)
+			{
+				alert(err);
+			}
+			else
+			{
+				this.setState({
+					users: data.results,
+					loadingUsers: false
+				})
+			}
+		});
 	}
 
 	_handleSave = _ => {
@@ -65,23 +59,69 @@ export default class EditLocationComponent extends Component {
 		}
 
 		let location = this.state.location;
-		LocationService.editLocation(
-			location.id, location.address,
-			location.open_time, location.close_time,
-			location.price_per_kg, this.state.newGarbageTypes, location.owner_id,
-			(data, err) => {
-				if (err)
-				{
-					alert(err);
+		let newState = {};
+		let hasErrors = false;
+		if (location.address === '')
+		{
+			newState.addressError = 'This field is required.';
+			hasErrors = true;
+		}
+
+		if (location.open_time === '')
+		{
+			newState.openTimeError = 'This field is required.';
+			hasErrors = true;
+		}
+
+		if (location.close_time === '')
+		{
+			newState.closeTimeError = 'This field is required.';
+			hasErrors = true;
+		}
+
+		if (location.garbage_types.length === 0)
+		{
+			newState.garbageTypesError = 'At least one type should be selected.';
+			hasErrors = true;
+		}
+
+		if (location.price_per_kg < 0)
+		{
+			newState.pricePerKgError = 'Price must be non-negative.';
+			hasErrors = true;
+		}
+
+		if (location.owner_id === 0)
+		{
+			newState.ownerError = 'This field is required.';
+			hasErrors = true;
+		}
+
+		if (hasErrors)
+		{
+			this.setState(newState);
+		}
+		else
+		{
+			this.setState({saveLoading: true});
+			LocationService.editLocation(
+				location.id, location.address,
+				location.open_time, location.close_time,
+				location.price_per_kg, this.state.newGarbageTypes, location.owner_id,
+				(data, err) => {
+					if (err)
+					{
+						alert(err);
+					}
+					else
+					{
+						this.setState({hasChanges: false});
+					}
+
+					this.setState({saveLoading: false});
 				}
-				else
-				{
-					this.setState({
-						hasChanges: false
-					});
-				}
-			}
-		);
+			);
+		}
 	}
 
 	_handleDelete = _ => {
@@ -93,40 +133,48 @@ export default class EditLocationComponent extends Component {
 			}
 			else
 			{
-				history.back();
+				this.props.history.goBack();
 			}
 		});
 	}
 
-	_handleChange = (e, location) => {
-		this.setState({
+	_handleChange = (e, location, errKey) => {
+		let state = {
 			location: location,
 			hasChanges: true
-		});
+		};
+		state[errKey] = undefined;
+		this.setState(state);
 	}
 
 	_handleAddressChange = e => {
 		let loc = this.state.location;
 		loc.address = e.target.value;
-		this._handleChange(e, loc);
+		this._handleChange(e, loc, 'addressError');
 	}
 
 	_handleOpenTimeChange = e => {
 		let loc = this.state.location;
 		loc.open_time = e.target.value;
-		this._handleChange(e, loc);
+		this._handleChange(e, loc, 'openTimeError');
 	}
 
 	_handleCloseTimeChange = e => {
 		let loc = this.state.location;
 		loc.close_time = e.target.value;
-		this._handleChange(e, loc);
+		this._handleChange(e, loc, 'closeTimeError');
 	}
 
 	_handlePricePerKgChange = e => {
 		let loc = this.state.location;
 		loc.price_per_kg = e.target.value;
-		this._handleChange(e, loc);
+		this._handleChange(e, loc, 'pricePerKgError');
+	}
+
+	_handleOwnerChange = e => {
+		let loc = this.state.location;
+		loc.owner_id = e.target.value;
+		this._handleChange(e, loc, 'ownerError');
 	}
 
 	_handleWasteChange = e => {
@@ -155,7 +203,8 @@ export default class EditLocationComponent extends Component {
 
 		this.setState({
 			newGarbageTypes: newGarbageTypes,
-			hasChanges: true
+			hasChanges: true,
+			garbageTypesError: undefined
 		});
 	}
 
@@ -206,6 +255,11 @@ export default class EditLocationComponent extends Component {
 								       value={this.state.location.address}
 								       onChange={this._handleAddressChange}/>
 							</div>
+							{
+								this.state.addressError && <small className="form-text text-danger ml-1 mt-1">
+									{this.state.addressError}
+								</small>
+							}
 						</div>
 					</div>
 					<div className="row my-3">
@@ -216,6 +270,11 @@ export default class EditLocationComponent extends Component {
 								       value={this.state.location.open_time}
 								       onChange={this._handleOpenTimeChange}/>
 							</div>
+							{
+								this.state.openTimeError && <small className="form-text text-danger ml-1 mt-1">
+									{this.state.openTimeError}
+								</small>
+							}
 						</div>
 						<div className="col-md-6">
 							<div className="form-group">
@@ -224,22 +283,57 @@ export default class EditLocationComponent extends Component {
 								       value={this.state.location.close_time}
 								       onChange={this._handleCloseTimeChange}/>
 							</div>
+							{
+								this.state.closeTimeError && <small className="form-text text-danger ml-1 mt-1">
+									{this.state.closeTimeError}
+								</small>
+							}
 						</div>
 					</div>
 					<div className="row">
-						<div className="col-md-12">
+						<div className="col-md-6">
 							<div className="form-group">
 								<label htmlFor="price_per_kg">Price per kg (for commercial orders):</label>
 								<input type="number" className="form-control" id="price_per_kg"
 								       value={this.state.location.price_per_kg}
 								       onChange={this._handlePricePerKgChange}/>
 							</div>
+							{
+								this.state.pricePerKgError && <small className="form-text text-danger ml-1 mt-1">
+									{this.state.pricePerKgError}
+								</small>
+							}
+						</div>
+						<div className="col-md-6">
+							<div className="form-group">
+								<label htmlFor="owner">{this.state.loadingUsers ? "" : "Owner:"}</label>
+								{
+									this.state.loadingUsers ? (<SpinnerComponent/>) : (
+										<select className="form-control"
+										        id="owner"
+										        onChange={this._handleOwnerChange}
+										        defaultValue={this.state.location.owner_id}>
+											<option disabled value={0}>None</option>
+											{this.state.users && this.state.users.map(u => <option value={u.id} key={u.id}>{
+												u.first_name && u.last_name ? (
+													u.first_name + " " + u.last_name + " (" + u.username + ")"
+												) : u.username
+											}</option>)}
+										</select>
+									)
+								}
+							</div>
+							{
+								this.state.ownerError && <small className="form-text text-danger ml-1 mt-1">
+									{this.state.ownerError}
+								</small>
+							}
 						</div>
 					</div>
 					<div className="row my-3">
 						<div className="col-md-12 text-center">
 							{
-								this.state.garbageTypesList.map(item => <label
+								GarbageTypes.map(item => <label
 									className="checkbox-inline cursor-pointer mx-4" key={item.value}>
 									<input type="checkbox"
 									       value={item.value}
@@ -251,16 +345,22 @@ export default class EditLocationComponent extends Component {
 									     alt={item.value}/>
 								</label>)
 							}
+							{
+								this.state.garbageTypesError && <small className="form-text text-danger ml-1 mt-1">
+									{this.state.garbageTypesError}
+								</small>
+							}
 						</div>
 					</div>
 					<div className="mt-5">
 						<button className="btn btn-outline-secondary" title="Go Back"
-						        onClick={history.back}>
+						        onClick={this.props.history.goBack}>
 							<i className="fa fa-chevron-left" aria-hidden="true"/>
 						</button>
 						<button className={"mx-2 btn btn-success"}
 						        onClick={this._handleSave} disabled={(this.state.hasChanges ? "" : "disabled")}>
-							Save
+							{this.state.saveLoading &&
+							<span className="spinner-border spinner-border-sm"/>} Save
 						</button>
 						<button className="btn btn-outline-danger" onClick={this._onClickConfirmToggle}>
 							Delete

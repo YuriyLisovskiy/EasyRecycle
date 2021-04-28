@@ -47,7 +47,7 @@ export default class HomeComponent extends Component {
 						"Don't want to?",
 						"/dont-want-to.png",
 						"Learn how to place a request, so that we can take care of everything",
-						"/info/request"
+						"/info/collection"
 					)}
 				</div>
 			</div>

@@ -18,13 +18,14 @@ import RegisterComponent from "./components/user/Register";
 import SettingsComponent from "./components/user/settings/Settings";
 import UserService from "./services/user";
 import HowToRecycleComponent from "./components/info/HowToRecycle";
-import LocationsComponent from "./components/info/Locations";
-import RequestInfoComponent from "./components/info/Request";
+import LocationsInfoComponent from "./components/info/LocationsInfo";
+import CollectionInfoComponent from "./components/info/CollectionInfo";
 import RatingComponent from "./components/Rating";
 import ScanQrCodeComponent from "./components/user/ScanQrCode";
 import FinishTransactionComponent from "./components/user/FinishTransaction";
-import CommercialRequestComponent from "./components/CommercialRequest";
+import CommercialOrderComponent from "./components/CommercialOrder";
 import EditLocationComponent from "./components/EditLocation";
+import CreateLocationComponent from "./components/CreateLocation";
 
 export default class App extends Component {
 
@@ -194,6 +195,15 @@ export default class App extends Component {
 											<i className="fa fa-cog" aria-hidden="true"/> User Settings
 										</Link>
 										<div className="dropdown-divider"/>
+										{
+											user.is_superuser &&
+											<div>
+												<Link to="/locations/create" className="dropdown-item">
+													<i className="fa fa-map-marker" aria-hidden="true"/> Add Location
+												</Link>
+												<div className="dropdown-divider"/>
+											</div>
+										}
 										<div className="dropdown-item select-none cursor-pointer"
 											 onClick={this._onClickLogOut}>
 											<i className="fa fa-sign-out" aria-hidden="true"/> Sign Out
@@ -229,11 +239,12 @@ export default class App extends Component {
 						<Route path='/home' component={HomeComponent} />
 						<Route path='/rating' component={RatingComponent} />
 						<Route path='/info/how' component={HowToRecycleComponent} />
-						<Route path='/info/locations' component={LocationsComponent} />
-						<Route path='/info/request' component={RequestInfoComponent} />
-						<Route path='/commercial-request' component={CommercialRequestComponent} />
+						<Route path='/info/locations' component={LocationsInfoComponent} />
+						<Route path='/info/collection' component={CollectionInfoComponent} />
+						<Route path='/commercial-order' component={CommercialOrderComponent} />
 						<Route path='/finish-transaction-for/:username' component={FinishTransactionComponent} />
-						<Route path='/location/:id' component={EditLocationComponent} />
+						<Route path='/locations/create' component={CreateLocationComponent} />
+						<Route path='/locations/:id/edit' component={EditLocationComponent} />
 						<Route path='/page-not-found' component={Errors.NotFound} />
 						<Route path={['/', '/index']} component={IndexComponent} />
 					</Switch>
