@@ -6,8 +6,18 @@ from recycle.validators import IsGarbageCollectorValidator, IsCommercialValidato
 
 class LocationSerializer(serializers.ModelSerializer):
 	id = serializers.ReadOnlyField()
+	open_time = serializers.SerializerMethodField()
+	close_time = serializers.SerializerMethodField()
 	owner_id = serializers.SerializerMethodField()
 	garbage_types = serializers.SerializerMethodField()
+
+	@staticmethod
+	def get_open_time(obj):
+		return obj.open_time.strftime('%H:%M')
+
+	@staticmethod
+	def get_close_time(obj):
+		return obj.close_time.strftime('%H:%M')
 
 	@staticmethod
 	def get_owner_id(obj):
@@ -15,7 +25,10 @@ class LocationSerializer(serializers.ModelSerializer):
 
 	@staticmethod
 	def get_garbage_types(obj):
-		return [gt.get_garbage_type_display() for gt in obj.garbagetype_set.all()]
+		return [{
+			'short': gt.garbage_type,
+			'long': gt.get_garbage_type_display()
+		} for gt in obj.garbagetype_set.all()]
 
 	class Meta:
 		model = Location

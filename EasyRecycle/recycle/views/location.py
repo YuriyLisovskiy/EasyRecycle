@@ -117,6 +117,13 @@ class ManageLocationAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
 	def update(self, request, *args, **kwargs):
 		data = request.data.copy()
 		garbage_types = data.pop('garbage_types', [])
+		for g_type in garbage_types:
+			if g_type not in garbage.SHORT_TYPES:
+				return Response(
+					{'message': 'invalid garbage type: {}'.format(g_type)},
+					status=status.HTTP_400_BAD_REQUEST
+				)
+
 		partial = kwargs.pop('partial', False)
 		instance = self.get_object()
 		serializer = self.get_serializer(instance, data=data, partial=partial)
@@ -124,13 +131,14 @@ class ManageLocationAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
 		self.perform_update(serializer)
 
 		current_g_types = instance.garbagetype_set.all()
+		for g_type in current_g_types:
+			if g_type.garbage_type in garbage_types:
+				garbage_types.remove(g_type.garbage_type)
+			else:
+				g_type.delete()
 
-		# TODO: remove types which are absent in `current_g_types` and create new
-		#       ones that are absent in the database and present in `current_g_types`.
-
-		# for g_type in garbage_types:
-		# 	if g_type in garbage.SHORT_TYPES:
-		# 		GarbageType.objects.create(garbage_type=g_type, location_id=serializer.data.id)
+		for new_g_type in garbage_types:
+			GarbageType.objects.create(garbage_type=new_g_type, location=instance)
 
 		if getattr(instance, '_prefetched_objects_cache', None):
 			# If 'prefetch_related' has been applied to a queryset, we need to
