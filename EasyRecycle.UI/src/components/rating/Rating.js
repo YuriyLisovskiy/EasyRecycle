@@ -1,5 +1,7 @@
 import React, {Component} from "react";
 import UserService from "../../services/user";
+import SpinnerComponent from "../Spinner";
+import UserComponent from "./User";
 
 export default class RatingComponent extends Component {
 
@@ -13,25 +15,21 @@ export default class RatingComponent extends Component {
 	}
 
 	_loadUsers = () => {
-		if (this.state.nextPage)
-		{
+		if (this.state.nextPage) {
 			UserService.getUsers(null, this.state.nextPage, 'rating', (data, err) => {
-				if (err)
-				{
+				if (err) {
 					alert(err);
-				}
-				else
-				{
-				    this.setState({
-                        users: data.results,
-                        loading: false,
-                        nextPage: data.next
-				    });
+				} else {
+					this.setState({
+						users: data.results,
+						loading: false,
+						nextPage: data.next
+					});
 
-				    // TODO: remove!
+					// TODO: remove!
 					console.log(this.state);
 				}
-		    });
+			});
 		}
 	}
 
@@ -39,7 +37,11 @@ export default class RatingComponent extends Component {
 		this._loadUsers();
 	}
 
-	render () {
-		return <h1>TODO: rating here!</h1>;
+	render() {
+		return this.state.loading ? (<SpinnerComponent/>) : (
+			<div className="container">
+				{this.state.users.map((user, idx) => <UserComponent user={user} index={idx}/>)}
+			</div>
+		);
 	}
 }

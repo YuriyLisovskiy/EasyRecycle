@@ -97,4 +97,18 @@
 	text-decoration: underline;
 }
 
+.trophy-gold {
+	color: gold;
+}
 
+.trophy-silver {
+	color: silver;
+}
+
+.trophy-bronze {
+	color: #cd7f32;
+}
+
+.trophy-common {
+
+}
