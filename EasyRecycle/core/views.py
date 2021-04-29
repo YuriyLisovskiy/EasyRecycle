@@ -70,7 +70,7 @@ class UsersAPIView(generics.ListAPIView):
 		if gc_only:
 			qs = self.queryset.filter(is_garbage_collector=True)
 
-		sort_by = self.request.query_params.get('sort_by', 'name')
+		sort_by = self.request.query_params.get('order_by', 'name')
 		if sort_by == 'name':
 			qs = qs.order_by('first_name', 'last_name', 'username')
 		elif sort_by == 'rating':
