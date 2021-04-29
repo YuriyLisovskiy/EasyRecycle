@@ -61,8 +61,31 @@ class UserDetailsAPIView(generics.RetrieveAPIView):
 #   ]
 class UsersAPIView(generics.ListAPIView):
 	permission_classes = (permissions.IsAdminUser,)
-	queryset = UserModel.objects.all()
+	queryset = UserModel.objects.filter(is_active=True)
 	serializer_class = UserDetailsSerializer
+
+	def get_queryset(self):
+		gc_only = self.request.query_params.get('garbage_collectors', 'false').lower() == 'true'
+		qs = self.queryset
+		if gc_only:
+			qs = self.queryset.filter(is_garbage_collector=True)
+
+		sort_by = self.request.query_params.get('sort_by', 'name')
+		if sort_by == 'name':
+			qs = qs.order_by('first_name', 'last_name', 'username')
+		elif sort_by == 'rating':
+			qs = qs.order_by('-rating')
+
+		return qs
+
+	def paginate_queryset(self, queryset):
+		try:
+			if int(self.request.query_params.get('page', '1')) == -1:
+				return None
+		except ValueError:
+			pass
+
+		return super().paginate_queryset(queryset)
 
 
 # /api/v1/core/users/self/edit

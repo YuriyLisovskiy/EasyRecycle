@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
+from core.models import UserModel
 from recycle import garbage
 from recycle.models import Location, GarbageType
 from recycle.serializers import LocationSerializer, CreateLocationSerializer, EditLocationSerializer
@@ -88,6 +89,10 @@ class CreateLocationAPIView(generics.CreateAPIView):
 
 			GarbageType.objects.create(garbage_type=g_type, location_id=serializer.data['id'])
 
+		owner = UserModel.objects.filter(pk=serializer.data['owner']).first()
+		owner.is_garbage_collector = True
+		owner.save()
+
 		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
@@ -126,6 +131,7 @@ class ManageLocationAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
 
 		partial = kwargs.pop('partial', False)
 		instance = self.get_object()
+		old_owner = instance.owner
 		serializer = self.get_serializer(instance, data=data, partial=partial)
 		serializer.is_valid(raise_exception=True)
 		self.perform_update(serializer)
@@ -144,5 +150,13 @@ class ManageLocationAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
 			# If 'prefetch_related' has been applied to a queryset, we need to
 			# forcibly invalidate the prefetch cache on the instance.
 			instance._prefetched_objects_cache = {}
+
+		# Update owners
+		if old_owner.id != serializer.data['owner']:
+			old_owner.is_garbage_collector = False
+			old_owner.save()
+			new_owner = UserModel.objects.filter(pk=serializer.data['owner']).first()
+			new_owner.is_garbage_collector = True
+			new_owner.save()
 
 		return Response(serializer.data)
