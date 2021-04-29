@@ -49,8 +49,26 @@ class UserService extends BaseService {
 	//    },
 	//    ...
 	//  ]
-	getUsers = (handler) => {
-		return this.get({url: this._URL_USERS}, handler);
+	getUsers = (garbage_collectors, page, order_by, handler) => {
+		let query = [];
+		if (garbage_collectors === true)
+		{
+			query.push("garbage_collectors=true");
+		}
+
+		if (page)
+		{
+			query.push("page=" + page.toString());
+		}
+
+		if (order_by)
+		{
+			query.push('order_by=' + order_by);
+		}
+
+		return this.get({
+			url: this._URL_USERS + (query.length > 0 ? ("?" + query.join('&')) : "")
+		}, handler);
 	}
 
 	// returns:

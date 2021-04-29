@@ -20,7 +20,7 @@ import UserService from "./services/user";
 import HowToRecycleComponent from "./components/info/HowToRecycle";
 import LocationsInfoComponent from "./components/info/LocationsInfo";
 import CollectionInfoComponent from "./components/info/CollectionInfo";
-import RatingComponent from "./components/Rating";
+import RatingComponent from "./components/rating/Rating";
 import ScanQrCodeComponent from "./components/user/ScanQrCode";
 import FinishTransactionComponent from "./components/user/FinishTransaction";
 import CommercialOrderComponent from "./components/CommercialOrder";
@@ -152,18 +152,32 @@ export default class App extends Component {
 					</button>
 					<div className="collapse navbar-collapse" id="collapsibleNavbar">
 						<ul className="navbar-nav ml-auto">
-							<li className="nav-item mr-2">
-								<Link to="/rating" className="mt-2 mx-2 text-success"
-									  style={{fontSize: 34}} title="Show Rating">
-									<i className="fa fa-trophy" aria-hidden="true"/>
-								</Link>
-							</li>
 							{user && !user.is_commercial && !user.is_garbage_collector ? (
 								<li className="nav-item mr-2 d-inline text-success cursor-pointer">
 									<i className="fa fa-qrcode mt-2 mx-2" aria-hidden="true"
 									   style={{fontSize: 34}} title="My QR-Code" onClick={this._onClickScanQrCodeToggle}/>
 								</li>
 							) : "" }
+							<li className="nav-item mr-2">
+								<Link to="/info/locations" className="mx-2 text-success">
+									<i className="fa fa-map-marker mt-2" aria-hidden="true"
+									   style={{fontSize: 32}}/>
+									<span className="ml-2 align-text-bottom font-weight-bold"
+									      style={{fontSize: 16}}>
+										LOCATIONS
+									</span>
+								</Link>
+							</li>
+							<li className="nav-item mr-2">
+								<Link to="/rating" className="mx-2 text-success"
+									  style={{fontSize: 32}}>
+									<i className="fa fa-trophy mt-2" aria-hidden="true"/>
+									<span className="ml-2 align-middle font-weight-bold"
+									      style={{fontSize: 16}}>
+										RATING
+									</span>
+								</Link>
+							</li>
 							{user ? (
 								<li className="nav-item dropdown d-inline">
 									<div id="navbardrop"

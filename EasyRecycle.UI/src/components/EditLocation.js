@@ -37,7 +37,7 @@ export default class EditLocationComponent extends Component {
 				});
 			}
 		});
-		UserService.getUsers((data, err) => {
+		UserService.getUsers(null, null, 'name', (data, err) => {
 			if (err)
 			{
 				alert(err);
@@ -228,7 +228,7 @@ export default class EditLocationComponent extends Component {
 			{
 				let {newGarbageTypes} = this.state;
 				return <div className="container">
-					<DrawerComponent title="CONFIRM"
+					<DrawerComponent title="CONFIRM AN ACTION"
 					                 open={this.state.confirmIsOpen}
 					                 onRequestClose={this._onClickConfirmToggle}
 					                 modalElementClass="container w-25 min-w-250">

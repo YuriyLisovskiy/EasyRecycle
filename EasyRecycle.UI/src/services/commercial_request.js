@@ -20,20 +20,20 @@ class CommercialRequestService extends BaseService {
 	//  ]
 	getCommercialRequests = (userPkFilter, servicePkFilter, handler) => {
 		let url = this._URL_COMMERCIAL_REQUESTS;
-		let query = "";
+		let query = [];
 		if (userPkFilter)
 		{
-			query += "user_pk=" + userPkFilter.toString();
+			query.push("user_pk=" + userPkFilter.toString());
 		}
 
 		if (servicePkFilter)
 		{
-			query += "service_pk=" + servicePkFilter.toString();
+			query.push("service_pk=" + servicePkFilter.toString());
 		}
 
 		if (query.length > 0)
 		{
-			url += "?" + query;
+			url += "?" + query.join('&');
 		}
 
 		return this.get({url: url}, handler);

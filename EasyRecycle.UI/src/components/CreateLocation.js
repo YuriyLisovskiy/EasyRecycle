@@ -25,7 +25,7 @@ export default class CreateLocationComponent extends Component {
 	}
 
 	componentDidMount() {
-		UserService.getUsers((data, err) => {
+		UserService.getUsers(true, null, 'name', (data, err) => {
 			if (err)
 			{
 				alert(err);
