@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import UserService from "../../services/user";
 import SpinnerComponent from "../Spinner";
 import UserComponent from "./User";
+import Errors from "../Errors";
 
 export default class RatingComponent extends Component {
 
@@ -38,8 +39,18 @@ export default class RatingComponent extends Component {
 	}
 
 	render() {
+		if (!UserService.getCurrentUser())
+		{
+			return <Errors.Forbidden/>;
+		}
+
 		return this.state.loading ? (<SpinnerComponent/>) : (
 			<div className="container">
+				<div className="row">
+					<h3 className="col-md-12 text-center mb-3">
+						RATING
+					</h3>
+				</div>
 				{this.state.users.map((user, idx) => <UserComponent user={user} index={idx}/>)}
 			</div>
 		);

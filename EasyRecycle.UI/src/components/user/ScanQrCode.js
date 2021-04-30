@@ -29,7 +29,7 @@ export default class ScanQrCodeComponent extends Component {
 							Let garbage collector scan this code to give you points.
 						</div>
 						<div className="text-center h-100 mt-3">
-							<QRCode value={hostName + "/finish-transaction-for/" + user.username} />
+							<QRCode value={hostName + "/finish-transaction-for/" + user.id} />
 						</div>
 					</div>
 				</div>

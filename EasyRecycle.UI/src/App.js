@@ -17,13 +17,15 @@ import LoginComponent from "./components/user/Login";
 import RegisterComponent from "./components/user/Register";
 import SettingsComponent from "./components/user/settings/Settings";
 import UserService from "./services/user";
+import CommerialOrderService from "./services/commercial_order";
 import HowToRecycleComponent from "./components/info/HowToRecycle";
 import LocationsInfoComponent from "./components/info/LocationsInfo";
 import CollectionInfoComponent from "./components/info/CollectionInfo";
 import RatingComponent from "./components/rating/Rating";
 import ScanQrCodeComponent from "./components/user/ScanQrCode";
 import FinishTransactionComponent from "./components/user/FinishTransaction";
-import CommercialOrderComponent from "./components/CommercialOrder";
+import CommercialOrdersComponent from "./components/commercial/Orders";
+import CreateCommercialOrderComponent from "./components/commercial/CreateOrder";
 import EditLocationComponent from "./components/EditLocation";
 import CreateLocationComponent from "./components/CreateLocation";
 
@@ -39,6 +41,7 @@ export default class App extends Component {
 			loginIsOpen: false,
 			registerIsOpen: false,
 			scanQrCodeIsOpen: false,
+			ordersCount: 0
 		};
 	}
 
@@ -51,8 +54,25 @@ export default class App extends Component {
 				this.setState({
 					currentUser: user
 				});
+				this._updateOrdersCount();
 			}
 		});
+	}
+
+	_updateOrdersCount = () => {
+		if (this.state.currentUser.is_garbage_collector)
+		{
+			CommerialOrderService.getOrders({
+				locationFilter: true,
+				statusFilter: ['A', 'B'],
+				handler: (data, err) => {
+					if (!err)
+					{
+						this.setState({ordersCount: data.results.length});
+					}
+				}
+			});
+		}
 	}
 
 	_makeSubSettingRoute = (subPath) => {
@@ -168,9 +188,9 @@ export default class App extends Component {
 									</span>
 								</Link>
 							</li>
-							<li className="nav-item mr-2">
-								<Link to="/rating" className="mx-2 text-success"
-									  style={{fontSize: 32}}>
+							<li className="nav-item mr-2" title={!user ? "You must be logged in to view rating" : ""}>
+								<Link to="/rating" className={"mx-2 text-success" + (!user ? " text-muted" : "")}
+								      style={!user ? {fontSize: 32, pointerEvents: "none"} : {fontSize: 32}}>
 									<i className="fa fa-trophy mt-2" aria-hidden="true"/>
 									<span className="ml-2 align-middle font-weight-bold"
 									      style={{fontSize: 16}}>
@@ -218,6 +238,23 @@ export default class App extends Component {
 												<div className="dropdown-divider"/>
 											</div>
 										}
+										{
+											user.is_garbage_collector &&
+											<div>
+												<Link to="/commercial-orders" className="dropdown-item">
+													<i className="fa fa-tachometer" aria-hidden="true"/> Orders&nbsp;
+													{
+														this.state.ordersCount > 0 &&
+														<sup>
+															<span className="badge badge-pill badge-danger">
+																{this.state.ordersCount}
+															</span>
+														</sup>
+													}
+												</Link>
+												<div className="dropdown-divider"/>
+											</div>
+										}
 										<div className="dropdown-item select-none cursor-pointer"
 											 onClick={this._onClickLogOut}>
 											<i className="fa fa-sign-out" aria-hidden="true"/> Sign Out
@@ -255,8 +292,12 @@ export default class App extends Component {
 						<Route path='/info/how' component={HowToRecycleComponent} />
 						<Route path='/info/locations' component={LocationsInfoComponent} />
 						<Route path='/info/collection' component={CollectionInfoComponent} />
-						<Route path='/commercial-order' component={CommercialOrderComponent} />
-						<Route path='/finish-transaction-for/:username' component={FinishTransactionComponent} />
+						<Route path='/commercial-orders' render={
+							(props) => <CommercialOrdersComponent {...props}
+							                                      updateOrdersCount={this._updateOrdersCount}/>
+						} />
+						<Route path='/commercial-order/create' component={CreateCommercialOrderComponent} />
+						<Route path='/finish-transaction-for/:id' component={FinishTransactionComponent} />
 						<Route path='/locations/create' component={CreateLocationComponent} />
 						<Route path='/locations/:id/edit' component={EditLocationComponent} />
 						<Route path='/page-not-found' component={Errors.NotFound} />

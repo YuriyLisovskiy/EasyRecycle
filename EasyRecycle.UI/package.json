@@ -12,6 +12,7 @@
     "history": "^5.0.0",
     "prop-types": "^15.7.2",
     "qrcode.react": "^1.0.1",
+    "query-string": "^4.3.4",
     "react": "^17.0.1",
     "react-app-env": "^1.2.3",
     "react-bootstrap": "^1.4.0",

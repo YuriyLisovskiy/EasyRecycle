@@ -85,13 +85,14 @@ export default class LocationsComponent extends Component {
 			{
 				user && user.is_commercial &&
 				<Card.Footer>
-					<p className="pull-left">$ {location.price_per_kg} / kg</p>
+					<p className="pull-left">${location.price_per_kg} / kg</p>
 					<div className="ml-3 pull-right">
 						<Link to="/info/collection" className="btn btn-primary btn-sm mr-2"
 						      title="Learn what a commercial request is">
 							<i className="fa fa-question" aria-hidden="true"/>
 						</Link>
-						<Link to="/commercial-order" className="btn btn-success btn-sm">
+						<Link to={"/commercial-order/create?location=" + location.id.toString()}
+						      className="btn btn-success btn-sm">
 							Create Commercial Order
 						</Link>
 					</div>
@@ -122,7 +123,7 @@ export default class LocationsComponent extends Component {
 		{
 			let loc = locations[i];
 			result.push(<div className="row" key={i}>
-				<div className="col-md-6">
+				<div className={"col-md-" + (locations.length === 1 ? "12" : "6")}>
 					{this._makeLocationCard(loc, user)}
 				</div>
 			</div>);
@@ -134,11 +135,11 @@ export default class LocationsComponent extends Component {
 	render () {
 		let user = UserService.getCurrentUser();
 		return this.state.loading ? (<SpinnerComponent/>) : (
-			<div>
+			<div className="container">
 				<div className="row">
-					<h2 className="col-md-12 text-center">
-						Choose the nearest location with the appropriate garbage type and bring it for recycling
-					</h2>
+					<h3 className="col-md-12 text-center mb-3">
+						LOCATIONS
+					</h3>
 				</div>
 				{this._makeRows(this.state.locations, user)}
 			</div>

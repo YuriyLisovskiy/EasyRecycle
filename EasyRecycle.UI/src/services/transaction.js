@@ -14,21 +14,22 @@ class TransactionService extends BaseService {
     //      "datetime": <string>,
     //      "garbage_type": <string>,
     //      "points": <int>,
+    //      "mass": <float>,
     //      "user_id": <int>,
     //      "collector_id": <int>
     //    }
     //  ]
-    getTransactions = (userPkFilter, collectorPkFilter, handler) => {
+    getTransactions = (data) => {
         let url = this._URL_TRANSACTIONS;
         let query = "";
-        if (userPkFilter)
+        if (data.userPkFilter)
         {
-            query += "user_pk=" + userPkFilter.toString();
+            query += "user_pk=" + data.userPkFilter.toString();
         }
 
-        if (collectorPkFilter)
+        if (data.collectorPkFilter)
         {
-            query += "collector_pk=" + collectorPkFilter.toString();
+            query += "collector_pk=" + data.collectorPkFilter.toString();
         }
 
         if (query.length > 0)
@@ -36,7 +37,7 @@ class TransactionService extends BaseService {
             url += "?" + query;
         }
 
-        return this.get({url: url}, handler);
+        return this.get({url: url}, data.handler);
     }
 
     // returns:
@@ -45,6 +46,7 @@ class TransactionService extends BaseService {
     //    "datetime": <string>,
     //    "garbage_type": <string>,
     //    "points": <int>,
+    //    "mass": <float>,
     //    "user_id": <int>,
     //    "collector_id": <int>
     //  }
@@ -55,11 +57,9 @@ class TransactionService extends BaseService {
     // returns:
     //  {
     //    "id": <int>,
-    //    "datetime": <string>,
     //    "garbage_type": <string>,
-    //    "points": <int>,
-    //    "user_id": <int>,
-    //    "collector_id": <int>
+    //    "mass": <float>,
+    //    "user": <int>
     //  }
     createTransaction = (garbageType, mass, userId, handler) => {
         let data = {

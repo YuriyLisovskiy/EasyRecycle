@@ -38,7 +38,7 @@ export default class HomeComponent extends Component {
 					{this.makeCard(
 						"Where to?",
 						"/map.png",
-						"Learn where to bring your garbage, so that it can be recycled",
+						"Choose the nearest location with the appropriate garbage type and bring it for recycling",
 						"/info/locations"
 					)}
 				</div>

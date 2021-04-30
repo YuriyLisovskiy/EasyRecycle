@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 import UserService from "../../services/user";
-import {getErrorMessage} from "../../utils/misc";
+import CommercialOrderService from "../../services/commercial_order";
+import TransactionsService from "../../services/transaction";
+import {GarbageTypeToIcon, getErrorMessage} from "../../utils/misc";
 import SpinnerComponent from "../Spinner";
 import Errors from "../Errors";
 
@@ -12,8 +14,24 @@ export default class ProfileComponent extends Component {
 			user: undefined,
 			loading: true,
 			currentUser: props.currentUser ? props.currentUser : UserService.getCurrentUser(),
-			notFound: false
+			notFound: false,
+			orders: undefined,
+			loadingOrders: true,
+			transactions: undefined,
+			loadingTransactions: true,
 		};
+		this.statusToRowClass = {
+			'A': 'table-warning',
+			'B': 'table-info',
+			'C': 'table-danger',
+			'D': 'table-success'
+		}
+		this.statuses = {
+			'A': 'Queued',
+			'B': 'In Progress',
+			'C': 'Rejected',
+			'D': 'Done'
+		}
 	}
 
 	componentDidMount() {
@@ -52,7 +70,6 @@ export default class ProfileComponent extends Component {
 					});
 				}
 				else {
-					// TODO:
 					alert(getErrorMessage(err));
 				}
 			}
@@ -61,6 +78,44 @@ export default class ProfileComponent extends Component {
 					user: user,
 					loading: false
 				});
+				if (user.is_commercial)
+				{
+					CommercialOrderService.getOrders({
+						userPkFilter: user.id,
+						handler: (data, err) => {
+							if (err)
+							{
+								alert(err);
+							}
+							else
+							{
+								this.setState({
+									orders: data.results,
+									loadingOrders: false
+								})
+							}
+						}
+					});
+				}
+				else
+				{
+					TransactionsService.getTransactions({
+						userPkFilter: user.id,
+						handler: (data, err) => {
+							if (err)
+							{
+								alert(err);
+							}
+							else
+							{
+								this.setState({
+									transactions: data.results,
+									loadingTransactions: false
+								})
+							}
+						}
+					})
+				}
 			}
 		});
 	}
@@ -70,7 +125,6 @@ export default class ProfileComponent extends Component {
 			let method = boolVal ? methods.ifTrue : methods.ifFalse;
 			method(this.state.user.id, (resp, err) => {
 				if (err) {
-					// TODO:
 					alert(getErrorMessage(err));
 				}
 				else {
@@ -154,12 +208,88 @@ export default class ProfileComponent extends Component {
 							</div>
 							<div className="col-md-8">
 								{user.is_commercial ? (
-									<div className="mx-auto text-center text-muted mb-2">
-										ORDERS
+									<div>
+										<div className="mx-auto text-center text-muted mb-2">
+											ORDERS
+										</div>
+										{
+											this.state.loadingOrders ? (<SpinnerComponent/>) : (
+												<div className="">
+													<div className="p-3 card">
+														<table className="table">
+															<thead>
+															<tr>
+																<th>Type</th>
+																<th>Mass (kg)</th>
+																<th>Address</th>
+																<th>Date</th>
+																<th>Status</th>
+															</tr>
+															</thead>
+															<tbody>
+															{this.state.orders.map(order => <tr key={order.id}
+															                                    className={this.statusToRowClass[order.status]}>
+																<th className="align-middle">
+																	<img className="d-inline mx-1 my-1"
+																	     height={80}
+																	     src={GarbageTypeToIcon[order.garbage_type]}
+																	     alt={order.garbage_type}/>
+																</th>
+																<th className="align-middle">{order.mass}</th>
+																<th className="align-middle">{order.address}</th>
+																<th className="align-middle min-w-120">{order.date}</th>
+																<th className="align-middle min-w-120">
+																	{this.statuses[order.status]}
+																</th>
+															</tr>)}
+															</tbody>
+														</table>
+													</div>
+												</div>
+											)
+										}
 									</div>
 								) : (
-									<div className="mx-auto text-center text-muted mb-2">
-										TOTAL POINTS ACCUMULATED: {user.rating}
+									<div>
+										<div className="mx-auto text-center text-muted mb-2">
+											TOTAL POINTS ACCUMULATED: {user.rating}
+										</div>
+										{
+											this.state.loadingTransactions ? (<SpinnerComponent/>) : (
+												this.state.transactions.length < 1 ? (
+													<div className="mx-auto text-center text-muted mt-5">
+														TRANSACTIONS ARE ABSENT
+													</div>
+												) : (
+													<div className="p-3 card">
+														<table className="table">
+															<thead>
+															<tr>
+																<th>Type</th>
+																<th>Mass (kg)</th>
+																<th>Time</th>
+																<th>Points</th>
+															</tr>
+															</thead>
+															<tbody>
+															{this.state.transactions.map(order => <tr key={order.id}
+															                                          className={this.statusToRowClass[order.status]}>
+																<th className="align-middle">
+																	<img className="d-inline mx-1 my-1"
+																	     height={80}
+																	     src={GarbageTypeToIcon[order.garbage_type]}
+																	     alt={order.garbage_type}/>
+																</th>
+																<th className="align-middle">{order.mass}</th>
+																<th className="align-middle">{order.datetime}</th>
+																<th className="align-middle min-w-120">{order.points}</th>
+															</tr>)}
+															</tbody>
+														</table>
+													</div>
+												)
+											)
+										}
 									</div>
 								)}
 							</div>

@@ -94,3 +94,11 @@ export const GarbageTypes = [
 		value: 'PL'
 	}
 ];
+
+export const GarbageTypeToIcon = {
+	"OR": "/organic-waste-bin.png",
+	"GL": "/glass-waste-bin.png",
+	"ME": "/metal-waste-bin.png",
+	"PA": "/paper-waste-bin.png",
+	"PL": "/plastic-waste-bin.png",
+};
