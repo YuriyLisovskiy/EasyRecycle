@@ -1,5 +1,5 @@
 from django.db.models import Q
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, pagination
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 
@@ -33,6 +33,8 @@ _PERMISSION_CLASSES = (permissions.IsAuthenticated & (
 #     },
 #     ...
 #   ]
+
+
 class TransactionsAPIView(generics.ListAPIView):
 	permission_classes = (permissions.IsAuthenticated,)
 	queryset = Transaction.objects.order_by('-datetime')
@@ -116,9 +118,9 @@ class CreateTransactionAPIView(generics.CreateAPIView):
 		data = request.data.copy()
 
 		# TODO: calculate points according to garbage type.
-		data['points'] = int(garbage.GARBAGE_TO_POINTS[data['garbage_type']] * data['mass'])
+		data['points'] = round(garbage.GARBAGE_TO_POINTS[data['garbage_type']] * float(data['mass']))
 		data['collector'] = request.user.pk
-		serializer = self.get_serializer(data=request.data)
+		serializer = self.get_serializer(data=data)
 		serializer.is_valid(raise_exception=True)
 		self.perform_create(serializer)
 		headers = self.get_success_headers(serializer.data)

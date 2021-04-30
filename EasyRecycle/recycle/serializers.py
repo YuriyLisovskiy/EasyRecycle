@@ -135,8 +135,13 @@ class EditCommercialRequestSerializer(serializers.ModelSerializer):
 
 class TransactionSerializer(serializers.ModelSerializer):
 	id = serializers.ReadOnlyField()
+	datetime = serializers.SerializerMethodField()
 	user_id = serializers.SerializerMethodField()
 	collector_id = serializers.SerializerMethodField()
+
+	@staticmethod
+	def get_datetime(obj):
+		return obj.datetime.strftime('%b %d, %Y at %H:%M')
 
 	@staticmethod
 	def get_user_id(obj):
@@ -155,10 +160,9 @@ class TransactionSerializer(serializers.ModelSerializer):
 
 class CreateTransactionSerializer(serializers.ModelSerializer):
 	id = serializers.ReadOnlyField()
-	datetime = serializers.ReadOnlyField()
 
 	class Meta:
 		model = Transaction
 		fields = (
-			'id', 'garbage_type', 'mass', 'user'
+			'id', 'garbage_type', 'points', 'mass', 'user', 'collector'
 		)
