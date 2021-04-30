@@ -21,20 +21,25 @@ class TransactionService extends BaseService {
     //  ]
     getTransactions = (data) => {
         let url = this._URL_TRANSACTIONS;
-        let query = "";
+        let query = [];
         if (data.userPkFilter)
         {
-            query += "user_pk=" + data.userPkFilter.toString();
+            query.push("user_pk=" + data.userPkFilter.toString());
         }
 
         if (data.collectorPkFilter)
         {
-            query += "collector_pk=" + data.collectorPkFilter.toString();
+            query.push("collector_pk=" + data.collectorPkFilter.toString());
+        }
+
+        if (data.page)
+        {
+            query.push("page=" + data.page.toString());
         }
 
         if (query.length > 0)
         {
-            url += "?" + query;
+            url += "?" + query.join('&');
         }
 
         return this.get({url: url}, data.handler);

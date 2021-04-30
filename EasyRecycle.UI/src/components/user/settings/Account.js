@@ -19,14 +19,14 @@ export default class AccountSettingsComponent extends Component {
 		this.confirmBecomeCommercialRef = React.createRef();
 	}
 
-	_onClickDeactivateToggle = () => {
+	onClickDeactivateToggle = () => {
 		let {deactivateDrawerIsOpen} = this.state;
 		this.setState({
 			deactivateDrawerIsOpen: !deactivateDrawerIsOpen
 		});
 	}
 
-	_onClickDeactivateConfirm = (_, password, finished) => {
+	onClickDeactivateConfirm = (_, password, finished) => {
 		UserService.deactivateMe(this.props.user.id, password, (resp, err) => {
 			if (err) {
 				this.confirmDeactivateRef.current.setError(getErrorMessage(err));
@@ -40,14 +40,14 @@ export default class AccountSettingsComponent extends Component {
 		});
 	}
 
-	_onClickBecomeCommercialToggle = () => {
+	onClickBecomeCommercialToggle = () => {
 		let {becomeCommercialDrawerIsOpen} = this.state;
 		this.setState({
 			becomeCommercialDrawerIsOpen: !becomeCommercialDrawerIsOpen
 		});
 	}
 
-	_onClickBecomeCommercialConfirm = (_, password, finished) => {
+	onClickBecomeCommercialConfirm = (_, password, finished) => {
 		UserService.becomeCommercial(this.props.user.id, password, (resp, err) => {
 			if (err) {
 				this.confirmBecomeCommercialRef.current.setError(getErrorMessage(err));
@@ -86,13 +86,16 @@ export default class AccountSettingsComponent extends Component {
 					<div className="col-12 text-right">
 						<PasswordVerificationComponent description={<div className="text-left text-justify">
 								<p className="mt-3 text-center">This action is not recoverable.</p>
+								<p className="mt-3 text-center">
+									You will be not able to view your transactions but still will be present on Rating page.
+								</p>
 							</div>}
 													   ref={this.confirmBecomeCommercialRef}
 													   open={this.state.becomeCommercialDrawerIsOpen}
 													   modalElementClass="container w-30 min-w-300"
-													   onRequestClose={this._onClickBecomeCommercialToggle}
-													   onClickConfirm={this._onClickBecomeCommercialConfirm}/>
-						<button className="btn btn-outline-danger" onClick={this._onClickBecomeCommercialToggle}>
+													   onRequestClose={this.onClickBecomeCommercialToggle}
+													   onClickConfirm={this.onClickBecomeCommercialConfirm}/>
+						<button className="btn btn-outline-danger" onClick={this.onClickBecomeCommercialToggle}>
 							BECOME A COMMERCIAL USER
 						</button>
 					</div>
@@ -111,9 +114,9 @@ export default class AccountSettingsComponent extends Component {
 					                               ref={this.confirmDeactivateRef}
 					                               open={this.state.deactivateDrawerIsOpen}
 					                               modalElementClass="container w-30 min-w-300"
-					                               onRequestClose={this._onClickDeactivateToggle}
-					                               onClickConfirm={this._onClickDeactivateConfirm}/>
-					<button className="btn btn-outline-danger" onClick={this._onClickDeactivateToggle}>
+					                               onRequestClose={this.onClickDeactivateToggle}
+					                               onClickConfirm={this.onClickDeactivateConfirm}/>
+					<button className="btn btn-outline-danger" onClick={this.onClickDeactivateToggle}>
 						DEACTIVATE ACCOUNT
 					</button>
 				</div>

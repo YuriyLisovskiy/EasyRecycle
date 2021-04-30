@@ -19,8 +19,16 @@ class LocationService extends BaseService {
 	//      "owner_id": <int>
 	//    }
 	//  ]
-	getLocations = (handler) => {
-		return this.get({url: this._URL_LOCATIONS}, handler);
+	getLocations = (page, handler) => {
+		let query = [];
+		if (page)
+		{
+			query.push("page=" + page.toString());
+		}
+
+		return this.get({url: this._URL_LOCATIONS + (
+			query.length > 0 ? ("?" + query.join('&')) : ""
+		)}, handler);
 	}
 
 	// returns:

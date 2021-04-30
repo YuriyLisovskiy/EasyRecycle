@@ -6,7 +6,7 @@ import UserService from "../../../services/user";
 
 export default class PrivacySettingsComponent extends Component {
 
-	_onToggleShowFullName = (value, handler) => {
+	onToggleShowFullName = (value, handler) => {
 		UserService.editUser(
 			this.props.user.id, null, null, value, null, (data, err) => {
 				if (!err) {
@@ -32,7 +32,7 @@ export default class PrivacySettingsComponent extends Component {
 					<ToggleSettingComponent title="Show full name"
 					                        subtitle="Display first and last name on your account page."
 					                        initialValue={this.props.user.show_full_name}
-					                        onToggle={this._onToggleShowFullName}/>
+					                        onToggle={this.onToggleShowFullName}/>
 				</div>
 			</div>
 		</div>;

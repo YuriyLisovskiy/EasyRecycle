@@ -10,6 +10,8 @@ export default class CommercialOrdersComponent extends Component {
 		this.state = {
 			loading: true,
 			orders: undefined,
+			nextPage: 1,
+			nextPageLoading: false,
 			changeStatusLoading: false
 		};
 		this.statusToRowClass = {
@@ -27,25 +29,7 @@ export default class CommercialOrdersComponent extends Component {
 	}
 
 	componentDidMount() {
-		CommercialOrderService.getOrders({
-			locationFilter: true,
-			orderByStatus: true,
-			handler: (data, err) => {
-				if (err)
-				{
-					alert(err);
-				}
-				else
-				{
-					console.log(data.results);
-
-					this.setState({
-						orders: data.results,
-						loading: false
-					});
-				}
-			}
-		});
+		this.loadOrders();
 	}
 
 	handleStatusChanged = (order) => {
@@ -58,12 +42,10 @@ export default class CommercialOrdersComponent extends Component {
 				id: order.id,
 				status: newStatus,
 				handler: (data, err) => {
-					if (err)
-					{
+					if (err) {
 						alert(err);
 					}
-					else
-					{
+					else {
 						let orders = this.state.orders;
 						let idx = orders.indexOf(order);
 						orders[idx].status = newStatus;
@@ -71,14 +53,38 @@ export default class CommercialOrdersComponent extends Component {
 							orders: orders,
 							changeStatusLoading: false
 						});
-						if (this.props.updateOrdersCount)
-						{
+						if (this.props.updateOrdersCount) {
 							this.props.updateOrdersCount();
 						}
 					}
 				}
 			})
 		};
+	}
+
+	loadOrders = () => {
+		this.setState({nextPageLoading: true});
+		CommercialOrderService.getOrders({
+			locationFilter: true,
+			orderByStatus: true,
+			page: this.state.nextPage,
+			handler: (data, err) => {
+				if (err) {
+					alert(err);
+				}
+				else {
+					let nextPage = data.next ? this.state.nextPage + 1 : null;
+					let orders = this.state.orders;
+					orders = !orders ? data.results : orders.concat(data.results);
+					this.setState({
+						orders: orders,
+						nextPage: nextPage,
+						nextPageLoading: false,
+						loading: false
+					});
+				}
+			}
+		});
 	}
 
 	render() {
@@ -126,6 +132,16 @@ export default class CommercialOrdersComponent extends Component {
 						</tr>)}
 						</tbody>
 					</table>
+					{
+						this.state.nextPage &&
+						<div className="mx-auto text-center">
+							<button className="btn btn-outline-secondary"
+							        onClick={this.loadOrders}>
+								{this.state.nextPageLoading &&
+								<span className="spinner-border spinner-border-sm"/>} Load More
+							</button>
+						</div>
+					}
 				</div>
 			</div>
 		);

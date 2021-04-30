@@ -46,6 +46,11 @@ class CommercialOrderService extends BaseService {
 			query.push("order_by_status=true");
 		}
 
+		if (data.page)
+		{
+			query.push("page=" + data.page.toString());
+		}
+
 		if (query.length > 0)
 		{
 			url += "?" + query.join('&');

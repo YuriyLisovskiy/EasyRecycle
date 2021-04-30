@@ -16,8 +16,12 @@ export default class ProfileComponent extends Component {
 			currentUser: props.currentUser ? props.currentUser : UserService.getCurrentUser(),
 			notFound: false,
 			orders: undefined,
+			nextPageOfOrders: 1,
+			nextPageOrdersLoading: false,
 			loadingOrders: true,
 			transactions: undefined,
+			nextPageOfTransactions: 1,
+			nextPageTransactionLoading: false,
 			loadingTransactions: true,
 		};
 		this.statusToRowClass = {
@@ -48,10 +52,10 @@ export default class ProfileComponent extends Component {
 			userId = null;
 		}
 
-		this._loadUser(userId, isMe);
+		this.loadUser(userId, isMe);
 	}
 
-	_loadUser = (id, isMe = false) => {
+	loadUser = (id, isMe = false) => {
 		if (!id) {
 			this.setState({notFound: true});
 			return;
@@ -78,49 +82,17 @@ export default class ProfileComponent extends Component {
 					user: user,
 					loading: false
 				});
-				if (user.is_commercial)
-				{
-					CommercialOrderService.getOrders({
-						userPkFilter: user.id,
-						handler: (data, err) => {
-							if (err)
-							{
-								alert(err);
-							}
-							else
-							{
-								this.setState({
-									orders: data.results,
-									loadingOrders: false
-								})
-							}
-						}
-					});
+				if (user.is_commercial) {
+					this.loadMoreOrders();
 				}
-				else
-				{
-					TransactionsService.getTransactions({
-						userPkFilter: user.id,
-						handler: (data, err) => {
-							if (err)
-							{
-								alert(err);
-							}
-							else
-							{
-								this.setState({
-									transactions: data.results,
-									loadingTransactions: false
-								})
-							}
-						}
-					})
+				else {
+					this.loadMoreTransactions();
 				}
 			}
 		});
 	}
 
-	_toggleUserAction = (boolVal, methods, updatedUser) => {
+	toggleUserAction = (boolVal, methods, updatedUser) => {
 		return _ => {
 			let method = boolVal ? methods.ifTrue : methods.ifFalse;
 			method(this.state.user.id, (resp, err) => {
@@ -136,8 +108,8 @@ export default class ProfileComponent extends Component {
 		}
 	}
 
-	_onClickBanUser = (ban) => {
-		return this._toggleUserAction(
+	onClickBanUser = (ban) => {
+		return this.toggleUserAction(
 			ban,
 			{
 				ifTrue: UserService.banUser,
@@ -148,6 +120,68 @@ export default class ProfileComponent extends Component {
 				return user;
 			}
 		);
+	}
+
+	loadMoreOrders = () => {
+		if (this.state.nextPageOfOrders) {
+			let user = this.state.user;
+			if (user && user.is_commercial) {
+				this.setState({nextPageOrdersLoading: true});
+				CommercialOrderService.getOrders({
+					userPkFilter: user.id,
+					page: this.state.nextPageOfOrders,
+					handler: (data, err) => {
+						if (err) {
+							alert(err);
+						}
+						else {
+							let nextPage = data.next ? this.state.nextPageOfOrders + 1 : null;
+							let orders = this.state.orders;
+							orders = !orders ? data.results : orders.concat(data.results);
+							this.setState({
+								orders: orders,
+								nextPageOfOrders: nextPage,
+								loadingOrders: false,
+								nextPageOrdersLoading: false
+							})
+						}
+					}
+				});
+			}
+		}
+	}
+
+	loadMoreTransactions = () => {
+		if (this.state.nextPageOfTransactions)
+		{
+			let user = this.state.user;
+			if (user && !user.is_commercial)
+			{
+				this.setState({
+					nextPageTransactionLoading: true
+				});
+				TransactionsService.getTransactions({
+					userPkFilter: user.id,
+					page: this.state.nextPageOfTransactions,
+					handler: (data, err) => {
+						if (err) {
+							alert(err);
+						}
+						else {
+							let nextPage = data.next ? this.state.nextPageOfTransactions + 1 : null;
+							let transactions = this.state.transactions;
+							transactions = !transactions ? data.results : transactions.concat(data.results);
+							this.setState({
+								transactions: transactions,
+								nextPageOfTransactions: nextPage,
+								loadingTransactions: false,
+								nextPageTransactionLoading: false
+							})
+						}
+					}
+				});
+			}
+		}
 	}
 
 	render() {
@@ -179,13 +213,13 @@ export default class ProfileComponent extends Component {
 											(user.is_banned ? (
 												<button type="button"
 												        className="btn btn-secondary btn-block btn-sm mb-2"
-												        onClick={this._onClickBanUser(false)}>
+												        onClick={this.onClickBanUser(false)}>
 													Unban
 												</button>
 											) : (
 												<button type="button"
 												        className="btn btn-danger btn-block btn-sm mb-2"
-												        onClick={this._onClickBanUser(true)}>
+												        onClick={this.onClickBanUser(true)}>
 													Ban
 												</button>
 											))
@@ -214,37 +248,45 @@ export default class ProfileComponent extends Component {
 										</div>
 										{
 											this.state.loadingOrders ? (<SpinnerComponent/>) : (
-												<div className="">
-													<div className="p-3 card">
-														<table className="table">
-															<thead>
-															<tr>
-																<th>Type</th>
-																<th>Mass (kg)</th>
-																<th>Address</th>
-																<th>Date</th>
-																<th>Status</th>
-															</tr>
-															</thead>
-															<tbody>
-															{this.state.orders.map(order => <tr key={order.id}
-															                                    className={this.statusToRowClass[order.status]}>
-																<th className="align-middle">
-																	<img className="d-inline mx-1 my-1"
-																	     height={80}
-																	     src={GarbageTypeToIcon[order.garbage_type]}
-																	     alt={order.garbage_type}/>
-																</th>
-																<th className="align-middle">{order.mass}</th>
-																<th className="align-middle">{order.address}</th>
-																<th className="align-middle min-w-120">{order.date}</th>
-																<th className="align-middle min-w-120">
-																	{this.statuses[order.status]}
-																</th>
-															</tr>)}
-															</tbody>
-														</table>
-													</div>
+												<div className="p-3 card">
+													<table className="table">
+														<thead>
+														<tr>
+															<th>Type</th>
+															<th>Mass (kg)</th>
+															<th>Address</th>
+															<th>Date</th>
+															<th>Status</th>
+														</tr>
+														</thead>
+														<tbody>
+														{this.state.orders.map(order => <tr key={order.id}
+														                                    className={this.statusToRowClass[order.status]}>
+															<th className="align-middle">
+																<img className="d-inline mx-1 my-1"
+																     height={80}
+																     src={GarbageTypeToIcon[order.garbage_type]}
+																     alt={order.garbage_type}/>
+															</th>
+															<th className="align-middle">{order.mass}</th>
+															<th className="align-middle">{order.address}</th>
+															<th className="align-middle min-w-120">{order.date}</th>
+															<th className="align-middle min-w-120">
+																{this.statuses[order.status]}
+															</th>
+														</tr>)}
+														</tbody>
+													</table>
+													{
+														this.state.nextPageOfOrders &&
+														<div className="mx-auto text-center">
+															<button className="btn btn-outline-secondary"
+															        onClick={this.loadMoreOrders}>
+																{this.state.nextPageOrdersLoading &&
+																<span className="spinner-border spinner-border-sm"/>} Load More
+															</button>
+														</div>
+													}
 												</div>
 											)
 										}
@@ -267,7 +309,7 @@ export default class ProfileComponent extends Component {
 															<tr>
 																<th>Type</th>
 																<th>Mass (kg)</th>
-																<th>Time</th>
+																<th>Time (UTC)</th>
 																<th>Points</th>
 															</tr>
 															</thead>
@@ -286,6 +328,16 @@ export default class ProfileComponent extends Component {
 															</tr>)}
 															</tbody>
 														</table>
+														{
+															this.state.nextPageOfTransactions &&
+															<div className="mx-auto text-center">
+																<button className="btn btn-outline-secondary"
+																        onClick={this.loadMoreTransactions}>
+																	{this.state.nextPageTransactionLoading &&
+																	<span className="spinner-border spinner-border-sm"/>} Load More
+																</button>
+															</div>
+														}
 													</div>
 												)
 											)

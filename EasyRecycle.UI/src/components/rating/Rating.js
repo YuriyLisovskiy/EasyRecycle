@@ -11,36 +11,37 @@ export default class RatingComponent extends Component {
 		this.state = {
 			loading: true,
 			users: undefined,
-			nextPage: 1
+			nextPage: 1,
+			nextPageLoading: false,
 		};
 	}
 
-	_loadUsers = () => {
+	loadUsers = () => {
 		if (this.state.nextPage) {
+			this.setState({nextPageLoading: true});
 			UserService.getUsers(null, this.state.nextPage, 'rating', (data, err) => {
 				if (err) {
 					alert(err);
-				} else {
+				}
+				else {
+					let users = this.state.users;
 					this.setState({
-						users: data.results,
+						users: !users ? data.results : users.concat(data.results),
 						loading: false,
-						nextPage: data.next
+						nextPage: data.next ? this.state.nextPage + 1 : null,
+						nextPageLoading: false
 					});
-
-					// TODO: remove!
-					console.log(this.state);
 				}
 			});
 		}
 	}
 
 	componentDidMount() {
-		this._loadUsers();
+		this.loadUsers();
 	}
 
 	render() {
-		if (!UserService.getCurrentUser())
-		{
+		if (!UserService.getCurrentUser()) {
 			return <Errors.Forbidden/>;
 		}
 
@@ -52,6 +53,16 @@ export default class RatingComponent extends Component {
 					</h3>
 				</div>
 				{this.state.users.map((user, idx) => <UserComponent user={user} index={idx}/>)}
+				{
+					this.state.nextPage &&
+					<div className="mx-auto text-center">
+						<button className="btn btn-outline-secondary"
+						        onClick={this.loadUsers}>
+							{this.state.nextPageLoading &&
+							<span className="spinner-border spinner-border-sm"/>} Load More
+						</button>
+					</div>
+				}
 			</div>
 		);
 	}

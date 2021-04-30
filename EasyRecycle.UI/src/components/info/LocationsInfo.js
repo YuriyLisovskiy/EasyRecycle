@@ -4,6 +4,7 @@ import SpinnerComponent from "../Spinner";
 import {Link} from "react-router-dom";
 import UserService from "../../services/user";
 import LocationService from "../../services/location";
+import {GarbageTypeToIcon} from "../../utils/misc";
 
 export default class LocationsComponent extends Component {
 
@@ -13,45 +14,37 @@ export default class LocationsComponent extends Component {
 			loading: true,
 			locations: undefined,
 			currentLocationToDelete: undefined,
-			confirmDeleteLocationIsOpen: false
-		}
-		this.garbageTypeToIcon = {
-			"organic": "/organic-waste-bin.png",
-			"glass": "/glass-waste-bin.png",
-			"metal": "/metal-waste-bin.png",
-			"paper": "/paper-waste-bin.png",
-			"plastic": "/plastic-waste-bin.png",
+			confirmDeleteLocationIsOpen: false,
+			nextPage: 1,
+			nextPageLoading: false
 		}
 	}
 
 	componentDidMount() {
-		LocationService.getLocations((data, err) => {
-			if (err)
-			{
-				console.log(err);
-			}
-			else
-			{
-				this.setState({
-					loading: false,
-					locations: data.results
-				});
-				console.log(this.state.locations);
-			}
-		});
+		this.loadLocations();
 	}
 
-	_getGarbageIcon = (garbageType) => {
-		let gt = garbageType.toLowerCase();
-		if (this.garbageTypeToIcon[gt])
-		{
-			return this.garbageTypeToIcon[gt];
+	loadLocations = () => {
+		if (this.state.nextPage) {
+			this.setState({nextPageLoading: true});
+			LocationService.getLocations(this.state.nextPage, (data, err) => {
+				if (err) {
+					alert(err);
+				}
+				else {
+					let locations = this.state.locations;
+					this.setState({
+						loading: false,
+						locations: !locations ? data.results : locations.concat(data.results),
+						nextPage: data.next ? this.state.nextPage + 1 : null,
+						nextPageLoading: false
+					});
+				}
+			});
 		}
-
-		return "/logo192.png";
 	}
 
-	_makeLocationCard = (location, user) => {
+	makeCard = (location, user) => {
 		return <Card className="h-100">
 			<Card.Header>
 				{
@@ -74,7 +67,7 @@ export default class LocationsComponent extends Component {
 					                                          title="Click to learn how to recycle different kinds of garbage">
 						<img className="d-inline mx-1 my-1 cursor-pointer"
 					         height={100}
-					         src={this._getGarbageIcon(type.long)}
+					         src={GarbageTypeToIcon[type.short]}
 					         alt={type.long}/>
 					</Link>)}
 				</div>
@@ -101,30 +94,28 @@ export default class LocationsComponent extends Component {
 		</Card>;
 	}
 
-	_makeRows = (locations, user) => {
+	makeRows = (locations, user) => {
 		let sz = locations.length - locations.length % 2;
 		let result = [];
 		let i;
-		for (i = 0; i < sz; i += 2)
-		{
+		for (i = 0; i < sz; i += 2) {
 			let loc1 = locations[i];
 			let loc2 = locations[i + 1];
 			result.push(<div className="row my-4" key={i}>
 				<div className="col-md-6">
-					{this._makeLocationCard(loc1, user)}
+					{this.makeCard(loc1, user)}
 				</div>
 				<div className="col-md-6">
-					{this._makeLocationCard(loc2, user)}
+					{this.makeCard(loc2, user)}
 				</div>
 			</div>);
 		}
 
-		if (i < locations.length)
-		{
+		if (i < locations.length) {
 			let loc = locations[i];
 			result.push(<div className="row" key={i}>
 				<div className={"col-md-" + (locations.length === 1 ? "12" : "6")}>
-					{this._makeLocationCard(loc, user)}
+					{this.makeCard(loc, user)}
 				</div>
 			</div>);
 		}
@@ -141,7 +132,17 @@ export default class LocationsComponent extends Component {
 						LOCATIONS
 					</h3>
 				</div>
-				{this._makeRows(this.state.locations, user)}
+				{this.makeRows(this.state.locations, user)}
+				{
+					this.state.nextPage &&
+					<div className="mx-auto text-center mt-3">
+						<button className="btn btn-outline-secondary"
+						        onClick={this.loadLocations}>
+							{this.state.nextPageLoading &&
+							<span className="spinner-border spinner-border-sm"/>} Load More
+						</button>
+					</div>
+				}
 			</div>
 		);
 	}

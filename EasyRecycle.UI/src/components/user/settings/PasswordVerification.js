@@ -22,14 +22,14 @@ export default class PasswordVerificationComponent extends Component {
 		});
 	}
 
-	_onChangePassword = (e) => {
+	onChangePassword = (e) => {
 		this.setState({
 			password: e.target.value,
 			passwordError: undefined
 		})
 	}
 
-	_onClickCancel = (_) => {
+	onClickCancel = (_) => {
 		this.setState({
 			password: "",
 			passwordError: undefined,
@@ -86,7 +86,7 @@ export default class PasswordVerificationComponent extends Component {
 			}
 			<div className="form-group">
 				<input type="password" className="form-control" ref={this._inputRef}
-				       placeholder="Type password..." onChange={this._onChangePassword}/>
+				       placeholder="Type password..." onChange={this.onChangePassword}/>
 				{
 					this.state.passwordError && <small className="form-text text-danger ml-1 mt-1">
 						{this.state.passwordError}
@@ -95,7 +95,7 @@ export default class PasswordVerificationComponent extends Component {
 			</div>
 			<div className="text-right">
 				<button className="btn btn-outline-danger d-inline"
-				        onClick={this._onClickCancel}>Cancel</button>
+				        onClick={this.onClickCancel}>Cancel</button>
 				<button className="btn btn-primary d-inline ml-1"
 				        onClick={this._onClickConfirm}
 				        disabled={this.state.loading}>

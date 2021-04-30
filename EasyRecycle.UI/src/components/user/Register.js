@@ -24,7 +24,7 @@ export default class RegisterComponent extends Component {
 		};
 	}
 
-	_setPasswordsError = (password, passwordRepeat) => {
+	setPasswordsError = (password, passwordRepeat) => {
 		if (password !== passwordRepeat) {
 			this.setState({
 				passwordRepeatError: 'Passwords do not match.'
@@ -32,8 +32,7 @@ export default class RegisterComponent extends Component {
 		}
 	}
 
-	// TODO:
-	_setError = (err) => {
+	setError = (err) => {
 		let msg = getErrorMessage(err);
 		if (msg.email) {
 			msg = msg.email[0];
@@ -45,7 +44,7 @@ export default class RegisterComponent extends Component {
 		});
 	}
 
-	_getFieldError = (name, isNotValidFunc, res) => {
+	getFieldError = (name, isNotValidFunc, res) => {
 		let errMessage = isNotValidFunc();
 		if (errMessage) {
 			if (res === null) {
@@ -61,7 +60,7 @@ export default class RegisterComponent extends Component {
 		return res;
 	}
 
-	_requiredFieldError = (field) => {
+	requiredFieldError = (field) => {
 		if (strIsEmpty(field)) {
 			return 'This field is required.';
 		}
@@ -69,18 +68,18 @@ export default class RegisterComponent extends Component {
 		return undefined;
 	}
 
-	_charIsAllowedInUsername = (char) => {
+	charIsAllowedInUsername = (char) => {
 		let allowedChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789';
 		return allowedChars.includes(char);
 	}
 
-	_usernameError = (username) => {
+	usernameError = (username) => {
 		if (username.length > 30 || username.length < 5) {
 			return 'Username must be at least 5 and up to 30 characters long.';
 		}
 
 		for (let i = 0; i < username.length; i++) {
-			if (!this._charIsAllowedInUsername(username.charAt(i))) {
+			if (!this.charIsAllowedInUsername(username.charAt(i))) {
 				return 'Username must contain only upper and (or) lower case letters, numbers and underscore symbol.';
 			}
 		}
@@ -88,34 +87,34 @@ export default class RegisterComponent extends Component {
 		return undefined;
 	}
 
-	_getUsernameError = (username, res) => {
-		res = this._getFieldError(
-			'username', _ => this._requiredFieldError(username), res
+	getUsernameError = (username, res) => {
+		res = this.getFieldError(
+			'username', _ => this.requiredFieldError(username), res
 		);
-		res = this._getFieldError(
-			'username', _ => this._usernameError(username), res
+		res = this.getFieldError(
+			'username', _ => this.usernameError(username), res
 		);
 		return res;
 	}
 
-	_getPasswordError = (password, res) => {
-		res = this._getFieldError(
-			'password', _ => this._requiredFieldError(password), res
+	getPasswordError = (password, res) => {
+		res = this.getFieldError(
+			'password', _ => this.requiredFieldError(password), res
 		);
-		res = this._getFieldError(
+		res = this.getFieldError(
 			'password', _ => checkPassword(password), res
 		);
 		return res;
 	}
 
-	_getRegisterError = (username, email, password, passwordRepeat) => {
+	getRegisterError = (username, email, password, passwordRepeat) => {
 		let res = null;
-		res = this._getUsernameError(username, res);
-		res = this._getFieldError(
-			'email', _ => this._requiredFieldError(email), res
+		res = this.getUsernameError(username, res);
+		res = this.getFieldError(
+			'email', _ => this.requiredFieldError(email), res
 		);
-		res = this._getPasswordError(password, res);
-		res = this._getFieldError(
+		res = this.getPasswordError(password, res);
+		res = this.getFieldError(
 			'passwordRepeat', _ => {
 				return passwordRepeat !== password ? 'Passwords do not match.' : undefined;
 			}, res
@@ -123,7 +122,7 @@ export default class RegisterComponent extends Component {
 		return res;
 	}
 
-	_onChangeMakeFor = (field, validationFunc) => {
+	onChangeMakeFor = (field, validationFunc) => {
 		return e => {
 			let state = {};
 			let text = e.target.value;
@@ -134,12 +133,12 @@ export default class RegisterComponent extends Component {
 		}
 	}
 
-	_onChangeUsername = (e) => {
-		return this._onChangeMakeFor('username', this._usernameError)(e);
+	onChangeUsername = (e) => {
+		return this.onChangeMakeFor('username', this.usernameError)(e);
 	}
 
-	_onChangeEmail = (e) => {
-		return this._onChangeMakeFor('email', text => {
+	onChangeEmail = (e) => {
+		return this.onChangeMakeFor('email', text => {
 			if (!text.includes('@')) {
 				return 'Email is invalid.';
 			}
@@ -148,24 +147,24 @@ export default class RegisterComponent extends Component {
 		})(e);
 	}
 
-	_onChangePassword = (e) => {
-		this._setPasswordsError(
-			this._onChangeMakeFor('password', checkPassword)(e), this.state.passwordRepeat
+	onChangePassword = (e) => {
+		this.setPasswordsError(
+			this.onChangeMakeFor('password', checkPassword)(e), this.state.passwordRepeat
 		);
 	}
 
-	_onChangePasswordRepeat = (e) => {
-		this._setPasswordsError(
-			this.state.password, this._onChangeMakeFor('passwordRepeat')(e)
+	onChangePasswordRepeat = (e) => {
+		this.setPasswordsError(
+			this.state.password, this.onChangeMakeFor('passwordRepeat')(e)
 		);
 	}
 
-	_onClickRegister = (_) => {
+	onClickRegister = (_) => {
 		this.setState({
 			registerError: "",
 			loading: true
 		});
-		let registerError = this._getRegisterError(
+		let registerError = this.getRegisterError(
 			this.state.username, this.state.email,
 			this.state.password, this.state.passwordRepeat
 		);
@@ -176,7 +175,7 @@ export default class RegisterComponent extends Component {
 			}
 			AuthService.userExists(input, (data, err) => {
 				if (err) {
-					this._setError(err);
+					this.setError(err);
 				}
 				else {
 					if (data.exists) {
@@ -202,7 +201,7 @@ export default class RegisterComponent extends Component {
 										})
 									}
 									else {
-										this._setError(err);
+										this.setError(err);
 									}
 								}
 								else {
@@ -220,9 +219,9 @@ export default class RegisterComponent extends Component {
 		}
 	}
 
-	_onKeyDownLogin = (e) => {
+	onKeyDownLogin = (e) => {
 		if (e.key.toLowerCase() === 'enter') {
-			this._onClickRegister(e);
+			this.onClickRegister(e);
 		}
 	}
 
@@ -249,9 +248,9 @@ export default class RegisterComponent extends Component {
 							className="form-control"
 							name="username"
 							value={this.state.username}
-							onChange={this._onChangeUsername}
+							onChange={this.onChangeUsername}
 							placeholder="Type text..."
-							onKeyDown={this._onKeyDownLogin}
+							onKeyDown={this.onKeyDownLogin}
 						/>
 						{
 							this.state.usernameError && <small className="form-text text-danger ml-1 mt-1">
@@ -267,9 +266,9 @@ export default class RegisterComponent extends Component {
 							className="form-control"
 							name="email"
 							value={this.state.email}
-							onChange={this._onChangeEmail}
+							onChange={this.onChangeEmail}
 							placeholder="Type text..."
-							onKeyDown={this._onKeyDownLogin}
+							onKeyDown={this.onKeyDownLogin}
 						/>
 						{
 							this.state.emailError && <small className="form-text text-danger ml-1 mt-1">
@@ -285,9 +284,9 @@ export default class RegisterComponent extends Component {
 							className="form-control"
 							name="password"
 							value={this.state.password}
-							onChange={this._onChangePassword}
+							onChange={this.onChangePassword}
 							placeholder="Type text..."
-							onKeyDown={this._onKeyDownLogin}
+							onKeyDown={this.onKeyDownLogin}
 						/>
 						{
 							this.state.passwordError && <small className="form-text text-danger ml-1 mt-1">
@@ -303,9 +302,9 @@ export default class RegisterComponent extends Component {
 							className="form-control"
 							name="password_repeat"
 							value={this.state.passwordRepeat}
-							onChange={this._onChangePasswordRepeat}
+							onChange={this.onChangePasswordRepeat}
 							placeholder="Type text..."
-							onKeyDown={this._onKeyDownLogin}
+							onKeyDown={this.onKeyDownLogin}
 						/>
 						{
 							this.state.passwordRepeatError && <small className="form-text text-danger ml-1 mt-1">
@@ -316,7 +315,7 @@ export default class RegisterComponent extends Component {
 					<div className="form-group">
 						<button
 							className="btn btn-success btn-block"
-							onClick={this._onClickRegister}
+							onClick={this.onClickRegister}
 							disabled={this.state.loading}>
 							{
 								this.state.loading &&

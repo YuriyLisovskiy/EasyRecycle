@@ -2,9 +2,8 @@ import React, {Component} from "react";
 
 export default class UserComponent extends Component {
 
-	_getBadgeColor = (idx) => {
-		switch (idx)
-		{
+	getBadgeColor = (idx) => {
+		switch (idx) {
 			case 0:
 				return 'gold';
 			case 1:
@@ -25,7 +24,7 @@ export default class UserComponent extends Component {
 						this.props.index < 3 ? (
 							<span className="fa-stack" style={{marginRight: '-25px', marginTop: '-20px'}}>
 								<i style={{fontSize: '48px'}}
-								   className={"fa fa-trophy fa-stack-2x trophy-" + this._getBadgeColor(this.props.index)}/>
+								   className={"fa fa-trophy fa-stack-2x trophy-" + this.getBadgeColor(this.props.index)}/>
 								<span className="fa fa-stack-1x font-weight-bold">
 									<span style={{fontSize: '18px', marginLeft: '13px', display: 'block', color: 'white'}}>
 										{this.props.index + 1}

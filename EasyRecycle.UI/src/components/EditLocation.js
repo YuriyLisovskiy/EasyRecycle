@@ -24,12 +24,10 @@ export default class EditLocationComponent extends Component {
 
 	componentDidMount() {
 		LocationService.getLocation(this.props.match.params.id, (data, err) => {
-			if (err)
-			{
+			if (err) {
 				alert(err);
 			}
-			else
-			{
+			else {
 				this.setState({
 					loading: false,
 					location: data,
@@ -38,12 +36,10 @@ export default class EditLocationComponent extends Component {
 			}
 		});
 		UserService.getUsers(null, null, 'name', (data, err) => {
-			if (err)
-			{
+			if (err) {
 				alert(err);
 			}
-			else
-			{
+			else {
 				this.setState({
 					users: data.results,
 					loadingUsers: false
@@ -52,69 +48,58 @@ export default class EditLocationComponent extends Component {
 		});
 	}
 
-	_handleSave = _ => {
-		if (!this.state.hasChanges)
-		{
+	handleSave = _ => {
+		if (!this.state.hasChanges) {
 			return;
 		}
 
 		let location = this.state.location;
 		let newState = {};
 		let hasErrors = false;
-		if (location.address === '')
-		{
+		if (location.address === '') {
 			newState.addressError = 'This field is required.';
 			hasErrors = true;
 		}
 
-		if (location.open_time === '')
-		{
+		if (location.open_time === '') {
 			newState.openTimeError = 'This field is required.';
 			hasErrors = true;
 		}
 
-		if (location.close_time === '')
-		{
+		if (location.close_time === '') {
 			newState.closeTimeError = 'This field is required.';
 			hasErrors = true;
 		}
 
-		if (location.garbage_types.length === 0)
-		{
+		if (location.garbage_types.length === 0) {
 			newState.garbageTypesError = 'At least one type should be selected.';
 			hasErrors = true;
 		}
 
-		if (location.price_per_kg < 0)
-		{
+		if (location.price_per_kg < 0) {
 			newState.pricePerKgError = 'Price must be non-negative.';
 			hasErrors = true;
 		}
 
-		if (location.owner_id === 0)
-		{
+		if (location.owner_id === 0) {
 			newState.ownerError = 'This field is required.';
 			hasErrors = true;
 		}
 
-		if (hasErrors)
-		{
+		if (hasErrors) {
 			this.setState(newState);
 		}
-		else
-		{
+		else {
 			this.setState({saveLoading: true});
 			LocationService.editLocation(
 				location.id, location.address,
 				location.open_time, location.close_time,
 				location.price_per_kg, this.state.newGarbageTypes, location.owner_id,
 				(data, err) => {
-					if (err)
-					{
+					if (err) {
 						alert(err);
 					}
-					else
-					{
+					else {
 						this.setState({hasChanges: false});
 					}
 
@@ -124,21 +109,19 @@ export default class EditLocationComponent extends Component {
 		}
 	}
 
-	_handleDelete = _ => {
+	handleDelete = _ => {
 		let location = this.state.location;
 		LocationService.deleteLocation(location.id, (data, err) => {
-			if (err)
-			{
+			if (err) {
 				alert(err);
 			}
-			else
-			{
+			else {
 				this.props.history.goBack();
 			}
 		});
 	}
 
-	_handleChange = (e, location, errKey) => {
+	handleChange = (e, location, errKey) => {
 		let state = {
 			location: location,
 			hasChanges: true
@@ -147,56 +130,51 @@ export default class EditLocationComponent extends Component {
 		this.setState(state);
 	}
 
-	_handleAddressChange = e => {
+	handleAddressChange = e => {
 		let loc = this.state.location;
 		loc.address = e.target.value;
-		this._handleChange(e, loc, 'addressError');
+		this.handleChange(e, loc, 'addressError');
 	}
 
-	_handleOpenTimeChange = e => {
+	handleOpenTimeChange = e => {
 		let loc = this.state.location;
 		loc.open_time = e.target.value;
-		this._handleChange(e, loc, 'openTimeError');
+		this.handleChange(e, loc, 'openTimeError');
 	}
 
-	_handleCloseTimeChange = e => {
+	handleCloseTimeChange = e => {
 		let loc = this.state.location;
 		loc.close_time = e.target.value;
-		this._handleChange(e, loc, 'closeTimeError');
+		this.handleChange(e, loc, 'closeTimeError');
 	}
 
-	_handlePricePerKgChange = e => {
+	handlePricePerKgChange = e => {
 		let loc = this.state.location;
 		loc.price_per_kg = e.target.value;
-		this._handleChange(e, loc, 'pricePerKgError');
+		this.handleChange(e, loc, 'pricePerKgError');
 	}
 
-	_handleOwnerChange = e => {
+	handleOwnerChange = e => {
 		let loc = this.state.location;
 		loc.owner_id = e.target.value;
-		this._handleChange(e, loc, 'ownerError');
+		this.handleChange(e, loc, 'ownerError');
 	}
 
-	_handleWasteChange = e => {
+	handleWasteChange = e => {
 		let newGarbageTypes = this.state.newGarbageTypes;
-		if (!newGarbageTypes)
-		{
+		if (!newGarbageTypes) {
 			newGarbageTypes = [];
 		}
 
 		let value = e.target.value;
 		let idx = newGarbageTypes.indexOf(value);
-		if (e.target.checked)
-		{
-			if (idx === -1)
-			{
+		if (e.target.checked) {
+			if (idx === -1) {
 				newGarbageTypes.push(value);
 			}
 		}
-		else
-		{
-			if (idx !== -1)
-			{
+		else {
+			if (idx !== -1) {
 				newGarbageTypes.splice(idx, 1);
 			}
 		}
@@ -208,7 +186,7 @@ export default class EditLocationComponent extends Component {
 		});
 	}
 
-	_onClickConfirmToggle = () => {
+	onClickConfirmToggle = () => {
 		let {confirmIsOpen} = this.state;
 		this.setState({
 			confirmIsOpen: !confirmIsOpen
@@ -217,27 +195,24 @@ export default class EditLocationComponent extends Component {
 
 	render () {
 		let user = UserService.getCurrentUser();
-		if (user)
-		{
-			if (this.state.loading)
-			{
+		if (user) {
+			if (this.state.loading) {
 				return <SpinnerComponent/>;
 			}
 
-			if (user.is_superuser || user.id === this.state.location.owner_id)
-			{
+			if (user.is_superuser || user.id === this.state.location.owner_id) {
 				let {newGarbageTypes} = this.state;
 				return <div className="container">
 					<DrawerComponent title="CONFIRM AN ACTION"
 					                 open={this.state.confirmIsOpen}
-					                 onRequestClose={this._onClickConfirmToggle}
+					                 onRequestClose={this.onClickConfirmToggle}
 					                 modalElementClass="container w-25 min-w-250">
 						<p>This action is not recoverable. Do you really want to delete the location?</p>
 						<div className="text-center mt-4">
-							<button className="btn btn-secondary mr-2" onClick={this._onClickConfirmToggle}>
+							<button className="btn btn-secondary mr-2" onClick={this.onClickConfirmToggle}>
 								Cancel
 							</button>
-							<button className="btn btn-outline-danger" onClick={this._handleDelete}>
+							<button className="btn btn-outline-danger" onClick={this.handleDelete}>
 								Yes, I'm sure
 							</button>
 						</div>
@@ -253,7 +228,7 @@ export default class EditLocationComponent extends Component {
 								<label htmlFor="address">Address:</label>
 								<input type="text" className="form-control" id="address"
 								       value={this.state.location.address}
-								       onChange={this._handleAddressChange}/>
+								       onChange={this.handleAddressChange}/>
 							</div>
 							{
 								this.state.addressError && <small className="form-text text-danger ml-1 mt-1">
@@ -268,7 +243,7 @@ export default class EditLocationComponent extends Component {
 								<label htmlFor="open_time">Open time:</label>
 								<input type="time" className="form-control" id="open_time"
 								       value={this.state.location.open_time}
-								       onChange={this._handleOpenTimeChange}/>
+								       onChange={this.handleOpenTimeChange}/>
 							</div>
 							{
 								this.state.openTimeError && <small className="form-text text-danger ml-1 mt-1">
@@ -281,7 +256,7 @@ export default class EditLocationComponent extends Component {
 								<label htmlFor="close_time">Close time:</label>
 								<input type="time" className="form-control" id="close_time"
 								       value={this.state.location.close_time}
-								       onChange={this._handleCloseTimeChange}/>
+								       onChange={this.handleCloseTimeChange}/>
 							</div>
 							{
 								this.state.closeTimeError && <small className="form-text text-danger ml-1 mt-1">
@@ -296,7 +271,7 @@ export default class EditLocationComponent extends Component {
 								<label htmlFor="price_per_kg">Price per kg (for commercial orders):</label>
 								<input type="number" className="form-control" id="price_per_kg"
 								       value={this.state.location.price_per_kg}
-								       onChange={this._handlePricePerKgChange}/>
+								       onChange={this.handlePricePerKgChange}/>
 							</div>
 							{
 								this.state.pricePerKgError && <small className="form-text text-danger ml-1 mt-1">
@@ -311,7 +286,7 @@ export default class EditLocationComponent extends Component {
 									this.state.loadingUsers ? (<SpinnerComponent/>) : (
 										<select className="form-control"
 										        id="owner"
-										        onChange={this._handleOwnerChange}
+										        onChange={this.handleOwnerChange}
 										        defaultValue={this.state.location.owner_id}>
 											<option disabled value={0}>None</option>
 											{this.state.users && this.state.users.map(u => <option value={u.id} key={u.id}>{
@@ -337,7 +312,7 @@ export default class EditLocationComponent extends Component {
 									className="checkbox-inline cursor-pointer mx-4" key={item.value}>
 									<input type="checkbox"
 									       value={item.value}
-									       onChange={this._handleWasteChange}
+									       onChange={this.handleWasteChange}
 									       checked={newGarbageTypes.indexOf(item.value) !== -1}/>
 									<img className="d-inline mx-1 my-1"
 									     height={100}
@@ -358,11 +333,11 @@ export default class EditLocationComponent extends Component {
 							<i className="fa fa-chevron-left" aria-hidden="true"/>
 						</button>
 						<button className={"mx-2 btn btn-success"}
-						        onClick={this._handleSave} disabled={(this.state.hasChanges ? "" : "disabled")}>
+						        onClick={this.handleSave} disabled={(this.state.hasChanges ? "" : "disabled")}>
 							{this.state.saveLoading &&
 							<span className="spinner-border spinner-border-sm"/>} Save
 						</button>
-						<button className="btn btn-outline-danger" onClick={this._onClickConfirmToggle}>
+						<button className="btn btn-outline-danger" onClick={this.onClickConfirmToggle}>
 							Delete
 						</button>
 					</div>

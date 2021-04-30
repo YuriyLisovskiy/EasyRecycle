@@ -51,52 +51,44 @@ export default class CreateCommercialOrderComponent extends Component {
 		});
 	}
 
-	_handleCreate = _ => {
+	handleCreate = _ => {
 		let order = this.state.order;
 		let newState = {};
 		let hasErrors = false;
-		if (order.address === '')
-		{
+		if (order.address === '') {
 			newState.addressError = 'This field is required.';
 			hasErrors = true;
 		}
 
-		if (order.date === '')
-		{
+		if (order.date === '') {
 			newState.dateError = 'This field is required.';
 			hasErrors = true;
 		}
 
-		if (order.garbageType === '')
-		{
+		if (order.garbageType === '') {
 			newState.garbageTypeError = 'This field is required.';
 			hasErrors = true;
 		}
 
-		if (order.mass <= 0)
-		{
+		if (order.mass <= 0) {
 			newState.massError = 'Mass must be positive.';
 			hasErrors = true;
 		}
 
-		if (hasErrors)
-		{
+		if (hasErrors) {
 			this.setState(newState);
 		}
-		else
-		{
+		else {
 			this.setState({createLoading: true});
 			let user = UserService.getCurrentUser();
 			CommercialOrderService.createOrder(
 				order.address, order.date, order.garbageType, order.mass, this.state.location.id, user.id,
 				(data, err) => {
-					if (err)
-					{
+					if (err) {
 						alert(err);
 						this.setState({createLoading: false});
 					}
-					else
-					{
+					else {
 						// TODO: push profile with orders maybe
 						this.props.history.push('/info/locations');
 					}
@@ -105,7 +97,7 @@ export default class CreateCommercialOrderComponent extends Component {
 		}
 	}
 
-	_handleAddressChange = e => {
+	handleAddressChange = e => {
 		let order = this.state.order;
 		order.address = e.target.value;
 		this.setState({
@@ -114,7 +106,7 @@ export default class CreateCommercialOrderComponent extends Component {
 		});
 	}
 
-	_handleDateChange = e => {
+	handleDateChange = e => {
 		let order = this.state.order;
 		order.date = e.target.value;
 		this.setState({
@@ -123,7 +115,7 @@ export default class CreateCommercialOrderComponent extends Component {
 		});
 	}
 
-	_handleGarbageTypeChange = e => {
+	handleGarbageTypeChange = e => {
 		let order = this.state.order;
 		order.garbageType = e.target.value;
 		this.setState({
@@ -132,32 +124,28 @@ export default class CreateCommercialOrderComponent extends Component {
 		});
 	}
 
-	_handleMassChange = e => {
+	handleMassChange = e => {
 		let order = this.state.order;
 		order.mass = e.target.value;
-		if (order.mass > 0)
-        {
+		if (order.mass > 0) {
             order.totalPrice = roundFloat(order.mass * this.state.location.price_per_kg, 2);
             this.setState({
                 order: order,
                 massError: undefined
             });
         }
-		else
-        {
+		else {
             this.setState({massError: 'Mass must be positive.'});
         }
 	}
 
 	render () {
-		if (this.state.loading)
-		{
+		if (this.state.loading) {
 			return <SpinnerComponent/>;
 		}
 
 		let user = UserService.getCurrentUser();
-		if (user && (user.is_superuser || user.is_commercial))
-		{
+		if (user && (user.is_superuser || user.is_commercial)) {
 			return <div className="container">
 				<div className="row">
 					<h4 className="col-md-12 text-center">
@@ -188,7 +176,7 @@ export default class CreateCommercialOrderComponent extends Component {
 								Date when to pick up garbage <span className="text-danger">*</span>
 							</label>
 							<input type="date" className="form-control" id="date"
-								   onChange={this._handleDateChange}/>
+								   onChange={this.handleDateChange}/>
 						</div>
 						{
 							this.state.dateError && <small className="form-text text-danger ml-1 mt-1">
@@ -202,7 +190,7 @@ export default class CreateCommercialOrderComponent extends Component {
 								Total mass of garbage (kg) <span className="text-danger">*</span>
 							</label>
 							<input type="number" className="form-control" id="mass" value={this.state.order.mass}
-								   onChange={this._handleMassChange}/>
+								   onChange={this.handleMassChange}/>
 						</div>
 						{
 							this.state.massError && <small className="form-text text-danger ml-1 mt-1">
@@ -218,7 +206,7 @@ export default class CreateCommercialOrderComponent extends Component {
 								Your address <span className="text-danger">*</span>
 							</label>
 							<input type="text" className="form-control" id="address"
-							       onChange={this._handleAddressChange}/>
+							       onChange={this.handleAddressChange}/>
 						</div>
 						{
 							this.state.addressError && <small className="form-text text-danger ml-1 mt-1">
@@ -234,7 +222,7 @@ export default class CreateCommercialOrderComponent extends Component {
 								className="radio-inline cursor-pointer mx-4" key={item.short}>
 								<input type="radio"
 									   value={item.short}
-									   onChange={this._handleGarbageTypeChange}
+									   onChange={this.handleGarbageTypeChange}
 									   checked={this.state.order.garbageType === item.short}/>
 								<img className="d-inline mx-1 my-1"
 									 height={100}
@@ -259,7 +247,7 @@ export default class CreateCommercialOrderComponent extends Component {
 							onClick={this.props.history.goBack}>
 						<i className="fa fa-chevron-left" aria-hidden="true"/>
 					</button>
-					<button className={"mx-2 btn btn-success"} onClick={this._handleCreate}>
+					<button className={"mx-2 btn btn-success"} onClick={this.handleCreate}>
 						{this.state.createLoading &&
 						<span className="spinner-border spinner-border-sm"/>} Create
 					</button>

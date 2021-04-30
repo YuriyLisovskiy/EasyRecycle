@@ -34,13 +34,12 @@ export default class HowToRecycleComponent extends Component {
 		];
 	}
 
-	_makeDataRow = (text, imagePath, placeImgLeft) => {
+	makeRow = (text, imagePath, placeImgLeft) => {
 		let imageDiv = <div className="col-md-3 text-center">
 			<img alt="Garbage Type" src={imagePath} className="img-thumbnail bg-transparent border-0"/>
 		</div>;
 		let textDiv = <div className="col-md-9 p-3" style={{backgroundColor: '#fff', borderRadius: '15px'}}>{text}</div>;
-		if (placeImgLeft)
-		{
+		if (placeImgLeft) {
 			return <div className="row my-3">{imageDiv}{textDiv}</div>;
 		}
 
@@ -54,7 +53,7 @@ export default class HowToRecycleComponent extends Component {
 					<h2 className="w-100 text-center">How to recycle different kinds of garbage?</h2>
 				</div>
 			</div>
-			{this.garbageTypesData.map(data => this._makeDataRow(data.text, data.image, data.placeImgLeft))}
+			{this.garbageTypesData.map(data => this.makeRow(data.text, data.image, data.placeImgLeft))}
 		</div>;
 	}
 }

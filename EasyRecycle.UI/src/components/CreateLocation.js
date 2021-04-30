@@ -26,12 +26,10 @@ export default class CreateLocationComponent extends Component {
 
 	componentDidMount() {
 		UserService.getUsers(true, null, 'name', (data, err) => {
-			if (err)
-			{
+			if (err) {
 				alert(err);
 			}
-			else
-			{
+			else {
 				this.setState({
 					users: data.results,
 					loadingUsers: false
@@ -40,64 +38,54 @@ export default class CreateLocationComponent extends Component {
 		});
 	}
 
-	_handleCreate = _ => {
+	handleCreate = _ => {
 		let location = this.state.location;
 		let newState = {};
 		let hasErrors = false;
-		if (location.address === '')
-		{
+		if (location.address === '') {
 			newState.addressError = 'This field is required.';
 			hasErrors = true;
 		}
 
-		if (location.open_time === '')
-		{
+		if (location.open_time === '') {
 			newState.openTimeError = 'This field is required.';
 			hasErrors = true;
 		}
 
-		if (location.close_time === '')
-		{
+		if (location.close_time === '') {
 			newState.closeTimeError = 'This field is required.';
 			hasErrors = true;
 		}
 
-		if (location.garbage_types.length === 0)
-		{
+		if (location.garbage_types.length === 0) {
 			newState.garbageTypesError = 'At least one type should be selected.';
 			hasErrors = true;
 		}
 
-		if (location.price_per_kg < 0)
-		{
+		if (location.price_per_kg < 0) {
 			newState.pricePerKgError = 'Price must be non-negative.';
 			hasErrors = true;
 		}
 
-		if (location.owner_id === 0)
-		{
+		if (location.owner_id === 0) {
 			newState.ownerError = 'This field is required.';
 			hasErrors = true;
 		}
 
-		if (hasErrors)
-		{
+		if (hasErrors) {
 			this.setState(newState);
 		}
-		else
-		{
+		else {
 			this.setState({createLoading: true});
 			LocationService.createLocation(
 				location.address, location.open_time, location.close_time,
 				location.price_per_kg, location.garbage_types, location.owner_id,
 				(data, err) => {
-					if (err)
-					{
+					if (err) {
 						alert(err);
 						this.setState({createLoading: false});
 					}
-					else
-					{
+					else {
 						this.props.history.push('/info/locations');
 					}
 				}
@@ -105,7 +93,7 @@ export default class CreateLocationComponent extends Component {
 		}
 	}
 
-	_handleAddressChange = e => {
+	handleAddressChange = e => {
 		let loc = this.state.location;
 		loc.address = e.target.value;
 		this.setState({
@@ -114,7 +102,7 @@ export default class CreateLocationComponent extends Component {
 		});
 	}
 
-	_handleOpenTimeChange = e => {
+	handleOpenTimeChange = e => {
 		let loc = this.state.location;
 		loc.open_time = e.target.value;
 		this.setState({
@@ -123,7 +111,7 @@ export default class CreateLocationComponent extends Component {
 		});
 	}
 
-	_handleCloseTimeChange = e => {
+	handleCloseTimeChange = e => {
 		let loc = this.state.location;
 		loc.close_time = e.target.value;
 		this.setState({
@@ -132,7 +120,7 @@ export default class CreateLocationComponent extends Component {
 		});
 	}
 
-	_handlePricePerKgChange = e => {
+	handlePricePerKgChange = e => {
 		let loc = this.state.location;
 		loc.price_per_kg = e.target.value;
 		this.setState({
@@ -141,7 +129,7 @@ export default class CreateLocationComponent extends Component {
 		});
 	}
 
-	_handleOwnerChange = e => {
+	handleOwnerChange = e => {
 		let loc = this.state.location;
 		loc.owner_id = e.target.value;
 		this.setState({
@@ -150,21 +138,17 @@ export default class CreateLocationComponent extends Component {
 		});
 	}
 
-	_handleWasteChange = e => {
+	handleWasteChange = e => {
 		let location = this.state.location;
 		let value = e.target.value;
 		let idx = location.garbage_types.indexOf(value);
-		if (e.target.checked)
-		{
-			if (idx === -1)
-			{
+		if (e.target.checked) {
+			if (idx === -1) {
 				location.garbage_types.push(value);
 			}
 		}
-		else
-		{
-			if (idx !== -1)
-			{
+		else {
+			if (idx !== -1) {
 				location.garbage_types.splice(idx, 1);
 			}
 		}
@@ -177,8 +161,7 @@ export default class CreateLocationComponent extends Component {
 
 	render () {
 		let user = UserService.getCurrentUser();
-		if (user && user.is_superuser)
-		{
+		if (user && user.is_superuser) {
 			return <div className="container">
 				<div className="row">
 					<h4 className="col-md-12 text-center">
@@ -192,7 +175,7 @@ export default class CreateLocationComponent extends Component {
 								Address <span className="text-danger">*</span>
 							</label>
 							<input type="text" className="form-control" id="address"
-							       onChange={this._handleAddressChange}/>
+							       onChange={this.handleAddressChange}/>
 						</div>
 						{
 							this.state.addressError && <small className="form-text text-danger ml-1 mt-1">
@@ -208,7 +191,7 @@ export default class CreateLocationComponent extends Component {
 								Open time <span className="text-danger">*</span>
 							</label>
 							<input type="time" className="form-control" id="open_time"
-							       onChange={this._handleOpenTimeChange}/>
+							       onChange={this.handleOpenTimeChange}/>
 						</div>
 						{
 							this.state.openTimeError && <small className="form-text text-danger ml-1 mt-1">
@@ -222,7 +205,7 @@ export default class CreateLocationComponent extends Component {
 								Close time <span className="text-danger">*</span>
 							</label>
 							<input type="time" className="form-control" id="close_time"
-							       onChange={this._handleCloseTimeChange}/>
+							       onChange={this.handleCloseTimeChange}/>
 						</div>
 						{
 							this.state.closeTimeError && <small className="form-text text-danger ml-1 mt-1">
@@ -239,7 +222,7 @@ export default class CreateLocationComponent extends Component {
 							</label>
 							<input type="number" className="form-control" id="price_per_kg"
 							       value={this.state.location.price_per_kg}
-							       onChange={this._handlePricePerKgChange}/>
+							       onChange={this.handlePricePerKgChange}/>
 						</div>
 						{
 							this.state.pricePerKgError && <small className="form-text text-danger ml-1 mt-1">
@@ -257,7 +240,7 @@ export default class CreateLocationComponent extends Component {
 							this.state.loadingUsers ? (<SpinnerComponent/>) : (
 								<select className="form-control"
 								        id="owner"
-								        onChange={this._handleOwnerChange}
+								        onChange={this.handleOwnerChange}
 								        defaultValue={0}>
 									<option disabled value={0}>None</option>
 									{this.state.users && this.state.users.map(u => <option value={u.id} key={u.id}>{
@@ -283,7 +266,7 @@ export default class CreateLocationComponent extends Component {
 								className="checkbox-inline cursor-pointer mx-4" key={item.value}>
 								<input type="checkbox"
 								       value={item.value}
-								       onChange={this._handleWasteChange}/>
+								       onChange={this.handleWasteChange}/>
 								<img className="d-inline mx-1 my-1"
 								     height={100}
 								     src={item.src}
@@ -302,7 +285,7 @@ export default class CreateLocationComponent extends Component {
 					        onClick={this.props.history.goBack}>
 						<i className="fa fa-chevron-left" aria-hidden="true"/>
 					</button>
-					<button className={"mx-2 btn btn-success"} onClick={this._handleCreate}>
+					<button className={"mx-2 btn btn-success"} onClick={this.handleCreate}>
 						{this.state.createLoading &&
 						<span className="spinner-border spinner-border-sm"/>} Create
 					</button>

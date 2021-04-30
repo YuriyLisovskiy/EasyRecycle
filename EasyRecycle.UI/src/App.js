@@ -23,7 +23,7 @@ import LocationsInfoComponent from "./components/info/LocationsInfo";
 import CollectionInfoComponent from "./components/info/CollectionInfo";
 import RatingComponent from "./components/rating/Rating";
 import ScanQrCodeComponent from "./components/user/ScanQrCode";
-import FinishTransactionComponent from "./components/user/FinishTransaction";
+import FinishTransactionComponent from "./components/FinishTransaction";
 import CommercialOrdersComponent from "./components/commercial/Orders";
 import CreateCommercialOrderComponent from "./components/commercial/CreateOrder";
 import EditLocationComponent from "./components/EditLocation";
@@ -54,45 +54,43 @@ export default class App extends Component {
 				this.setState({
 					currentUser: user
 				});
-				this._updateOrdersCount();
+				this.updateOrdersCount();
 			}
 		});
 	}
 
-	_updateOrdersCount = () => {
-		if (this.state.currentUser.is_garbage_collector)
-		{
+	updateOrdersCount = () => {
+		if (this.state.currentUser.is_garbage_collector) {
 			CommerialOrderService.getOrders({
 				locationFilter: true,
 				statusFilter: ['A', 'B'],
 				handler: (data, err) => {
-					if (!err)
-					{
-						this.setState({ordersCount: data.results.length});
+					if (!err) {
+						this.setState({ordersCount: data.count});
 					}
 				}
 			});
 		}
 	}
 
-	_makeSubSettingRoute = (subPath) => {
+	makeSubSettingRoute = (subPath) => {
 		return <Route path={'/settings/' + subPath} render={
 			(routeProps) => <SettingsComponent {...routeProps}
-											   updateAvatar={this._onUpdateAvatar}
-											   updateFullName={this._onUpdateFullName}
+											   updateAvatar={this.onUpdateAvatar}
+											   updateFullName={this.onUpdateFullName}
 											   activeKey={subPath}/>
 		} />
 	}
 
-	_onLoginSuccess = () => {
+	onLoginSuccess = () => {
 		window.location.reload();
 	}
 
-	_onRegisterSuccess = () => {
+	onRegisterSuccess = () => {
 		window.location = '/';
 	}
 
-	_onUpdateAvatar = (avatarLink) => {
+	onUpdateAvatar = (avatarLink) => {
 		let user = this.state.currentUser;
 		if (user.avatar_link !== avatarLink) {
 			user.avatar_link = avatarLink;
@@ -102,7 +100,7 @@ export default class App extends Component {
 		}
 	}
 
-	_onUpdateFullName = (first_name, last_name) => {
+	onUpdateFullName = (first_name, last_name) => {
 		let user = this.state.currentUser;
 		if (first_name) {
 			user.first_name = first_name;
@@ -119,12 +117,12 @@ export default class App extends Component {
 		}
 	}
 
-	_onClickLogOut = () => {
+	onClickLogOut = () => {
 		AuthService.logout();
 		window.location = '/';
 	}
 
-	_onClickLoginToggle = () => {
+	onClickLoginToggle = () => {
 		let {loginIsOpen} = this.state;
 		this.setState({
 			loginIsOpen: !loginIsOpen,
@@ -132,7 +130,7 @@ export default class App extends Component {
 		});
 	}
 
-	_onClickRegisterToggle = () => {
+	onClickRegisterToggle = () => {
 		let {registerIsOpen} = this.state;
 		this.setState({
 			loginIsOpen: false,
@@ -140,7 +138,7 @@ export default class App extends Component {
 		});
 	}
 
-	_onClickScanQrCodeToggle = () => {
+	onClickScanQrCodeToggle = () => {
 		let {scanQrCodeIsOpen} = this.state;
 		this.setState({
 			scanQrCodeIsOpen: !scanQrCodeIsOpen
@@ -151,16 +149,16 @@ export default class App extends Component {
 		const user = this.state.currentUser;
 		return <BrowserRouter>
 			<div id="body" className="pb-5">
-				<LoginComponent onLoginSuccess={this._onLoginSuccess}
+				<LoginComponent onLoginSuccess={this.onLoginSuccess}
 								open={this.state.loginIsOpen}
-								onRequestClose={this._onClickLoginToggle}
-								onClickSwitchToRegister={this._onClickRegisterToggle}/>
-				<RegisterComponent onRegisterSuccess={this._onRegisterSuccess}
+								onRequestClose={this.onClickLoginToggle}
+								onClickSwitchToRegister={this.onClickRegisterToggle}/>
+				<RegisterComponent onRegisterSuccess={this.onRegisterSuccess}
 								   open={this.state.registerIsOpen}
-								   onRequestClose={this._onClickRegisterToggle}
-								   onClickSwitchToLogin={this._onClickLoginToggle}/>
+								   onRequestClose={this.onClickRegisterToggle}
+								   onClickSwitchToLogin={this.onClickLoginToggle}/>
 				<ScanQrCodeComponent open={this.state.scanQrCodeIsOpen}
-								     onRequestClose={this._onClickScanQrCodeToggle}/>
+								     onRequestClose={this.onClickScanQrCodeToggle}/>
 				<nav className="navbar navbar-expand-md bg-light navbar-light">
 					<Link className="navbar-brand" to='/'>
 						<img height={50} src={process.env.PUBLIC_URL + '/logo225.png'} alt="LOGO"/>
@@ -175,7 +173,9 @@ export default class App extends Component {
 							{user && !user.is_commercial && !user.is_garbage_collector ? (
 								<li className="nav-item mr-2 d-inline text-success cursor-pointer">
 									<i className="fa fa-qrcode mt-2 mx-2" aria-hidden="true"
-									   style={{fontSize: 34}} title="My QR-Code" onClick={this._onClickScanQrCodeToggle}/>
+									   style={{fontSize: 34}}
+									   title="My QR-Code"
+									   onClick={this.onClickScanQrCodeToggle}/>
 								</li>
 							) : "" }
 							<li className="nav-item mr-2">
@@ -256,7 +256,7 @@ export default class App extends Component {
 											</div>
 										}
 										<div className="dropdown-item select-none cursor-pointer"
-											 onClick={this._onClickLogOut}>
+											 onClick={this.onClickLogOut}>
 											<i className="fa fa-sign-out" aria-hidden="true"/> Sign Out
 										</div>
 									</div>
@@ -265,13 +265,13 @@ export default class App extends Component {
 								<span>
 									<li className="nav-item mr-2 d-inline">
 										<button className="btn btn-outline-success mt-1"
-												onClick={this._onClickLoginToggle}>
+												onClick={this.onClickLoginToggle}>
 											LOGIN
 										</button>
 									</li>
 									<li className="nav-item d-inline">
 										<button className="btn btn-success mt-1"
-												onClick={this._onClickRegisterToggle}>
+												onClick={this.onClickRegisterToggle}>
 											SIGN UP
 										</button>
 									</li>
@@ -284,9 +284,9 @@ export default class App extends Component {
 					<Switch>
 						<Route path='/profile/me' component={MyProfileComponent} />
 						<Route path='/profile/:id' component={ProfileComponent} />
-						{this._makeSubSettingRoute('account')}
-						{this._makeSubSettingRoute('profile')}
-						{this._makeSubSettingRoute('privacy')}
+						{this.makeSubSettingRoute('account')}
+						{this.makeSubSettingRoute('profile')}
+						{this.makeSubSettingRoute('privacy')}
 						<Route path='/home' component={HomeComponent} />
 						<Route path='/rating' component={RatingComponent} />
 						<Route path='/info/how' component={HowToRecycleComponent} />
@@ -294,7 +294,7 @@ export default class App extends Component {
 						<Route path='/info/collection' component={CollectionInfoComponent} />
 						<Route path='/commercial-orders' render={
 							(props) => <CommercialOrdersComponent {...props}
-							                                      updateOrdersCount={this._updateOrdersCount}/>
+							                                      updateOrdersCount={this.updateOrdersCount}/>
 						} />
 						<Route path='/commercial-order/create' component={CreateCommercialOrderComponent} />
 						<Route path='/finish-transaction-for/:id' component={FinishTransactionComponent} />
