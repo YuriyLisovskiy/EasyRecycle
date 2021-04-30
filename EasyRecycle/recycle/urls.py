@@ -17,22 +17,22 @@ from recycle.views.transaction import (
 app_name = 'recycle'
 
 urlpatterns = [
-	re_path(r'^commercial-requests/?$', CommercialRequestsAPIView.as_view(), name='get_commercial_requests'),
+	re_path(r'^commercial-orders/?$', CommercialRequestsAPIView.as_view(), name='get_commercial_orders'),
 	re_path(
-		r'^commercial-requests/(?P<pk>\d+)/?$', CommercialRequestDetailsAPIView.as_view(),
-		name='get_commercial_request'
+		r'^commercial-orders/(?P<pk>\d+)/?$', CommercialRequestDetailsAPIView.as_view(),
+		name='get_commercial_order'
 	),
 	re_path(
-		r'^commercial-requests/create/?$', CreateCommercialRequestAPIView.as_view(),
-		name='create_commercial_request'
+		r'^commercial-orders/create/?$', CreateCommercialRequestAPIView.as_view(),
+		name='create_commercial_orders'
 	),
 	re_path(
-		r'^commercial-requests/(?P<pk>\d+)/edit/?$', EditCommercialRequestAPIView.as_view(),
-		name='edit_commercial_request'
+		r'^commercial-orders/(?P<pk>\d+)/edit/?$', EditCommercialRequestAPIView.as_view(),
+		name='edit_commercial_orders'
 	),
 	re_path(
-		r'^commercial-requests/(?P<pk>\d+)/cancel/?$', CancelCommercialRequestAPIView.as_view(),
-		name='cancel_commercial_request'
+		r'^commercial-orders/(?P<pk>\d+)/cancel/?$', CancelCommercialRequestAPIView.as_view(),
+		name='cancel_commercial_orders'
 	),
 
 	re_path(r'^locations/?$', LocationsAPIView.as_view(), name='get_locations'),

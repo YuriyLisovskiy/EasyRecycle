@@ -75,12 +75,17 @@ class EditLocationSerializer(serializers.ModelSerializer):
 
 class CommercialRequestSerializer(serializers.ModelSerializer):
 	id = serializers.ReadOnlyField()
-	service_id = serializers.SerializerMethodField()
+	email = serializers.SerializerMethodField()
+	location_id = serializers.SerializerMethodField()
 	user_id = serializers.SerializerMethodField()
 
 	@staticmethod
-	def get_service_id(obj):
-		return obj.service.id if obj.service else -1
+	def get_email(obj):
+		return obj.user.email if obj.user else ''
+
+	@staticmethod
+	def get_location_id(obj):
+		return obj.location.id if obj.location else -1
 
 	@staticmethod
 	def get_user_id(obj):
@@ -89,7 +94,7 @@ class CommercialRequestSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CommercialRequest
 		fields = (
-			'id', 'date', 'garbage_type', 'mass', 'status', 'service_id', 'user_id'
+			'id', 'address', 'email', 'date', 'garbage_type', 'mass', 'status', 'location_id', 'user_id'
 		)
 
 
@@ -99,7 +104,7 @@ class CreateCommercialRequestSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CommercialRequest
 		fields = (
-			'id', 'date', 'garbage_type', 'mass', 'status', 'service', 'user'
+			'id', 'address', 'date', 'garbage_type', 'mass', 'status', 'location', 'user'
 		)
 		validators = (
 			IsCommercialValidator('user'),
@@ -112,17 +117,18 @@ class EditCommercialRequestSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CommercialRequest
 		fields = (
-			'id', 'date', 'garbage_type', 'mass', 'status', 'service', 'user'
+			'id', 'address', 'date', 'garbage_type', 'mass', 'status', 'location', 'user'
 		)
 		validators = (
 			IsCommercialValidator('user'),
 		)
 		extra_kwargs = {
+			'address': {'required': False},
 			'date': {'required': False},
 			'garbage_type': {'required': False},
 			'mass': {'required': False},
 			'status': {'required': False},
-			'service': {'required': False},
+			'location': {'required': False},
 			'user': {'required': False}
 		}
 
@@ -154,8 +160,5 @@ class CreateTransactionSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Transaction
 		fields = (
-			'id', 'datetime', 'garbage_type', 'mass', 'points', 'user', 'collector'
-		)
-		validators = (
-			IsGarbageCollectorValidator('collector'),
+			'id', 'garbage_type', 'mass', 'user'
 		)

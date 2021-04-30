@@ -60,7 +60,7 @@ class UserDetailsAPIView(generics.RetrieveAPIView):
 #       ...
 #   ]
 class UsersAPIView(generics.ListAPIView):
-	permission_classes = (permissions.IsAdminUser,)
+	permission_classes = (permissions.IsAdminUser | permissions.IsAuthenticated,)
 	queryset = UserModel.objects.filter(is_active=True)
 	serializer_class = UserDetailsSerializer
 

@@ -24,9 +24,9 @@ class GarbageType(models.Model):
 
 
 class CommercialRequest(models.Model):
-	QUEUED = 'Q'
-	IN_PROGRESS = 'A'
-	REJECTED = 'R'
+	QUEUED = 'A'
+	IN_PROGRESS = 'B'
+	REJECTED = 'C'
 	DONE = 'D'
 	STATUS_CHOICES = [
 		(QUEUED, 'Queued'),
@@ -35,6 +35,7 @@ class CommercialRequest(models.Model):
 		(DONE, 'Done')
 	]
 
+	address = models.CharField(max_length=350)
 	date = models.DateField()
 	garbage_type = models.CharField(
 		max_length=2, choices=garbage.TYPE_CHOICES, default=garbage.ORGANIC

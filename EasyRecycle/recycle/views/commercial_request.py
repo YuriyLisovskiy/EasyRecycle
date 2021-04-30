@@ -3,7 +3,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 
-from recycle.models import CommercialRequest
+from recycle.models import CommercialRequest, Location
 from recycle.permissions import IsCommercialUser, IsGarbageCollector
 from recycle.serializers import (
 	CommercialRequestSerializer, CreateCommercialRequestSerializer, EditCommercialRequestSerializer
@@ -24,6 +24,8 @@ _PERMISSION_CLASSES = (permissions.IsAuthenticated & (
 #   [
 #     {
 #       "id": <int>,
+#       "address": <string>,
+#       "email": <string>,
 #       "date": <string>,
 #       "garbage_type": <string>,
 #       "mass": <float>,
@@ -35,27 +37,34 @@ _PERMISSION_CLASSES = (permissions.IsAuthenticated & (
 #   ]
 class CommercialRequestsAPIView(generics.ListAPIView):
 	permission_classes = _PERMISSION_CLASSES
-	queryset = CommercialRequest.objects.order_by('-date')
+	queryset = CommercialRequest.objects
 	serializer_class = CommercialRequestSerializer
 
 	def get_queryset(self):
 		queryset = super().get_queryset()
+		order_by = []
+		if self.request.query_params.get('order_by_status', 'false').lower() == 'true':
+			order_by.append('status')
+
+		order_by.append('date')
+		queryset = queryset.order_by(*order_by)
+
 		if self.request.user.is_superuser or self.request.user.is_garbage_collector:
-			q = None
-			user_pk = self.request.data.get('user_pk')
+			user_pk = self.request.query_params.get('user_pk')
 			if user_pk is not None:
-				q = Q(user_pk=int(user_pk))
+				try:
+					queryset = queryset.filter(user_id=int(user_pk))
+				except ValueError:
+					pass
 
-			service_pk = self.request.data.get('service_pk')
-			if service_pk is not None:
-				spk_q = Q(service_pk=int(service_pk))
-				if q:
-					q &= spk_q
-				else:
-					q = spk_q
+			by_location = self.request.query_params.get('location', 'false').lower() == 'true'
+			if by_location:
+				location = Location.objects.filter(owner_id=self.request.user.id).first()
+				queryset = queryset.filter(location_id=location.id)
 
-			if q:
-				queryset = queryset.filter(q)
+			by_status = self.request.query_params.getlist('status', None)
+			if by_status:
+				queryset = queryset.filter(status__in=by_status)
 
 			return queryset
 
@@ -70,6 +79,8 @@ class CommercialRequestsAPIView(generics.ListAPIView):
 # returns (success status - 200):
 #   {
 #     "id": <int>,
+#     "address": <string>,
+#     "email": <string>,
 #     "date": <string>,
 #     "garbage_type": <string>,
 #     "mass": <float>,
@@ -94,6 +105,7 @@ class CommercialRequestDetailsAPIView(generics.RetrieveAPIView):
 # /api/v1/recycle/commercial-requests/create
 # methods:
 #   - post:
+#       - address: string
 #       - date: string
 #       - garbage_type: string
 #       - mass: float
@@ -103,6 +115,7 @@ class CommercialRequestDetailsAPIView(generics.RetrieveAPIView):
 # returns (success status - 201):
 #   {
 #     "id": <int>,
+#     "address": <string>,
 #     "date": <string>,
 #     "garbage_type": <string>,
 #     "mass": <float>,
@@ -121,6 +134,7 @@ class CreateCommercialRequestAPIView(generics.CreateAPIView):
 #   - pk <int>: primary key of CommercialRequest object
 # methods:
 #   - put:
+#       - address: string
 #       - date: string
 #       - garbage_type: string
 #       - mass: float
@@ -130,6 +144,7 @@ class CreateCommercialRequestAPIView(generics.CreateAPIView):
 # returns (success status: 200 (on update)):
 #   {
 #     "id": <int>,
+#     "address": <string>,
 #     "date": <string>,
 #     "garbage_type": <string>,
 #     "mass": <float>,
@@ -143,13 +158,18 @@ class EditCommercialRequestAPIView(generics.UpdateAPIView):
 	serializer_class = EditCommercialRequestSerializer
 
 	def update(self, request, *args, **kwargs):
-		if request.user.is_garbage_collector:
+		if not request.user.is_superuser:
 			data = {'status': request.data['status']}
 		else:
 			data = request.data
 
 		partial = kwargs.pop('partial', False)
 		instance = self.get_object()
+		if instance.status in ['R', 'D']:
+			return Response(data={
+				'message': 'unable to change status for rejected and done orders'
+			}, status=400)
+
 		serializer = self.get_serializer(instance, data=data, partial=partial)
 		serializer.is_valid(raise_exception=True)
 		self.perform_update(serializer)
