@@ -23,8 +23,8 @@ class LocationDetailsAPITestCase(APIFactoryTestCase):
 		actual_location = response.data
 		self.assertEqual(actual_location['id'], self.expected_location.id)
 		self.assertEqual(self.expected_location.address, actual_location['address'])
-		self.assertEqual(self.expected_location.open_time.strftime('%H:%M:%S'), actual_location['open_time'])
-		self.assertEqual(self.expected_location.close_time.strftime('%H:%M:%S'), actual_location['close_time'])
+		self.assertEqual(self.expected_location.open_time.strftime('%H:%M'), actual_location['open_time'])
+		self.assertEqual(self.expected_location.close_time.strftime('%H:%M'), actual_location['close_time'])
 		self.assertEqual(self.expected_location.owner.id, actual_location['owner_id'])
 
 	def test_GetInfo(self):
