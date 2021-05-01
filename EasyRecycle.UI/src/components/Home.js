@@ -26,7 +26,7 @@ export default class HomeComponent extends Component {
 						"How to?",
 						"/how-to.png",
 						"Learn how to recycle different kinds of garbage",
-						"/info/how"
+						"/info/recycling"
 					)}
 				</div>
 				<div className="col-md-4">

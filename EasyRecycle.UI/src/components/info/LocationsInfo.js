@@ -62,7 +62,7 @@ export default class LocationsComponent extends Component {
 			<Card.Body>
 				<h6 className="text-center">We collects</h6>
 				<div className="text-center">
-					{location.garbage_types.map(type => <Link to="/info/how"
+					{location.garbage_types.map(type => <Link to="/info/recycling"
 					                                          key={type.short}
 					                                          title="Click to learn how to recycle different kinds of garbage">
 						<img className="d-inline mx-1 my-1 cursor-pointer"

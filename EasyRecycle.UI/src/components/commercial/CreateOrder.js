@@ -169,7 +169,7 @@ export default class CreateCommercialOrderComponent extends Component {
 						</div>
 					</div>
 				</div>
-				<div className="row my-4">
+				<div className="row my-2">
 					<div className="col-md-6">
 						<div className="form-group">
 							<label htmlFor="date">
@@ -199,7 +199,7 @@ export default class CreateCommercialOrderComponent extends Component {
 						}
 					</div>
 				</div>
-				<div className="row my-4">
+				<div className="row my-2">
 					<div className="col-md-12">
 						<div className="form-group">
 							<label htmlFor="address">
@@ -215,7 +215,7 @@ export default class CreateCommercialOrderComponent extends Component {
 						}
 					</div>
 				</div>
-				<div className="row my-3">
+				<div className="row my-2">
 					<div className="col-md-12 text-center">
 						{
 							this.state.location.garbage_types.map((item, idx) => <label
@@ -238,19 +238,19 @@ export default class CreateCommercialOrderComponent extends Component {
 					}
 				</div>
 				<div className="row">
-					<div className="col-md-12 text-right" style={{fontSize: 26}}>
+					<div className="col-md-6">
+						<button className="btn btn-outline-secondary" title="Go Back"
+						        onClick={this.props.history.goBack}>
+							<i className="fa fa-chevron-left" aria-hidden="true"/>
+						</button>
+						<button className={"mx-2 btn btn-success"} onClick={this.handleCreate}>
+							{this.state.createLoading &&
+							<span className="spinner-border spinner-border-sm"/>} Create
+						</button>
+					</div>
+					<div className="col-md-6 text-right" style={{fontSize: 26}}>
 						Total: ${this.state.order.totalPrice}
 					</div>
-				</div>
-				<div className="mt-5">
-					<button className="btn btn-outline-secondary" title="Go Back"
-							onClick={this.props.history.goBack}>
-						<i className="fa fa-chevron-left" aria-hidden="true"/>
-					</button>
-					<button className={"mx-2 btn btn-success"} onClick={this.handleCreate}>
-						{this.state.createLoading &&
-						<span className="spinner-border spinner-border-sm"/>} Create
-					</button>
 				</div>
 			</div>;
 		}
