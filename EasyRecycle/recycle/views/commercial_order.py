@@ -1,4 +1,3 @@
-from django.db.models import Q
 from rest_framework import generics, permissions, status
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
@@ -6,7 +5,7 @@ from rest_framework.response import Response
 from recycle.models import CommercialRequest, Location
 from recycle.permissions import IsCommercialUser, IsGarbageCollector
 from recycle.serializers import (
-	CommercialRequestSerializer, CreateCommercialRequestSerializer, EditCommercialRequestSerializer
+	CommercialOrderSerializer, CreateCommercialOrderSerializer, EditCommercialOrderSerializer
 )
 
 
@@ -35,10 +34,10 @@ _PERMISSION_CLASSES = (permissions.IsAuthenticated & (
 #     },
 #     ...
 #   ]
-class CommercialRequestsAPIView(generics.ListAPIView):
+class CommercialOrdersAPIView(generics.ListAPIView):
 	permission_classes = _PERMISSION_CLASSES
-	queryset = CommercialRequest.objects
-	serializer_class = CommercialRequestSerializer
+	queryset = CommercialRequest.objects.all()
+	serializer_class = CommercialOrderSerializer
 
 	def get_queryset(self):
 		queryset = super().get_queryset()
@@ -88,10 +87,10 @@ class CommercialRequestsAPIView(generics.ListAPIView):
 #     "service_id": <int>,
 #     "user_id": <int>
 #   }
-class CommercialRequestDetailsAPIView(generics.RetrieveAPIView):
+class CommercialOrderDetailsAPIView(generics.RetrieveAPIView):
 	permission_classes = _PERMISSION_CLASSES
 	queryset = CommercialRequest.objects.all()
-	serializer_class = CommercialRequestSerializer
+	serializer_class = CommercialOrderSerializer
 
 	def get_object(self):
 		obj = super().get_object()
@@ -123,10 +122,10 @@ class CommercialRequestDetailsAPIView(generics.RetrieveAPIView):
 #     "service": <int>,
 #     "user": <int>
 #   }
-class CreateCommercialRequestAPIView(generics.CreateAPIView):
+class CreateCommercialOrderAPIView(generics.CreateAPIView):
 	permission_classes = (permissions.IsAuthenticated & (IsCommercialUser | permissions.IsAdminUser),)
 	queryset = CommercialRequest.objects.all()
-	serializer_class = CreateCommercialRequestSerializer
+	serializer_class = CreateCommercialOrderSerializer
 
 
 # /api/v1/recycle/commercial-requests/<pk>/edit
@@ -152,14 +151,16 @@ class CreateCommercialRequestAPIView(generics.CreateAPIView):
 #     "service": <int>,
 #     "user": <int>
 #   }
-class EditCommercialRequestAPIView(generics.UpdateAPIView):
+class EditCommercialOrderAPIView(generics.UpdateAPIView):
 	permission_classes = (permissions.IsAuthenticated & (IsGarbageCollector | permissions.IsAdminUser),)
 	queryset = CommercialRequest.objects.all()
-	serializer_class = EditCommercialRequestSerializer
+	serializer_class = EditCommercialOrderSerializer
 
 	def update(self, request, *args, **kwargs):
 		if not request.user.is_superuser:
-			data = {'status': request.data['status']}
+			data = dict()
+			if 'status' in request.data:
+				data['status'] = request.data['status']
 		else:
 			data = request.data
 
@@ -188,7 +189,7 @@ class EditCommercialRequestAPIView(generics.UpdateAPIView):
 # methods:
 #   - delete
 # returns success status: 204 (on delete):
-class CancelCommercialRequestAPIView(generics.DestroyAPIView):
+class CancelCommercialOrderAPIView(generics.DestroyAPIView):
 	permission_classes = _PERMISSION_CLASSES
 	queryset = CommercialRequest.objects.all()
 

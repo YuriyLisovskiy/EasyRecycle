@@ -73,7 +73,7 @@ class EditLocationSerializer(serializers.ModelSerializer):
 		}
 
 
-class CommercialRequestSerializer(serializers.ModelSerializer):
+class CommercialOrderSerializer(serializers.ModelSerializer):
 	id = serializers.ReadOnlyField()
 	email = serializers.SerializerMethodField()
 	location_id = serializers.SerializerMethodField()
@@ -98,7 +98,7 @@ class CommercialRequestSerializer(serializers.ModelSerializer):
 		)
 
 
-class CreateCommercialRequestSerializer(serializers.ModelSerializer):
+class CreateCommercialOrderSerializer(serializers.ModelSerializer):
 	id = serializers.ReadOnlyField()
 
 	class Meta:
@@ -111,7 +111,7 @@ class CreateCommercialRequestSerializer(serializers.ModelSerializer):
 		)
 
 
-class EditCommercialRequestSerializer(serializers.ModelSerializer):
+class EditCommercialOrderSerializer(serializers.ModelSerializer):
 	id = serializers.ReadOnlyField()
 
 	class Meta:

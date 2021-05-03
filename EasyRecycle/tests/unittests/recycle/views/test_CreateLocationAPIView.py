@@ -77,6 +77,20 @@ class CreateLocationAPITestCase(APIFactoryTestCase):
 		self.assertEqual(input_data['close_time'], actual_location['close_time'][:-3])
 		self.assertEqual(input_data['owner'], actual_location['owner'])
 
+	def test_CreateLocation_InvalidGarbageType(self):
+		input_data = {
+			'address': 'Hello St. 10',
+			'open_time': '11:00',
+			'close_time': '15:00',
+			'price_per_kg': 11.7,
+			'garbage_types': [garbage.METAL, 'Food'],
+			'owner': self.gc_user.pk
+		}
+		request = self.request_factory.post(reverse('api_v1:recycle:create_location'), data=input_data)
+		force_authenticate(request, self.super_user)
+		response = self.view(request)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 	def run_missing_field(self, field):
 		input_data = {
 			'address': 'Hello St. 10',

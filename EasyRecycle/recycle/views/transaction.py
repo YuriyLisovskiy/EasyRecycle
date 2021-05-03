@@ -44,13 +44,13 @@ class TransactionsAPIView(generics.ListAPIView):
 		queryset = super().get_queryset()
 		if self.request.user.is_superuser or self.request.user.is_garbage_collector:
 			q = None
-			user_pk = self.request.data.get('user_pk')
+			user_pk = self.request.query_params.get('user_pk')
 			if user_pk is not None:
-				q = Q(user_pk=int(user_pk))
+				q = Q(user_id=int(user_pk))
 
-			collector_pk = self.request.data.get('collector_pk')
+			collector_pk = self.request.query_params.get('collector_pk')
 			if collector_pk is not None:
-				cpk_q = Q(service_pk=int(collector_pk))
+				cpk_q = Q(collector_id=int(collector_pk))
 				if q:
 					q &= cpk_q
 				else:
@@ -116,6 +116,15 @@ class CreateTransactionAPIView(generics.CreateAPIView):
 
 	def create(self, request, *args, **kwargs):
 		data = request.data.copy()
+
+		if 'garbage_type' not in data:
+			return Response({'detail': 'garbage_type is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+		if 'mass' not in data:
+			return Response({'detail': 'mass is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+		if 'user' not in data:
+			return Response({'detail': 'user is required'}, status=status.HTTP_400_BAD_REQUEST)
 
 		# TODO: calculate points according to garbage type.
 		data['points'] = round(garbage.GARBAGE_TO_POINTS[data['garbage_type']] * float(data['mass']))

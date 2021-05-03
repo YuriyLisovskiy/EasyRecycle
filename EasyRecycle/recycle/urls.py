@@ -1,8 +1,8 @@
 from django.urls import re_path
 
-from recycle.views.commercial_request import (
-	CommercialRequestsAPIView, CommercialRequestDetailsAPIView, CreateCommercialRequestAPIView,
-	EditCommercialRequestAPIView, CancelCommercialRequestAPIView
+from recycle.views.commercial_order import (
+	CommercialOrdersAPIView, CommercialOrderDetailsAPIView, CreateCommercialOrderAPIView,
+	EditCommercialOrderAPIView, CancelCommercialOrderAPIView
 )
 
 from recycle.views.location import (
@@ -17,22 +17,22 @@ from recycle.views.transaction import (
 app_name = 'recycle'
 
 urlpatterns = [
-	re_path(r'^commercial-orders/?$', CommercialRequestsAPIView.as_view(), name='get_commercial_orders'),
+	re_path(r'^commercial-orders/?$', CommercialOrdersAPIView.as_view(), name='get_commercial_orders'),
 	re_path(
-		r'^commercial-orders/(?P<pk>\d+)/?$', CommercialRequestDetailsAPIView.as_view(),
+		r'^commercial-orders/(?P<pk>\d+)/?$', CommercialOrderDetailsAPIView.as_view(),
 		name='get_commercial_order'
 	),
 	re_path(
-		r'^commercial-orders/create/?$', CreateCommercialRequestAPIView.as_view(),
-		name='create_commercial_orders'
+		r'^commercial-orders/create/?$', CreateCommercialOrderAPIView.as_view(),
+		name='create_commercial_order'
 	),
 	re_path(
-		r'^commercial-orders/(?P<pk>\d+)/edit/?$', EditCommercialRequestAPIView.as_view(),
-		name='edit_commercial_orders'
+		r'^commercial-orders/(?P<pk>\d+)/edit/?$', EditCommercialOrderAPIView.as_view(),
+		name='edit_commercial_order'
 	),
 	re_path(
-		r'^commercial-orders/(?P<pk>\d+)/cancel/?$', CancelCommercialRequestAPIView.as_view(),
-		name='cancel_commercial_orders'
+		r'^commercial-orders/(?P<pk>\d+)/cancel/?$', CancelCommercialOrderAPIView.as_view(),
+		name='cancel_commercial_order'
 	),
 
 	re_path(r'^locations/?$', LocationsAPIView.as_view(), name='get_locations'),

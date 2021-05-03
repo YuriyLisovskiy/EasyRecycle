@@ -14,6 +14,7 @@ class DeactivateSelfAPITestCase(APIFactoryTestCase):
 		self.user = User.objects.get(username='User')
 		self.user_2 = User.objects.get(username='User2')
 		self.user_3 = User.objects.get(username='User3')
+		self.inactive_user = User.objects.get(username='Inactive')
 	
 	def test_DeactivateValid(self):
 		request = self.request_factory.put(reverse('api_v1:core:deactivate_self'), {
@@ -41,5 +42,13 @@ class DeactivateSelfAPITestCase(APIFactoryTestCase):
 	def test_DeactivateNoData(self):
 		request = self.request_factory.put(reverse('api_v1:core:deactivate_self'))
 		force_authenticate(request, self.user)
+		response = self.view(request)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+	def test_DeactivateInactive(self):
+		request = self.request_factory.put(reverse('api_v1:core:deactivate_self'), {
+			'password': '12345678'
+		})
+		force_authenticate(request, self.inactive_user)
 		response = self.view(request)
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.test import force_authenticate
 
 from core.models import UserModel
+from recycle import garbage
 from recycle.models import Location
 from recycle.views.location import ManageLocationAPIView
 from tests.unittests.common import APIFactoryTestCase
@@ -55,7 +56,8 @@ class ManageLocationAPIViewUpdateTestCase(APIFactoryTestCase):
 			'address': 'Hello St. 10',
 			'open_time': '11:00',
 			'close_time': '15:00',
-			'owner': self.gc_user.pk
+			'owner': UserModel.objects.get(username='GCUser2').id,
+			'garbage_types': [garbage.METAL, garbage.GLASS]
 		}
 		request = self.request_factory.put(reverse('api_v1:recycle:manage_location', args=[self.location.pk]), data=input_data)
 		force_authenticate(request, self.super_user)
@@ -67,6 +69,19 @@ class ManageLocationAPIViewUpdateTestCase(APIFactoryTestCase):
 		self.assertEqual(input_data['open_time'], actual_location['open_time'][:-3])
 		self.assertEqual(input_data['close_time'], actual_location['close_time'][:-3])
 		self.assertEqual(input_data['owner'], actual_location['owner'])
+
+	def test_UpdateLocation_InvalidGarbageType(self):
+		input_data = {
+			'address': 'Hello St. 10',
+			'open_time': '11:00',
+			'close_time': '15:00',
+			'owner': self.gc_user.pk,
+			'garbage_types': [garbage.METAL, 'Food']
+		}
+		request = self.request_factory.put(reverse('api_v1:recycle:manage_location', args=[self.location.pk]), data=input_data)
+		force_authenticate(request, self.super_user)
+		response = self.view(request, pk=self.location.pk)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 	def run_update_field(self, data):
 		request = self.request_factory.put(reverse('api_v1:recycle:manage_location', args=[self.location.pk]), data=data)

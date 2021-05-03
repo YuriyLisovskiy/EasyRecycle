@@ -227,7 +227,7 @@ class BecomeCommercialAPIView(APIView, UpdateUserModelMixin, APIViewValidationMi
 		if not user.check_password(validated_data['password']):
 			raise exceptions.ValidationError('Password is incorrect.')
 
-		if user.is_commercial:
+		if user.is_commercial is True:
 			raise exceptions.ValidationError('Account is already commercial')
 
 		user.is_commercial = True
