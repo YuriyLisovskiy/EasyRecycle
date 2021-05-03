@@ -1,52 +1,67 @@
 from django.db import models
 
 from core.models import UserModel
-from service import garbage
+from recycle import garbage
 
 
 class Location(models.Model):
 	address = models.CharField(max_length=350)
 	open_time = models.TimeField()
 	close_time = models.TimeField()
-	owner = models.ForeignKey(to=UserModel, on_delete=models.CASCADE)
+
+	# For commercial users.
+	price_per_kg = models.FloatField(default=0)
+
+	# Garbage collector.
+	owner = models.ForeignKey(to=UserModel, on_delete=models.CASCADE, related_name='locations')
 
 
-class Service(models.Model):
+class GarbageType(models.Model):
 	garbage_type = models.CharField(
 		max_length=2, choices=garbage.TYPE_CHOICES, default=garbage.ORGANIC
 	)
-	service_name = models.CharField(max_length=150)
-	price_per_kg = models.FloatField(default=0)
 	location = models.ForeignKey(to=Location, on_delete=models.CASCADE)
 
 
 class CommercialRequest(models.Model):
-	QUEUED = 'Q'
-	IN_PROGRESS = 'A'
+	QUEUED = 'A'
+	IN_PROGRESS = 'B'
+	REJECTED = 'C'
 	DONE = 'D'
 	STATUS_CHOICES = [
 		(QUEUED, 'Queued'),
 		(IN_PROGRESS, 'In Progress'),
+		(REJECTED, 'Rejected'),
 		(DONE, 'Done')
 	]
 
+	address = models.CharField(max_length=350)
 	date = models.DateField()
 	garbage_type = models.CharField(
 		max_length=2, choices=garbage.TYPE_CHOICES, default=garbage.ORGANIC
 	)
+	mass = models.FloatField()
 	status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=QUEUED)
-	service = models.ForeignKey(to=Service, on_delete=models.SET_NULL, null=True, blank=True)
+	location = models.ForeignKey(to=Location, on_delete=models.SET_NULL, null=True, blank=True)
+
+	# Commercial user
 	user = models.ForeignKey(to=UserModel, on_delete=models.SET_NULL, null=True, blank=True)
 
 
 class Transaction(models.Model):
+	datetime = models.DateTimeField(auto_now=True)
 	garbage_type = models.CharField(
 		max_length=2, choices=garbage.TYPE_CHOICES, default=garbage.ORGANIC
 	)
+	mass = models.FloatField(default=0.0)
 	points = models.IntegerField(default=0)
+
+	# Registered user
 	user = models.ForeignKey(
 		to=UserModel, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions'
 	)
+
+	# Garbage collector
 	collector = models.ForeignKey(
 		to=UserModel, on_delete=models.SET_NULL, null=True, blank=True, related_name='collections'
 	)

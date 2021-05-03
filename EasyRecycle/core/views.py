@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 from core.mixins import UpdateUserModelMixin, APIViewValidationMixin
 from core.models import UserModel
-from core.serializers.user_model import (
+from core.serializers import (
 	UserDetailsSerializer, EditSelfUserSerializer, EditSelfUserAvatarSerializer
 )
 from core.validators import RequiredValidator, PasswordValidator
@@ -29,13 +29,63 @@ from core.validators import RequiredValidator, PasswordValidator
 #       "is_superuser": <bool>,
 #       "is_banned": <bool>,
 #       "is_garbage_collector": <bool>,
-#       "show_full_name": <bool>,
-#       "show_rating": <bool>
+#       "is_commercial": <bool>,
+#       "show_full_name": <bool>
 #   }
 class UserDetailsAPIView(generics.RetrieveAPIView):
 	permission_classes = (permissions.AllowAny,)
 	queryset = UserModel.objects.all()
 	serializer_class = UserDetailsSerializer
+
+
+# /api/v1/core/users
+# methods:
+#   - get
+# returns (success status - 200):
+#   [
+#       {
+#           "id": <int>,
+#           "first_name": <string>,
+#           "last_name": <string>,
+#           "username": <string>,
+#           "email": <string>,
+#           "avatar_link": <string (full url)>,
+#           "rating": <int>,
+#           "is_superuser": <bool>,
+#           "is_banned": <bool>,
+#           "is_garbage_collector": <bool>,
+#           "is_commercial": <bool>,
+#           "show_full_name": <bool>
+#       },
+#       ...
+#   ]
+class UsersAPIView(generics.ListAPIView):
+	permission_classes = (permissions.IsAdminUser | permissions.IsAuthenticated,)
+	queryset = UserModel.objects.filter(is_active=True)
+	serializer_class = UserDetailsSerializer
+
+	def get_queryset(self):
+		gc_only = self.request.query_params.get('garbage_collectors', 'false').lower() == 'true'
+		qs = self.queryset
+		if gc_only:
+			qs = self.queryset.filter(is_garbage_collector=True)
+
+		sort_by = self.request.query_params.get('order_by', 'name')
+		if sort_by == 'name':
+			qs = qs.order_by('first_name', 'last_name', 'username')
+		elif sort_by == 'rating':
+			qs = qs.order_by('-rating')
+
+		return qs
+
+	def paginate_queryset(self, queryset):
+		try:
+			if int(self.request.query_params.get('page', '1')) == -1:
+				return None
+		except ValueError:
+			pass
+
+		return super().paginate_queryset(queryset)
 
 
 # /api/v1/core/users/self/edit
@@ -44,13 +94,11 @@ class UserDetailsAPIView(generics.RetrieveAPIView):
 #       - first_name: string
 #       - last_name: string
 #       - show_full_name: bool
-#       - show_rating: bool
 # returns (success status - 200):
 #   {
 #       "first_name": <string>,
 #       "last_name": <string>,
-#       "show_full_name": <bool>,
-#       "show_rating": <bool>
+#       "show_full_name": <bool>
 #   }
 class EditSelfAPIView(APIView, UpdateUserModelMixin):
 	serializer_class = EditSelfUserSerializer
@@ -158,6 +206,35 @@ class DeactivateSelfAPIView(APIView, UpdateUserModelMixin, APIViewValidationMixi
 		return Response(status=200)
 
 
+# /api/v1/core/users/self/become-commercial
+# methods:
+#   - put
+#       - password: string
+# returns (success status - 200):
+#   {}
+class BecomeCommercialAPIView(APIView, UpdateUserModelMixin, APIViewValidationMixin):
+	validators = (
+		RequiredValidator(fields=('password',)),
+	)
+
+	def put(self, request, *args, **kwargs):
+		result = self.validate_data(request)
+		if isinstance(result, exceptions.ValidationError):
+			raise result
+
+		validated_data = result
+		user = self.get_object()
+		if not user.check_password(validated_data['password']):
+			raise exceptions.ValidationError('Password is incorrect.')
+
+		if user.is_commercial is True:
+			raise exceptions.ValidationError('Account is already commercial')
+
+		user.is_commercial = True
+		user.save()
+		return Response(status=200)
+
+
 # /api/v1/core/users/self
 # methods:
 #   - get
@@ -171,7 +248,8 @@ class DeactivateSelfAPIView(APIView, UpdateUserModelMixin, APIViewValidationMixi
 #       "avatar_link": <string (full url)>,
 #       "rating": <int>,
 #       "is_superuser": <bool>,
-#       "is_garbage_collector": <bool>
+#       "is_garbage_collector": <bool>,
+#       "is_commercial": <bool>
 #   }
 class SelfUserAPIView(generics.RetrieveAPIView):
 	serializer_class = UserDetailsSerializer

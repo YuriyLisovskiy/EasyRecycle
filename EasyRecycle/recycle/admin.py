@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from service.models import Location, Service, CommercialRequest, Transaction
+from recycle.models import Location, GarbageType, CommercialRequest, Transaction
 
 admin.site.register(Location)
-admin.site.register(Service)
+admin.site.register(GarbageType)
 admin.site.register(CommercialRequest)
 admin.site.register(Transaction)
