@@ -17,7 +17,8 @@ export default class ChangeEmailComponent extends Component {
 		this.confirmEmailChangeRef = React.createRef();
 	}
 
-	_onChangeMakeFor = (field) => {
+	/* istanbul ignore next */
+	onChangeMakeFor = (field) => {
 		return e => {
 			let newState = {};
 			newState[field] = e.target.value;
@@ -26,25 +27,28 @@ export default class ChangeEmailComponent extends Component {
 		}
 	}
 
-	_onClickEmailDrawerToggle = () => {
+	/* istanbul ignore next */
+	onClickEmailDrawerToggle = () => {
 		let {newEmailDrawerIsOpen} = this.state;
 		this.setState({
 			newEmailDrawerIsOpen: !newEmailDrawerIsOpen
 		});
 	}
 
-	_onClickEmailSave = (_) => {
+	/* istanbul ignore next */
+	onClickEmailSave = (_) => {
 		if (!emailIsValid(this.state.newEmail)) {
 			this.setState({
 				newEmailError: 'Email field is empty or invalid.'
 			});
 		}
 		else {
-			this._onClickEmailDrawerToggle();
+			this.onClickEmailDrawerToggle();
 		}
 	}
 
-	_onClickConfirmEmailSaving = (_, password, finished) => {
+	/* istanbul ignore next */
+	onClickConfirmEmailSaving = (_, password, finished) => {
 		UserService.editEmail(
 			this.state.user.id,
 			this.state.newEmail,
@@ -73,19 +77,19 @@ export default class ChangeEmailComponent extends Component {
 			<PasswordVerificationComponent description="To change an email address you must verify this action by entering your current password."
 			                               ref={this.confirmEmailChangeRef}
 			                               open={this.state.newEmailDrawerIsOpen}
-			                               onRequestClose={this._onClickEmailDrawerToggle}
-			                               onClickConfirm={this._onClickConfirmEmailSaving}/>
+			                               onRequestClose={this.onClickEmailDrawerToggle}
+			                               onClickConfirm={this.onClickConfirmEmailSaving}/>
 			<div className="form-group">
 				<label htmlFor="email"><h6>Email address</h6></label>
 				<div className="input-group">
 					<input type="text" className="form-control" name="email"
 					       placeholder="Type email address..."
 					       value={this.state.newEmail}
-					       onChange={this._onChangeMakeFor('newEmail')}/>
+					       onChange={this.onChangeMakeFor('newEmail')}/>
 					<div className="input-group-append"
 					     title={emailIsSaved ? "Saved" : "Click to save an email address"}>
 						<button className={"btn btn-" + (emailIsSaved ? "success" : "warning")}
-						        onClick={this._onClickEmailSave}
+						        onClick={this.onClickEmailSave}
 						        disabled={emailIsSaved}>
 							<div className="d-inline">
 								<i className={"fa " + (emailIsSaved ? "fa-check-circle-o" : "fa-exclamation-triangle")}

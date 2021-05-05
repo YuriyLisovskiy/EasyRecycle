@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import App from '../App';
 
 test('renders title of app', () => {
     render(<App />);
@@ -16,5 +16,11 @@ test('renders login button', () => {
 test('renders sign up button', () => {
     render(<App />);
     const linkElement = screen.getByText(/SIGN UP/i);
+    expect(linkElement).toBeInTheDocument();
+});
+
+test('renders locations button', () => {
+    render(<App />);
+    const linkElement = screen.getByText(/LOCATIONS/i);
     expect(linkElement).toBeInTheDocument();
 });

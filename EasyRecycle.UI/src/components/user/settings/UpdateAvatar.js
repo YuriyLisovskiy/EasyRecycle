@@ -16,7 +16,8 @@ export default class UpdateAvatarComponent extends Component {
 		};
 	}
 
-	_onChangeValue = (e) => {
+	/* istanbul ignore next */
+	onChangeValue = (e) => {
 		if (e.target.files.length > 0) {
 			let file = e.target.files[0];
 			this.setState({
@@ -28,7 +29,8 @@ export default class UpdateAvatarComponent extends Component {
 		}
 	}
 
-	_onClickSave = (_) => {
+	/* istanbul ignore next */
+	onClickSave = (_) => {
 		if (!this.state.isSaved) {
 			UserService.updateAvatar(this.state.user.id, this.state.selectedFile, (data, err) => {
 				if (err) {
@@ -59,11 +61,11 @@ export default class UpdateAvatarComponent extends Component {
 					<label htmlFor="email"><h6>Avatar</h6></label>
 					<div className="input-group">
 						<input type="file" className="form-control" name="avatar"
-						       onChange={this._onChangeValue}/>
+						       onChange={this.onChangeValue}/>
 						<div className="input-group-append"
 						     title={this.state.isSaved ? "Saved" : "Click to save"}>
 							<button className={"btn btn-" + (this.state.isSaved ? "success" : "warning")}
-							        onClick={this._onClickSave}
+							        onClick={this.onClickSave}
 							        disabled={this.state.isSaved}>
 								<div className="d-inline">
 									<i className={"fa " + (

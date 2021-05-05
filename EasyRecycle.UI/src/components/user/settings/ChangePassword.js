@@ -20,7 +20,8 @@ export default class ChangePasswordComponent extends Component {
 		};
 	}
 
-	_onChangeMakeFor = (field, validationFunc) => {
+	/* istanbul ignore next */
+	onChangeMakeFor = (field, validationFunc) => {
 		return e => {
 			let state = {};
 			let text = e.target.value;
@@ -31,19 +32,8 @@ export default class ChangePasswordComponent extends Component {
 		}
 	}
 
-	// _getFieldError = (name, field, res) => {
-	// 	if (strIsEmpty(field)) {
-	// 		if (res === null) {
-	// 			res = {};
-	// 		}
-	//
-	// 		res[name + 'Error'] = "This field is required.";
-	// 	}
-	//
-	// 	return res;
-	// }
-
-	_getFieldError = (name, getErrorFunc, res) => {
+	/* istanbul ignore next */
+	getFieldError = (name, getErrorFunc, res) => {
 		let errMessage = getErrorFunc();
 		if (errMessage) {
 			if (res === null) {
@@ -59,23 +49,25 @@ export default class ChangePasswordComponent extends Component {
 		return res;
 	}
 
-	_getNewPasswordError = (newPassword, res) => {
-		res = this._getFieldError(
+	/* istanbul ignore next */
+	getNewPasswordError = (newPassword, res) => {
+		res = this.getFieldError(
 			'newPassword', _ => requiredFieldError(this.state.newPassword), res
 		);
-		res = this._getFieldError(
+		res = this.getFieldError(
 			'newPassword', _ => checkPassword(this.state.newPassword), res
 		);
 		return res;
 	}
 
-	_getPasswordsErrors = () => {
+	/* istanbul ignore next */
+	getPasswordsErrors = () => {
 		let res = null;
-		res = this._getFieldError(
+		res = this.getFieldError(
 			'oldPassword', _ => requiredFieldError(this.state.oldPassword), res
 		);
-		res = this._getNewPasswordError(this.state.newPassword, res);
-		res = this._getFieldError(
+		res = this.getNewPasswordError(this.state.newPassword, res);
+		res = this.getFieldError(
 			'newPasswordRepeat', _ => {
 				return this.state.newPasswordRepeat !== this.state.newPassword ? (
 					'Passwords do not match.'
@@ -85,7 +77,8 @@ export default class ChangePasswordComponent extends Component {
 		return res;
 	}
 
-	_clearFieldsAndCloseDrawer = () => {
+	/* istanbul ignore next */
+	clearFieldsAndCloseDrawer = () => {
 		this.setState({
 			oldPassword: "",
 			oldPasswordError: undefined,
@@ -99,7 +92,8 @@ export default class ChangePasswordComponent extends Component {
 		});
 	}
 
-	_setPasswordsError = (password, passwordRepeat) => {
+	/* istanbul ignore next */
+	setPasswordsError = (password, passwordRepeat) => {
 		if (password !== passwordRepeat) {
 			this.setState({
 				newPasswordRepeatError: 'Passwords do not match.'
@@ -107,24 +101,28 @@ export default class ChangePasswordComponent extends Component {
 		}
 	}
 
-	_onChangeNewPassword = (e) => {
-		this._setPasswordsError(
-			this._onChangeMakeFor('newPassword', checkPassword)(e), this.state.newPasswordRepeat
+	/* istanbul ignore next */
+	onChangeNewPassword = (e) => {
+		this.setPasswordsError(
+			this.onChangeMakeFor('newPassword', checkPassword)(e), this.state.newPasswordRepeat
 		);
 	}
 
-	_onChangeNewPasswordRepeat = (e) => {
-		this._setPasswordsError(
-			this.state.newPassword, this._onChangeMakeFor('newPasswordRepeat')(e)
+	/* istanbul ignore next */
+	onChangeNewPasswordRepeat = (e) => {
+		this.setPasswordsError(
+			this.state.newPassword, this.onChangeMakeFor('newPasswordRepeat')(e)
 		);
 	}
 
-	_onClickCancel = (_) => {
-		this._clearFieldsAndCloseDrawer();
+	/* istanbul ignore next */
+	onClickCancel = (_) => {
+		this.clearFieldsAndCloseDrawer();
 	}
 
-	_onClickConfirm = (_) => {
-		let errors = this._getPasswordsErrors();
+	/* istanbul ignore next */
+	onClickConfirm = (_) => {
+		let errors = this.getPasswordsErrors();
 		if (!errors) {
 			this.setState({
 				loading: true
@@ -141,7 +139,7 @@ export default class ChangePasswordComponent extends Component {
 						});
 					}
 					else {
-						this._clearFieldsAndCloseDrawer();
+						this.clearFieldsAndCloseDrawer();
 					}
 				}
 			);
@@ -151,7 +149,8 @@ export default class ChangePasswordComponent extends Component {
 		}
 	}
 
-	_onClickDrawerToggle = () => {
+	/* istanbul ignore next */
+	onClickDrawerToggle = () => {
 		let {drawerIsOpen} = this.state;
 		this.setState({
 			drawerIsOpen: !drawerIsOpen
@@ -167,13 +166,13 @@ export default class ChangePasswordComponent extends Component {
 				</small>
 			</div>
 			<div className="col-4 text-right">
-				<button className="btn btn-outline-success" onClick={this._onClickDrawerToggle}>
+				<button className="btn btn-outline-success" onClick={this.onClickDrawerToggle}>
 					Change
 				</button>
 			</div>
 			<DrawerComponent title="UPDATE YOUR PASSWORD"
 			                 open={this.state.drawerIsOpen}
-			                 onRequestClose={this._onClickDrawerToggle}
+			                 onRequestClose={this.onClickDrawerToggle}
 			                 modalElementClass="container w-30 min-w-300">
 				{
 					this.state.errorMessage &&
@@ -188,7 +187,7 @@ export default class ChangePasswordComponent extends Component {
 						Old password <span className="text-danger">*</span>
 					</label>
 					<input type="password" name="old-password" className="form-control"
-					       placeholder="Type text..." onChange={this._onChangeMakeFor('oldPassword')}/>
+					       placeholder="Type text..." onChange={this.onChangeMakeFor('oldPassword')}/>
 					{
 						this.state.oldPasswordError &&
 						<small className="form-text text-danger ml-1 mt-1">
@@ -201,7 +200,7 @@ export default class ChangePasswordComponent extends Component {
 						New password <span className="text-danger">*</span>
 					</label>
 					<input type="password" name="new-password" className="form-control"
-					       placeholder="Type text..." onChange={this._onChangeNewPassword}/>
+					       placeholder="Type text..." onChange={this.onChangeNewPassword}/>
 					{
 						this.state.newPasswordError &&
 						<small className="form-text text-danger ml-1 mt-1">
@@ -214,7 +213,7 @@ export default class ChangePasswordComponent extends Component {
 						Confirm new password <span className="text-danger">*</span>
 					</label>
 					<input type="password" name="new-password-repeat" className="form-control"
-					       placeholder="Type text..." onChange={this._onChangeNewPasswordRepeat}/>
+					       placeholder="Type text..." onChange={this.onChangeNewPasswordRepeat}/>
 					{
 						this.state.newPasswordRepeatError &&
 						<small className="form-text text-danger ml-1 mt-1">
@@ -224,9 +223,9 @@ export default class ChangePasswordComponent extends Component {
 				</div>
 				<div className="text-right">
 					<button className="btn btn-outline-danger d-inline"
-					        onClick={this._onClickCancel}>Cancel</button>
+					        onClick={this.onClickCancel}>Cancel</button>
 					<button className="btn btn-primary d-inline ml-1"
-					        onClick={this._onClickConfirm}
+					        onClick={this.onClickConfirm}
 					        disabled={this.state.loading}>
 						{
 							this.state.loading &&

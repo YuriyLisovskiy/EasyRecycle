@@ -11,6 +11,8 @@
     "dotenv": "^8.2.0",
     "history": "^5.0.0",
     "prop-types": "^15.7.2",
+    "qrcode.react": "^1.0.1",
+    "query-string": "^4.3.4",
     "react": "^17.0.1",
     "react-app-env": "^1.2.3",
     "react-bootstrap": "^1.4.0",
@@ -54,12 +56,24 @@
     ]
   },
   "devDependencies": {
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.1",
+    "enzyme": "^3.11.0",
     "redux-devtools-extension": "^2.13.8"
   },
   "jest": {
     "coverageReporters": [
       "text",
       "cobertura"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!/node_modules/",
+      "!src/index.js",
+      "!src/reportWebVitals.js",
+      "!src/setupTests.js",
+      "!src/services/*",
+      "!src/utils/*",
+      "!src/components/Footer.js"
     ]
   }
 }

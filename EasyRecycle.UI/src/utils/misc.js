@@ -71,3 +71,34 @@ export const roundFloat = (val, precision) => {
 
 	return Math.round(val * number + Number.EPSILON) / number;
 }
+
+export const GarbageTypes = [
+	{
+		src: '/organic-waste-bin.png',
+		value: 'OR'
+	},
+	{
+		src: '/glass-waste-bin.png',
+		value: 'GL'
+	},
+	{
+		src: '/metal-waste-bin.png',
+		value: 'ME'
+	},
+	{
+		src: '/paper-waste-bin.png',
+		value: 'PA'
+	},
+	{
+		src: '/plastic-waste-bin.png',
+		value: 'PL'
+	}
+];
+
+export const GarbageTypeToIcon = {
+	"OR": "/organic-waste-bin.png",
+	"GL": "/glass-waste-bin.png",
+	"ME": "/metal-waste-bin.png",
+	"PA": "/paper-waste-bin.png",
+	"PL": "/plastic-waste-bin.png",
+};

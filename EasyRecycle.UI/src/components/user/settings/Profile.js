@@ -15,7 +15,8 @@ export default class ProfileSettingsComponent extends Component {
 		};
 	}
 
-	_validateInput = (text, title) => {
+	/* istanbul ignore next */
+	validateInput = (text, title) => {
 		if (strIsEmpty(text)) {
 			return 'Field must not be empty.';
 		}
@@ -27,22 +28,23 @@ export default class ProfileSettingsComponent extends Component {
 		return null;
 	}
 
-	_validateFirstName = (text) => {
-		return this._validateInput(text, 'First name');
+	/* istanbul ignore next */
+	validateFirstName = (text) => {
+		return this.validateInput(text, 'First name');
 	}
 
-	_validateLastName = (text) => {
-		return this._validateInput(text, 'Last name');
+	/* istanbul ignore next */
+	validateLastName = (text) => {
+		return this.validateInput(text, 'Last name');
 	}
 
-	_makeSaveHandler = (text, handler, field) => {
+	/* istanbul ignore next */
+	makeSaveHandler = (text, handler, field) => {
 		return (data, err) => {
 			if (err) {
 				handler(getErrorMessage(err));
 			}
 			else {
-				console.log('profile: updated');
-
 				let user = this.state.user;
 				user[field] = text;
 				UserService._setCurrentUser(user);
@@ -60,15 +62,17 @@ export default class ProfileSettingsComponent extends Component {
 		}
 	}
 
-	_onClickSaveFirstName = (text, handler) => {
+	/* istanbul ignore next */
+	onClickSaveFirstName = (text, handler) => {
 		UserService.editUser(
-			this.state.user.id, text, null, null, null, this._makeSaveHandler(text, handler, 'first_name')
+			this.state.user.id, text, null, null, null, this.makeSaveHandler(text, handler, 'first_name')
 		);
 	}
 
-	_onClickSaveLastName = (text, handler) => {
+	/* istanbul ignore next */
+	onClickSaveLastName = (text, handler) => {
 		UserService.editUser(
-			this.state.user.id, null, text, null, null, this._makeSaveHandler(text, handler, 'last_name')
+			this.state.user.id, null, text, null, null, this.makeSaveHandler(text, handler, 'last_name')
 		);
 	}
 
@@ -82,15 +86,15 @@ export default class ProfileSettingsComponent extends Component {
 					<SettingInputComponent initialValue={this.state.user.first_name}
 					                       title="First name"
 					                       name="first-name"
-					                       validateInput={this._validateFirstName}
-					                       onSave={this._onClickSaveFirstName}/>
+					                       validateInput={this.validateFirstName}
+					                       onSave={this.onClickSaveFirstName}/>
 				</div>
 				<div className="col-12">
 					<SettingInputComponent initialValue={this.state.user.last_name}
 					                       title="Last name"
 					                       name="last-name"
-					                       validateInput={this._validateLastName}
-					                       onSave={this._onClickSaveLastName}/>
+					                       validateInput={this.validateLastName}
+					                       onSave={this.onClickSaveLastName}/>
 				</div>
 			</div>
 			<div className="row mt-4">

@@ -13,7 +13,8 @@ export default class SettingInputComponent extends Component {
 		};
 	}
 
-	_onChangeValue = (e) => {
+	/* istanbul ignore next */
+	onChangeValue = (e) => {
 		let text = e.target.value.trim();
 		this.setState({
 			value: text,
@@ -22,7 +23,8 @@ export default class SettingInputComponent extends Component {
 		});
 	}
 
-	_onClickSave = (_) => {
+	/* istanbul ignore next */
+	onClickSave = (_) => {
 		if (!this.state.isSaved) {
 			let hasError = false;
 			if (this.props.validateInput) {
@@ -61,11 +63,11 @@ export default class SettingInputComponent extends Component {
 				<input type="text" className="form-control" name={this.props.name}
 				       placeholder="Type text..."
 				       value={this.state.value}
-				       onChange={this._onChangeValue}/>
+				       onChange={this.onChangeValue}/>
 				<div className="input-group-append"
 				     title={this.state.isSaved ? "Saved" : "Click to save"}>
 					<button className={"btn btn-" + (this.state.isSaved ? "success" : "warning")}
-					        onClick={this._onClickSave}
+					        onClick={this.onClickSave}
 					        disabled={this.state.isSaved}>
 						<div className="d-inline">
 							<i className={"fa " + (

@@ -21,13 +21,53 @@ class UserService extends BaseService {
 	//    "is_superuser": <bool>,
 	//    "is_banned": <bool>,
 	//    "is_garbage_collector": <bool>,
+	//    "is_commercial": <bool>,
 	//    "rating": <int>,
-	//    "show_full_name": <bool>,
-	//    "show_rating": <bool>
+	//    "show_full_name": <bool>
 	//  }
 	getUser = (id, handler) => {
 		return this.get({
 			url: this._URL_USERS + '/' + id.toString()
+		}, handler);
+	}
+
+	// returns:
+	//  [
+	//    {
+	//      "id": <int>,
+	//      "first_name": <string>,
+	//      "last_name": <string>,
+	//      "username": <string>,
+	//      "email": <string>,
+	//      "avatar_link": <string (full url)>,
+	//      "is_superuser": <bool>,
+	//      "is_banned": <bool>,
+	//      "is_garbage_collector": <bool>,
+	//      "is_commercial": <bool>,
+	//      "rating": <int>,
+	//      "show_full_name": <bool>
+	//    },
+	//    ...
+	//  ]
+	getUsers = (garbage_collectors, page, order_by, handler) => {
+		let query = [];
+		if (garbage_collectors === true)
+		{
+			query.push("garbage_collectors=true");
+		}
+
+		if (page)
+		{
+			query.push("page=" + page.toString());
+		}
+
+		if (order_by)
+		{
+			query.push('order_by=' + order_by);
+		}
+
+		return this.get({
+			url: this._URL_USERS + (query.length > 0 ? ("?" + query.join('&')) : "")
 		}, handler);
 	}
 
@@ -41,9 +81,9 @@ class UserService extends BaseService {
 	//    "avatar_link": <string (full url)>,
 	//    "is_superuser": <bool>,
 	//    "is_garbage_collector": <bool>,
+	//    "is_commercial": <bool>,
 	//    "rating": <int>,
-	//    "show_full_name": <bool>,
-	//    "show_rating": <bool>
+	//    "show_full_name": <bool>
 	//  }
 	getMe = (handler) => {
 		return this.get({url: this._URL_SELF}, handler);
@@ -54,8 +94,7 @@ class UserService extends BaseService {
 	//    "first_name": <string>,
 	//    "last_name": <string>,
 	//    "avatar_link": <string> (full url),
-	//    "show_full_name": <bool>,
-	//    "show_rating": <bool>
+	//    "show_full_name": <bool>
 	//  }
 	editUser = (id, firstName, lastName, showFullName, showRating, handler) => {
 		let data = {};
@@ -126,6 +165,15 @@ class UserService extends BaseService {
 	deactivateMe = (id, password, handler) => {
 		this.put({
 			url: this._URL_SELF + '/deactivate',
+			data: {
+				password: password
+			}
+		}, handler);
+	}
+
+	becomeCommercial = (id, password, handler) => {
+		this.put({
+			url: this._URL_SELF + '/become-commercial',
 			data: {
 				password: password
 			}

@@ -19,7 +19,8 @@ export default class LoginComponent extends Component {
 		};
 	}
 
-	_getFieldsError = (username, password) => {
+	/* istanbul ignore next */
+	getFieldsError = (username, password) => {
 		let res = null;
 		if (strIsEmpty(username)) {
 			res = {
@@ -38,7 +39,8 @@ export default class LoginComponent extends Component {
 		return res;
 	}
 
-	_onChangeMakeFor = (field) => {
+	/* istanbul ignore next */
+	onChangeMakeFor = (field) => {
 		return e => {
 			let newState = {};
 			newState[field] = e.target.value;
@@ -47,12 +49,13 @@ export default class LoginComponent extends Component {
 		}
 	}
 
-	_onClickLogin = (_) => {
+	/* istanbul ignore next */
+	onClickLogin = (_) => {
 		this.setState({
 			loginError: undefined,
 			loading: true
 		});
-		let fieldsError = this._getFieldsError(this.state.username, this.state.password);
+		let fieldsError = this.getFieldsError(this.state.username, this.state.password);
 		if (!fieldsError) {
 			AuthService.login(this.state.username, this.state.password, (data, err) => {
 				if (err) {
@@ -73,9 +76,10 @@ export default class LoginComponent extends Component {
 		}
 	}
 
-	_onKeyDownLogin = (e) => {
+	/* istanbul ignore next */
+	onKeyDownLogin = (e) => {
 		if (e.key.toLowerCase() === 'enter') {
-			this._onClickLogin(e);
+			this.onClickLogin(e);
 		}
 	}
 
@@ -102,9 +106,9 @@ export default class LoginComponent extends Component {
 								className="form-control"
 								name="username"
 								value={this.state.username}
-								onChange={this._onChangeMakeFor('username')}
+								onChange={this.onChangeMakeFor('username')}
 								placeholder="Type text..."
-								onKeyDown={this._onKeyDownLogin}
+								onKeyDown={this.onKeyDownLogin}
 							/>
 							{
 								this.state.usernameError && <small className="form-text text-danger ml-1 mt-1">
@@ -119,9 +123,9 @@ export default class LoginComponent extends Component {
 								className="form-control"
 								name="password"
 								value={this.state.password}
-								onChange={this._onChangeMakeFor('password')}
+								onChange={this.onChangeMakeFor('password')}
 								placeholder="Type text..."
-								onKeyDown={this._onKeyDownLogin}
+								onKeyDown={this.onKeyDownLogin}
 							/>
 							{
 								this.state.passwordError && <small className="form-text text-danger ml-1 mt-1">
@@ -131,8 +135,8 @@ export default class LoginComponent extends Component {
 						</div>
 						<div className="form-group">
 							<button
-								className="btn btn-primary btn-block"
-								onClick={this._onClickLogin}
+								className="btn btn-success btn-block"
+								onClick={this.onClickLogin}
 								disabled={this.state.loading}>
 								{
 									this.state.loading &&

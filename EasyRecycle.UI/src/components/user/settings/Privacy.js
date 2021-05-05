@@ -6,7 +6,8 @@ import UserService from "../../../services/user";
 
 export default class PrivacySettingsComponent extends Component {
 
-	_onToggleShowFullName = (value, handler) => {
+	/* istanbul ignore next */
+	onToggleShowFullName = (value, handler) => {
 		UserService.editUser(
 			this.props.user.id, null, null, value, null, (data, err) => {
 				if (!err) {
@@ -14,22 +15,6 @@ export default class PrivacySettingsComponent extends Component {
 					user.show_full_name = data.show_full_name;
 					UserService._setCurrentUser(user);
 					handler(data.show_full_name);
-				}
-				else {
-					handler(!value);
-				}
-			}
-		);
-	}
-
-	_onToggleShowRating = (value, handler) => {
-		UserService.editUser(
-			this.props.user.id, null, null, null, value, (data, err) => {
-				if (!err) {
-					let user = this.props.user;
-					user.show_rating = data.show_rating;
-					UserService._setCurrentUser(user);
-					handler(data.show_rating);
 				}
 				else {
 					handler(!value);
@@ -48,13 +33,7 @@ export default class PrivacySettingsComponent extends Component {
 					<ToggleSettingComponent title="Show full name"
 					                        subtitle="Display first and last name on your account page."
 					                        initialValue={this.props.user.show_full_name}
-					                        onToggle={this._onToggleShowFullName}/>
-				</div>
-				<div className="col-12 mt-3">
-					<ToggleSettingComponent title="Show rating"
-					                        subtitle="Display rating on your account page."
-					                        initialValue={this.props.user.show_rating}
-					                        onToggle={this._onToggleShowRating}/>
+					                        onToggle={this.onToggleShowFullName}/>
 				</div>
 			</div>
 		</div>;
