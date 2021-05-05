@@ -17,15 +17,15 @@ jobs:
     - name: Setup Secrets
       run: |
         cd EasyRecycle/ && \
-        heroku config:set DJANGO_SECRET_ADMIN_URL=${{ secrets.DJANGO_SECRET_ADMIN_URL }} -a ${{ secrets.HEROKU_APP }} && \
-        heroku config:set DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} -a ${{ secrets.HEROKU_APP }} && \
-        heroku config:set DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} -a ${{ secrets.HEROKU_APP }} && \
-        heroku config:set DJANGO_DEBUG=${{ secrets.DJANGO_DEBUG }} -a ${{ secrets.HEROKU_APP }} && \
-        heroku config:set DATABASE_HOST=${{ secrets.DATABASE_HOST }} -a ${{ secrets.HEROKU_APP }} && \
-        heroku config:set DATABASE_NAME=${{ secrets.DATABASE_NAME }} -a ${{ secrets.HEROKU_APP }} && \
-        heroku config:set DATABASE_USER=${{ secrets.DATABASE_USER }} -a ${{ secrets.HEROKU_APP }} && \
-        heroku config:set DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} -a ${{ secrets.HEROKU_APP }} && \
-        heroku config:set CORS_ORIGIN_WHITELIST=${{ secrets.CORS_ORIGIN_WHITELIST }} -a ${{ secrets.HEROKU_APP }}
+        heroku config:set DJANGO_SECRET_ADMIN_URL=${{ secrets.DJANGO_SECRET_ADMIN_URL }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set DJANGO_DEBUG=${{ secrets.DJANGO_DEBUG }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set DATABASE_HOST=${{ secrets.DJANGO_DATABASE_HOST }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set DATABASE_NAME=${{ secrets.DJANGO_DATABASE_NAME }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set DATABASE_USER=${{ secrets.DJANGO_DATABASE_USER }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set DATABASE_PASSWORD=${{ secrets.DJANGO_DATABASE_PASSWORD }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set CORS_ORIGIN_WHITELIST=${{ secrets.DJANGO_CORS_ORIGIN_WHITELIST }} -a ${{ secrets.API_HEROKU_APP }}
     - name: Generate Local Settings
       run: |
         mv EasyRecycle/EasyRecycle/production_settings.py EasyRecycle/EasyRecycle/local_settings.py && \
@@ -37,15 +37,15 @@ jobs:
       run: |
         cd EasyRecycle/ && \
         heroku container:login && \
-        heroku run python manage.py makemigrations -a ${{ secrets.HEROKU_APP }} && \
-        heroku run python manage.py migrate -a ${{ secrets.HEROKU_APP }}
+        heroku run python manage.py makemigrations -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku run python manage.py migrate -a ${{ secrets.API_HEROKU_APP }}
     - name: Build and Deploy the Image
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
         cd EasyRecycle/ && \
         heroku container:login && \
-        docker build -t registry.heroku.com/${{ secrets.HEROKU_APP }}/web . && \
-        docker push registry.heroku.com/${{ secrets.HEROKU_APP }}/web && \
-        heroku container:release -a ${{ secrets.HEROKU_APP }} web
+        docker build -t registry.heroku.com/${{ secrets.API_HEROKU_APP }}/web . && \
+        docker push registry.heroku.com/${{ secrets.API_HEROKU_APP }}/web && \
+        heroku container:release -a ${{ secrets.API_HEROKU_APP }} web
 
