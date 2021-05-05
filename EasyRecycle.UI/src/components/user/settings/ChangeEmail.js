@@ -17,6 +17,7 @@ export default class ChangeEmailComponent extends Component {
 		this.confirmEmailChangeRef = React.createRef();
 	}
 
+	/* istanbul ignore next */
 	onChangeMakeFor = (field) => {
 		return e => {
 			let newState = {};
@@ -26,6 +27,7 @@ export default class ChangeEmailComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	onClickEmailDrawerToggle = () => {
 		let {newEmailDrawerIsOpen} = this.state;
 		this.setState({
@@ -33,6 +35,7 @@ export default class ChangeEmailComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	onClickEmailSave = (_) => {
 		if (!emailIsValid(this.state.newEmail)) {
 			this.setState({
@@ -44,6 +47,7 @@ export default class ChangeEmailComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	onClickConfirmEmailSaving = (_, password, finished) => {
 		UserService.editEmail(
 			this.state.user.id,

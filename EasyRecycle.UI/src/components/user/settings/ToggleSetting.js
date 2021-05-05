@@ -3,6 +3,8 @@ import Switch from "react-input-switch";
 
 export default function ToggleSetting(props) {
 	const [value, setValue] = useState(props.initialValue);
+
+	/* istanbul ignore next */
 	let onClickSetValue = (val) => {
 		setValue(val);
 		props.onToggle(val, (result) => {

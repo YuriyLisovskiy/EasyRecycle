@@ -20,6 +20,7 @@ export default class ChangePasswordComponent extends Component {
 		};
 	}
 
+	/* istanbul ignore next */
 	onChangeMakeFor = (field, validationFunc) => {
 		return e => {
 			let state = {};
@@ -31,6 +32,7 @@ export default class ChangePasswordComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	getFieldError = (name, getErrorFunc, res) => {
 		let errMessage = getErrorFunc();
 		if (errMessage) {
@@ -47,6 +49,7 @@ export default class ChangePasswordComponent extends Component {
 		return res;
 	}
 
+	/* istanbul ignore next */
 	getNewPasswordError = (newPassword, res) => {
 		res = this.getFieldError(
 			'newPassword', _ => requiredFieldError(this.state.newPassword), res
@@ -57,6 +60,7 @@ export default class ChangePasswordComponent extends Component {
 		return res;
 	}
 
+	/* istanbul ignore next */
 	getPasswordsErrors = () => {
 		let res = null;
 		res = this.getFieldError(
@@ -73,6 +77,7 @@ export default class ChangePasswordComponent extends Component {
 		return res;
 	}
 
+	/* istanbul ignore next */
 	clearFieldsAndCloseDrawer = () => {
 		this.setState({
 			oldPassword: "",
@@ -87,6 +92,7 @@ export default class ChangePasswordComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	setPasswordsError = (password, passwordRepeat) => {
 		if (password !== passwordRepeat) {
 			this.setState({
@@ -95,22 +101,26 @@ export default class ChangePasswordComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	onChangeNewPassword = (e) => {
 		this.setPasswordsError(
 			this.onChangeMakeFor('newPassword', checkPassword)(e), this.state.newPasswordRepeat
 		);
 	}
 
+	/* istanbul ignore next */
 	onChangeNewPasswordRepeat = (e) => {
 		this.setPasswordsError(
 			this.state.newPassword, this.onChangeMakeFor('newPasswordRepeat')(e)
 		);
 	}
 
+	/* istanbul ignore next */
 	onClickCancel = (_) => {
 		this.clearFieldsAndCloseDrawer();
 	}
 
+	/* istanbul ignore next */
 	onClickConfirm = (_) => {
 		let errors = this.getPasswordsErrors();
 		if (!errors) {
@@ -139,6 +149,7 @@ export default class ChangePasswordComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	onClickDrawerToggle = () => {
 		let {drawerIsOpen} = this.state;
 		this.setState({

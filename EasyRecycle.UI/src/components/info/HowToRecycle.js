@@ -213,10 +213,10 @@ export default class HowToRecycleComponent extends Component {
 			<small className="text-muted">{content.footer}</small>
 		</div>;
 		if (placeImgLeft) {
-			return <div className="row my-3">{imageDiv}{textDiv}</div>;
+			return <div className="row my-3" key={content.id}>{imageDiv}{textDiv}</div>;
 		}
 
-		return <div className="row my-3" id={content.id}>{textDiv}{imageDiv}</div>;
+		return <div className="row my-3" key={content.id}>{textDiv}{imageDiv}</div>;
 	}
 
 	render () {

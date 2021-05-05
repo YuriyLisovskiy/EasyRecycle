@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import CommercialOrderService from "../../services/commercial_order";
 import SpinnerComponent from "../Spinner";
 import {GarbageTypeToIcon} from "../../utils/misc";
 
@@ -7,6 +6,7 @@ export default class CommercialOrdersComponent extends Component {
 
 	constructor(props) {
 		super(props);
+		this.commercialOrderService = this.props.commercialOrderService;
 		this.state = {
 			loading: true,
 			orders: undefined,
@@ -28,17 +28,19 @@ export default class CommercialOrdersComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	componentDidMount() {
 		this.loadOrders();
 	}
 
+	/* istanbul ignore next */
 	handleStatusChanged = (order) => {
 		return (e) => {
 			let newStatus = e.target.value;
 			this.setState({
 				changeStatusLoading: true
 			})
-			CommercialOrderService.editOrder({
+			this.commercialOrderService.editOrder({
 				id: order.id,
 				status: newStatus,
 				handler: (data, err) => {
@@ -62,9 +64,10 @@ export default class CommercialOrdersComponent extends Component {
 		};
 	}
 
+	/* istanbul ignore next */
 	loadOrders = () => {
 		this.setState({nextPageLoading: true});
-		CommercialOrderService.getOrders({
+		this.commercialOrderService.getOrders({
 			locationFilter: true,
 			orderByStatus: true,
 			page: this.state.nextPage,

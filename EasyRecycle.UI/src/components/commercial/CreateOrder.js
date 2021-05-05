@@ -26,11 +26,13 @@ export default class CreateCommercialOrderComponent extends Component {
 		};
 	}
 
+	/* istanbul ignore next */
 	componentDidMount() {
 		let params = queryString.parse(this.props.location.search);
 		if (!params.location)
 		{
 			this.setState({locationError: 'Unable to load location :('});
+			return;
 		}
 
 		LocationService.getLocation(params.location, (data, err) => {
@@ -51,6 +53,7 @@ export default class CreateCommercialOrderComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	handleCreate = _ => {
 		let order = this.state.order;
 		let newState = {};
@@ -97,6 +100,7 @@ export default class CreateCommercialOrderComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	handleAddressChange = e => {
 		let order = this.state.order;
 		order.address = e.target.value;
@@ -106,6 +110,7 @@ export default class CreateCommercialOrderComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	handleDateChange = e => {
 		let order = this.state.order;
 		order.date = e.target.value;
@@ -115,6 +120,7 @@ export default class CreateCommercialOrderComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	handleGarbageTypeChange = e => {
 		let order = this.state.order;
 		order.garbageType = e.target.value;
@@ -124,6 +130,7 @@ export default class CreateCommercialOrderComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	handleMassChange = e => {
 		let order = this.state.order;
 		order.mass = e.target.value;

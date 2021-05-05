@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 
+/* istanbul ignore next */
 class ErrorComponent extends Component {
 	render() {
 		return <div className="w-100">
@@ -9,12 +10,14 @@ class ErrorComponent extends Component {
 	}
 }
 
+/* istanbul ignore next */
 class NotFound extends Component {
 	render() {
 		return <ErrorComponent code={404} message={'This page does not exist'}/>
 	}
 }
 
+/* istanbul ignore next */
 class Forbidden extends Component {
 	render() {
 		return <ErrorComponent code={403} message={'Permission to this page is restricted'}/>

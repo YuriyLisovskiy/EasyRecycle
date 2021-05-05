@@ -56,6 +56,8 @@
     ]
   },
   "devDependencies": {
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.1",
+    "enzyme": "^3.11.0",
     "redux-devtools-extension": "^2.13.8"
   },
   "jest": {
@@ -67,7 +69,11 @@
       "src/**/*.{js,jsx}",
       "!/node_modules/",
       "!src/index.js",
-      "!src/reportWebVitals.js"
+      "!src/reportWebVitals.js",
+      "!src/setupTests.js",
+      "!src/services/*",
+      "!src/utils/*",
+      "!src/components/Footer.js"
     ]
   }
 }

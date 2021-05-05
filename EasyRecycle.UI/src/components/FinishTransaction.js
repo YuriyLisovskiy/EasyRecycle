@@ -25,6 +25,7 @@ export default class FinishTransactionComponent extends Component {
 		};
 	}
 
+	/* istanbul ignore next */
 	componentDidMount() {
 		UserService.getUser(this.props.match.params.id, (data, err) => {
 			if (err) {
@@ -39,6 +40,7 @@ export default class FinishTransactionComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	calculatePoints = (garbageType, mass) => {
 		let result = mass;
 		switch (garbageType) {
@@ -62,6 +64,7 @@ export default class FinishTransactionComponent extends Component {
 		return result;
 	}
 
+	/* istanbul ignore next */
 	handleConfirm = () => {
 		let transaction = this.state.transaction;
 		let newState = {};
@@ -100,10 +103,12 @@ export default class FinishTransactionComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	handleDiscard = () => {
 		this.setState({discarded: true});
 	}
 
+	/* istanbul ignore next */
 	handleMassChange = e => {
 		let transaction = this.state.transaction;
 		transaction.mass = e.target.value;
@@ -121,6 +126,7 @@ export default class FinishTransactionComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	handleGarbageTypeChange = e => {
 		let transaction = this.state.transaction;
 		transaction.garbageType = e.target.value;

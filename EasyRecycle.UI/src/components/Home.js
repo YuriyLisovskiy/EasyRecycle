@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 
 export default class HomeComponent extends Component {
 
+	/* istanbul ignore next */
 	makeCard = (title, imagePath, description, link) => {
 		return <Link to={link} style={{textDecoration: 'none', color: 'black'}}>
 			<Card className="h-100">

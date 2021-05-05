@@ -15,6 +15,7 @@ export default class ProfileSettingsComponent extends Component {
 		};
 	}
 
+	/* istanbul ignore next */
 	validateInput = (text, title) => {
 		if (strIsEmpty(text)) {
 			return 'Field must not be empty.';
@@ -27,22 +28,23 @@ export default class ProfileSettingsComponent extends Component {
 		return null;
 	}
 
+	/* istanbul ignore next */
 	validateFirstName = (text) => {
 		return this.validateInput(text, 'First name');
 	}
 
+	/* istanbul ignore next */
 	validateLastName = (text) => {
 		return this.validateInput(text, 'Last name');
 	}
 
+	/* istanbul ignore next */
 	makeSaveHandler = (text, handler, field) => {
 		return (data, err) => {
 			if (err) {
 				handler(getErrorMessage(err));
 			}
 			else {
-				console.log('profile: updated');
-
 				let user = this.state.user;
 				user[field] = text;
 				UserService._setCurrentUser(user);
@@ -60,12 +62,14 @@ export default class ProfileSettingsComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	onClickSaveFirstName = (text, handler) => {
 		UserService.editUser(
 			this.state.user.id, text, null, null, null, this.makeSaveHandler(text, handler, 'first_name')
 		);
 	}
 
+	/* istanbul ignore next */
 	onClickSaveLastName = (text, handler) => {
 		UserService.editUser(
 			this.state.user.id, null, text, null, null, this.makeSaveHandler(text, handler, 'last_name')

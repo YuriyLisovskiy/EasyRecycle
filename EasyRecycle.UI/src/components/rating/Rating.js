@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import UserService from "../../services/user";
 import SpinnerComponent from "../Spinner";
 import UserComponent from "./User";
 import Errors from "../Errors";
@@ -8,6 +7,7 @@ export default class RatingComponent extends Component {
 
 	constructor(props) {
 		super(props);
+		this.userService = this.props.userService;
 		this.state = {
 			loading: true,
 			users: undefined,
@@ -19,7 +19,7 @@ export default class RatingComponent extends Component {
 	loadUsers = () => {
 		if (this.state.nextPage) {
 			this.setState({nextPageLoading: true});
-			UserService.getUsers(null, this.state.nextPage, 'rating', (data, err) => {
+			this.userService.getUsers(null, this.state.nextPage, 'rating', (data, err) => {
 				if (err) {
 					alert(err);
 				}
@@ -41,7 +41,7 @@ export default class RatingComponent extends Component {
 	}
 
 	render() {
-		if (!UserService.getCurrentUser()) {
+		if (!this.userService.getCurrentUser()) {
 			return <Errors.Forbidden/>;
 		}
 

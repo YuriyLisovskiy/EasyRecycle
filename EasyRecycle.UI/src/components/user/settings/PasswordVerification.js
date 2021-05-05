@@ -16,12 +16,14 @@ export default class PasswordVerificationComponent extends Component {
 		this._inputRef = React.createRef();
 	}
 
+	/* istanbul ignore next */
 	componentDidMount() {
 		this.setState({
 			loading: false
 		});
 	}
 
+	/* istanbul ignore next */
 	onChangePassword = (e) => {
 		this.setState({
 			password: e.target.value,
@@ -29,6 +31,7 @@ export default class PasswordVerificationComponent extends Component {
 		})
 	}
 
+	/* istanbul ignore next */
 	onClickCancel = (_) => {
 		this.setState({
 			password: "",
@@ -38,6 +41,7 @@ export default class PasswordVerificationComponent extends Component {
 		this.props.onRequestClose();
 	}
 
+	/* istanbul ignore next */
 	_onClickConfirm = (e) => {
 		if (!strIsEmpty(this.state.password)) {
 			this.setState({
@@ -58,6 +62,7 @@ export default class PasswordVerificationComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	setError = (msg) => {
 		this.setState({
 			errorMessage: msg,

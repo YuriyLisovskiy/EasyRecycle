@@ -24,6 +24,7 @@ export default class RegisterComponent extends Component {
 		};
 	}
 
+	/* istanbul ignore next */
 	setPasswordsError = (password, passwordRepeat) => {
 		if (password !== passwordRepeat) {
 			this.setState({
@@ -32,6 +33,7 @@ export default class RegisterComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	setError = (err) => {
 		let msg = getErrorMessage(err);
 		if (msg.email) {
@@ -44,6 +46,7 @@ export default class RegisterComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	getFieldError = (name, isNotValidFunc, res) => {
 		let errMessage = isNotValidFunc();
 		if (errMessage) {
@@ -60,6 +63,7 @@ export default class RegisterComponent extends Component {
 		return res;
 	}
 
+	/* istanbul ignore next */
 	requiredFieldError = (field) => {
 		if (strIsEmpty(field)) {
 			return 'This field is required.';
@@ -68,11 +72,13 @@ export default class RegisterComponent extends Component {
 		return undefined;
 	}
 
+	/* istanbul ignore next */
 	charIsAllowedInUsername = (char) => {
 		let allowedChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789';
 		return allowedChars.includes(char);
 	}
 
+	/* istanbul ignore next */
 	usernameError = (username) => {
 		if (username.length > 30 || username.length < 5) {
 			return 'Username must be at least 5 and up to 30 characters long.';
@@ -87,6 +93,7 @@ export default class RegisterComponent extends Component {
 		return undefined;
 	}
 
+	/* istanbul ignore next */
 	getUsernameError = (username, res) => {
 		res = this.getFieldError(
 			'username', _ => this.requiredFieldError(username), res
@@ -97,6 +104,7 @@ export default class RegisterComponent extends Component {
 		return res;
 	}
 
+	/* istanbul ignore next */
 	getPasswordError = (password, res) => {
 		res = this.getFieldError(
 			'password', _ => this.requiredFieldError(password), res
@@ -107,6 +115,7 @@ export default class RegisterComponent extends Component {
 		return res;
 	}
 
+	/* istanbul ignore next */
 	getRegisterError = (username, email, password, passwordRepeat) => {
 		let res = null;
 		res = this.getUsernameError(username, res);
@@ -122,6 +131,7 @@ export default class RegisterComponent extends Component {
 		return res;
 	}
 
+	/* istanbul ignore next */
 	onChangeMakeFor = (field, validationFunc) => {
 		return e => {
 			let state = {};
@@ -133,10 +143,12 @@ export default class RegisterComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	onChangeUsername = (e) => {
 		return this.onChangeMakeFor('username', this.usernameError)(e);
 	}
 
+	/* istanbul ignore next */
 	onChangeEmail = (e) => {
 		return this.onChangeMakeFor('email', text => {
 			if (!text.includes('@')) {
@@ -147,18 +159,21 @@ export default class RegisterComponent extends Component {
 		})(e);
 	}
 
+	/* istanbul ignore next */
 	onChangePassword = (e) => {
 		this.setPasswordsError(
 			this.onChangeMakeFor('password', checkPassword)(e), this.state.passwordRepeat
 		);
 	}
 
+	/* istanbul ignore next */
 	onChangePasswordRepeat = (e) => {
 		this.setPasswordsError(
 			this.state.password, this.onChangeMakeFor('passwordRepeat')(e)
 		);
 	}
 
+	/* istanbul ignore next */
 	onClickRegister = (_) => {
 		this.setState({
 			registerError: "",
@@ -219,6 +234,7 @@ export default class RegisterComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	onKeyDownLogin = (e) => {
 		if (e.key.toLowerCase() === 'enter') {
 			this.onClickRegister(e);

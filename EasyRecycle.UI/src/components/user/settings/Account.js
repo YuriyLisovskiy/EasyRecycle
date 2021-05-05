@@ -19,6 +19,7 @@ export default class AccountSettingsComponent extends Component {
 		this.confirmBecomeCommercialRef = React.createRef();
 	}
 
+	/* istanbul ignore next */
 	onClickDeactivateToggle = () => {
 		let {deactivateDrawerIsOpen} = this.state;
 		this.setState({
@@ -26,6 +27,7 @@ export default class AccountSettingsComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	onClickDeactivateConfirm = (_, password, finished) => {
 		UserService.deactivateMe(this.props.user.id, password, (resp, err) => {
 			if (err) {
@@ -40,6 +42,7 @@ export default class AccountSettingsComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	onClickBecomeCommercialToggle = () => {
 		let {becomeCommercialDrawerIsOpen} = this.state;
 		this.setState({
@@ -47,6 +50,7 @@ export default class AccountSettingsComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	onClickBecomeCommercialConfirm = (_, password, finished) => {
 		UserService.becomeCommercial(this.props.user.id, password, (resp, err) => {
 			if (err) {
@@ -64,7 +68,6 @@ export default class AccountSettingsComponent extends Component {
 
 	render() {
 		let user = UserService.getCurrentUser();
-		console.log(user);
 		return <div className="p-3">
 			<div className="row">
 				<div className="col-12 border-bottom mb-4">

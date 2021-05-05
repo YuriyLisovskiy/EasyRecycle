@@ -19,6 +19,7 @@ export default class LoginComponent extends Component {
 		};
 	}
 
+	/* istanbul ignore next */
 	getFieldsError = (username, password) => {
 		let res = null;
 		if (strIsEmpty(username)) {
@@ -38,6 +39,7 @@ export default class LoginComponent extends Component {
 		return res;
 	}
 
+	/* istanbul ignore next */
 	onChangeMakeFor = (field) => {
 		return e => {
 			let newState = {};
@@ -47,6 +49,7 @@ export default class LoginComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	onClickLogin = (_) => {
 		this.setState({
 			loginError: undefined,
@@ -73,6 +76,7 @@ export default class LoginComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	onKeyDownLogin = (e) => {
 		if (e.key.toLowerCase() === 'enter') {
 			this.onClickLogin(e);

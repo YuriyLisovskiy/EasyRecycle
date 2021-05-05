@@ -22,10 +22,12 @@ export default class EditLocationComponent extends Component {
 		};
 	}
 
+	/* istanbul ignore next */
 	componentDidMount() {
 		LocationService.getLocation(this.props.match.params.id, (data, err) => {
 			if (err) {
 				alert(err);
+				this.setState({loading: false});
 			}
 			else {
 				this.setState({
@@ -38,6 +40,7 @@ export default class EditLocationComponent extends Component {
 		UserService.getUsers(null, null, 'name', (data, err) => {
 			if (err) {
 				alert(err);
+				this.setState({loading: false});
 			}
 			else {
 				this.setState({
@@ -48,6 +51,7 @@ export default class EditLocationComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	handleSave = _ => {
 		if (!this.state.hasChanges) {
 			return;
@@ -98,6 +102,7 @@ export default class EditLocationComponent extends Component {
 				(data, err) => {
 					if (err) {
 						alert(err);
+						this.setState({loading: false});
 					}
 					else {
 						this.setState({hasChanges: false});
@@ -109,6 +114,7 @@ export default class EditLocationComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	handleDelete = _ => {
 		let location = this.state.location;
 		LocationService.deleteLocation(location.id, (data, err) => {
@@ -121,6 +127,7 @@ export default class EditLocationComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	handleChange = (e, location, errKey) => {
 		let state = {
 			location: location,
@@ -130,36 +137,42 @@ export default class EditLocationComponent extends Component {
 		this.setState(state);
 	}
 
+	/* istanbul ignore next */
 	handleAddressChange = e => {
 		let loc = this.state.location;
 		loc.address = e.target.value;
 		this.handleChange(e, loc, 'addressError');
 	}
 
+	/* istanbul ignore next */
 	handleOpenTimeChange = e => {
 		let loc = this.state.location;
 		loc.open_time = e.target.value;
 		this.handleChange(e, loc, 'openTimeError');
 	}
 
+	/* istanbul ignore next */
 	handleCloseTimeChange = e => {
 		let loc = this.state.location;
 		loc.close_time = e.target.value;
 		this.handleChange(e, loc, 'closeTimeError');
 	}
 
+	/* istanbul ignore next */
 	handlePricePerKgChange = e => {
 		let loc = this.state.location;
 		loc.price_per_kg = e.target.value;
 		this.handleChange(e, loc, 'pricePerKgError');
 	}
 
+	/* istanbul ignore next */
 	handleOwnerChange = e => {
 		let loc = this.state.location;
 		loc.owner_id = e.target.value;
 		this.handleChange(e, loc, 'ownerError');
 	}
 
+	/* istanbul ignore next */
 	handleWasteChange = e => {
 		let newGarbageTypes = this.state.newGarbageTypes;
 		if (!newGarbageTypes) {
@@ -186,6 +199,7 @@ export default class EditLocationComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	onClickConfirmToggle = () => {
 		let {confirmIsOpen} = this.state;
 		this.setState({

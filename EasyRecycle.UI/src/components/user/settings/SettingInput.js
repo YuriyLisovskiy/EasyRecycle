@@ -13,6 +13,7 @@ export default class SettingInputComponent extends Component {
 		};
 	}
 
+	/* istanbul ignore next */
 	onChangeValue = (e) => {
 		let text = e.target.value.trim();
 		this.setState({
@@ -22,6 +23,7 @@ export default class SettingInputComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	onClickSave = (_) => {
 		if (!this.state.isSaved) {
 			let hasError = false;

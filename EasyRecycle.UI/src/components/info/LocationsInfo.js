@@ -3,13 +3,13 @@ import {Card} from "react-bootstrap";
 import SpinnerComponent from "../Spinner";
 import {Link} from "react-router-dom";
 import UserService from "../../services/user";
-import LocationService from "../../services/location";
 import {GarbageTypeToIcon} from "../../utils/misc";
 
 export default class LocationsComponent extends Component {
 
 	constructor(props) {
 		super(props);
+		this.locationService = this.props.locationService;
 		this.state = {
 			loading: true,
 			locations: undefined,
@@ -27,7 +27,7 @@ export default class LocationsComponent extends Component {
 	loadLocations = () => {
 		if (this.state.nextPage) {
 			this.setState({nextPageLoading: true});
-			LocationService.getLocations(this.state.nextPage, (data, err) => {
+			this.locationService.getLocations(this.state.nextPage, (data, err) => {
 				if (err) {
 					alert(err);
 				}

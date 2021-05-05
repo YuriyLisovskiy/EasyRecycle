@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 
-export default class RequestInfoComponent extends Component {
+export default class CollectionInfoComponent extends Component {
 
 	render () {
 		return <div className="container">
@@ -16,18 +16,16 @@ export default class RequestInfoComponent extends Component {
 								for it. Also you can view <Link to="/rating">Rating</Link> page to compare
 								your results with other users.
 							</p>
-							<p className="card-text">
+							<div className="card-text my-2">
 								Steps for bringing the garbage for recycling:
 								<ul className="list-group list-group-flush">
 									<li className="list-group-item">
 										1. Go to <Link to="/info/locations">Locations</Link> page.
 									</li>
 									<li className="list-group-item">
-										<p>
-											2. Choose the address of the nearest location with the appropriate
-											type of garbage:
-										</p>
-										<img className="w-100 rounded mx-auto d-block"
+										2. Choose the address of the nearest location with the appropriate
+										type of garbage:
+										<img className="w-100 rounded mx-auto d-block mt-2"
 										     src="/locations-demo.png"
 										     alt="Locations Demo"/>
 									</li>
@@ -35,14 +33,14 @@ export default class RequestInfoComponent extends Component {
 										3. Bring all waste to selected location.
 									</li>
 									<li className="list-group-item">
-										<p>4. Show your QR-code to the garbage collector to increase your rating points.</p>
-										<p>Find QR-code on navigation bar at the top:</p>
-										<img className="w-100 rounded mx-auto d-block"
+										4. Show your QR-code to the garbage collector to increase your rating points.
+										Find QR-code on navigation bar at the top:
+										<img className="w-100 rounded mx-auto d-block mt-2"
 										     src="/qr-code-demo.png"
 										     alt="QR-code Demo"/>
 									</li>
 								</ul>
-							</p>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -59,55 +57,49 @@ export default class RequestInfoComponent extends Component {
 								management must use its own vehicles to remove waste from your organization.
 								You will not receive any rating points for it.
 							</p>
-							<p className="card-text">
+							<div className="card-text my-2">
 								To become a commercial user:
 								<ul className="list-group list-group-flush">
 									<li className="list-group-item">
 										1. Go to <Link to="/settings/account">User Settings > Account</Link> page.
 									</li>
 									<li className="list-group-item">
-										<p>2. Find section with title "Commercial":</p>
-										<img className="w-100 rounded mx-auto d-block"
+										2. Find section with title "Commercial":
+										<img className="w-100 rounded mx-auto d-block mt-2"
 										     src="/commercial-section-demo.png"
 										     alt="Commercial Section Demo"/>
 									</li>
 									<li className="list-group-item">
-										<p>
-											3. Click on "Become a commercial user" button and confirm this action with
-											your password:
-										</p>
-										<img className="w-65 rounded mx-auto d-block"
+										3. Click on "Become a commercial user" button and confirm this action with
+										your password:
+										<img className="w-65 rounded mx-auto d-block mt-2"
 										     src="/become-a-commercial-demo.png"
 										     alt="Become a Commercial Demo"/>
 									</li>
 								</ul>
-							</p>
-							<p className="card-text">
+							</div>
+							<div className="card-text my-2">
 								To create a commercial order:
 								<ul className="list-group list-group-flush">
 									<li className="list-group-item">
 										1. Go to <Link to="/info/locations">Locations</Link> page.
 									</li>
 									<li className="list-group-item">
-										<p>
-											2. Choose the address of the nearest location with the appropriate
-											type of garbage and suitable price:
-										</p>
-										<img className="w-100 rounded mx-auto d-block"
+										2. Choose the address of the nearest location with the appropriate
+										type of garbage and suitable price:
+										<img className="w-100 rounded mx-auto d-block mt-2"
 										     src="/commercial-locations-demo.png"
 										     alt="Commercial Locations Demo"/>
 									</li>
 									<li className="list-group-item">
-										<p>
-											3. Click on "Create Commercial Order" button, fill all required fields and
-											click "Create":
-										</p>
-										<img className="w-100 rounded mx-auto d-block"
+										3. Click on "Create Commercial Order" button, fill all required fields and
+										click "Create":
+										<img className="w-100 rounded mx-auto d-block mt-2"
 										     src="/commercial-order-demo.png"
 										     alt="Commercial Order Demo"/>
 									</li>
 								</ul>
-							</p>
+							</div>
 						</div>
 					</div>
 				</div>

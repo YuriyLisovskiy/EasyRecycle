@@ -1,7 +1,4 @@
 import React, {Component} from "react";
-import UserService from "../../services/user";
-import CommercialOrderService from "../../services/commercial_order";
-import TransactionsService from "../../services/transaction";
 import {GarbageTypeToIcon, getErrorMessage} from "../../utils/misc";
 import SpinnerComponent from "../Spinner";
 import Errors from "../Errors";
@@ -10,10 +7,13 @@ export default class ProfileComponent extends Component {
 
 	constructor(props) {
 		super(props);
+		this.userService = this.props.userService;
+		this.transactionsService = this.props.transactionsService;
+		this.commercialOrderService = this.props.commercialOrderService;
 		this.state = {
 			user: undefined,
 			loading: true,
-			currentUser: props.currentUser ? props.currentUser : UserService.getCurrentUser(),
+			currentUser: props.currentUser ? props.currentUser : this.userService.getCurrentUser(),
 			notFound: false,
 			orders: undefined,
 			nextPageOfOrders: 1,
@@ -38,6 +38,7 @@ export default class ProfileComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	componentDidMount() {
 		let userId;
 		let isMe = false;
@@ -55,6 +56,7 @@ export default class ProfileComponent extends Component {
 		this.loadUser(userId, isMe);
 	}
 
+	/* istanbul ignore next */
 	loadUser = (id, isMe = false) => {
 		if (!id) {
 			this.setState({notFound: true});
@@ -65,7 +67,7 @@ export default class ProfileComponent extends Component {
 			this.props.history.push('/profile/' + id);
 		}
 
-		UserService.getUser(id, (user, err) => {
+		this.userService.getUser(id, (user, err) => {
 			if (err) {
 				if (err.response && err.response.status === 404) {
 					this.setState({
@@ -92,6 +94,7 @@ export default class ProfileComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	toggleUserAction = (boolVal, methods, updatedUser) => {
 		return _ => {
 			let method = boolVal ? methods.ifTrue : methods.ifFalse;
@@ -108,12 +111,13 @@ export default class ProfileComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	onClickBanUser = (ban) => {
 		return this.toggleUserAction(
 			ban,
 			{
-				ifTrue: UserService.banUser,
-				ifFalse: UserService.unbanUser
+				ifTrue: this.userService.banUser,
+				ifFalse: this.userService.unbanUser
 			},
 			(user) => {
 				user.is_banned = ban;
@@ -122,12 +126,13 @@ export default class ProfileComponent extends Component {
 		);
 	}
 
+	/* istanbul ignore next */
 	loadMoreOrders = () => {
 		if (this.state.nextPageOfOrders) {
 			let user = this.state.user;
 			if (user && user.is_commercial) {
 				this.setState({nextPageOrdersLoading: true});
-				CommercialOrderService.getOrders({
+				this.commercialOrderService.getOrders({
 					userPkFilter: user.id,
 					page: this.state.nextPageOfOrders,
 					handler: (data, err) => {
@@ -151,6 +156,7 @@ export default class ProfileComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	loadMoreTransactions = () => {
 		if (this.state.nextPageOfTransactions)
 		{
@@ -160,7 +166,7 @@ export default class ProfileComponent extends Component {
 				this.setState({
 					nextPageTransactionLoading: true
 				});
-				TransactionsService.getTransactions({
+				this.transactionsService.getTransactions({
 					userPkFilter: user.id,
 					page: this.state.nextPageOfTransactions,
 					handler: (data, err) => {

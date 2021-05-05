@@ -17,9 +17,9 @@ import LoginComponent from "./components/user/Login";
 import RegisterComponent from "./components/user/Register";
 import SettingsComponent from "./components/user/settings/Settings";
 import UserService from "./services/user";
-import CommerialOrderService from "./services/commercial_order";
+import CommercialOrderService from "./services/commercial_order";
+import LocationService from "./services/location";
 import HowToRecycleComponent from "./components/info/HowToRecycle";
-import LocationsInfoComponent from "./components/info/LocationsInfo";
 import CollectionInfoComponent from "./components/info/CollectionInfo";
 import RatingComponent from "./components/rating/Rating";
 import ScanQrCodeComponent from "./components/user/ScanQrCode";
@@ -29,6 +29,8 @@ import CreateCommercialOrderComponent from "./components/commercial/CreateOrder"
 import EditLocationComponent from "./components/EditLocation";
 import CreateLocationComponent from "./components/CreateLocation";
 import Footer from "./components/Footer";
+import LocationsComponent from "./components/info/LocationsInfo";
+import TransactionsService from "./services/transaction";
 
 export default class App extends Component {
 
@@ -46,6 +48,7 @@ export default class App extends Component {
 		};
 	}
 
+	/* istanbul ignore next */
 	componentDidMount() {
 		UserService.getMe((user, err) => {
 			if (err) {
@@ -60,9 +63,10 @@ export default class App extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	updateOrdersCount = () => {
 		if (this.state.currentUser.is_garbage_collector) {
-			CommerialOrderService.getOrders({
+			CommercialOrderService.getOrders({
 				locationFilter: true,
 				statusFilter: ['A', 'B'],
 				handler: (data, err) => {
@@ -74,6 +78,7 @@ export default class App extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	makeSubSettingRoute = (subPath) => {
 		return <Route path={'/settings/' + subPath} render={
 			(routeProps) => <SettingsComponent {...routeProps}
@@ -83,14 +88,17 @@ export default class App extends Component {
 		} />
 	}
 
+	/* istanbul ignore next */
 	onLoginSuccess = () => {
 		window.location.reload();
 	}
 
+	/* istanbul ignore next */
 	onRegisterSuccess = () => {
 		window.location = '/';
 	}
 
+	/* istanbul ignore next */
 	onUpdateAvatar = (avatarLink) => {
 		let user = this.state.currentUser;
 		if (user.avatar_link !== avatarLink) {
@@ -101,6 +109,7 @@ export default class App extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	onUpdateFullName = (first_name, last_name) => {
 		let user = this.state.currentUser;
 		if (first_name) {
@@ -118,11 +127,13 @@ export default class App extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	onClickLogOut = () => {
 		AuthService.logout();
 		window.location = '/';
 	}
 
+	/* istanbul ignore next */
 	onClickLoginToggle = () => {
 		let {loginIsOpen} = this.state;
 		this.setState({
@@ -131,6 +142,7 @@ export default class App extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	onClickRegisterToggle = () => {
 		let {registerIsOpen} = this.state;
 		this.setState({
@@ -139,6 +151,7 @@ export default class App extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	onClickScanQrCodeToggle = () => {
 		let {scanQrCodeIsOpen} = this.state;
 		this.setState({
@@ -284,18 +297,33 @@ export default class App extends Component {
 					</nav>
 					<div className="container mt-3 w-65">
 						<Switch>
-							<Route path='/profile/me' component={MyProfileComponent} />
-							<Route path='/profile/:id' component={ProfileComponent} />
+							<Route path='/profile/me' render={
+								(props) => <MyProfileComponent {...props}
+								                               userService={UserService}
+								                               transactionsService={TransactionsService}
+								                               commercialOrderService={CommercialOrderService}/>
+							} />
+							<Route path='/profile/:id' render={
+								(props) => <ProfileComponent {...props}
+								                             userService={UserService}
+								                             transactionsService={TransactionsService}
+								                             commercialOrderService={CommercialOrderService}/>
+							} />
 							{this.makeSubSettingRoute('account')}
 							{this.makeSubSettingRoute('profile')}
 							{this.makeSubSettingRoute('privacy')}
 							<Route path='/home' component={HomeComponent} />
-							<Route path='/rating' component={RatingComponent} />
+							<Route path='/rating'
+							       render={(props) => <RatingComponent {...props}
+							                                           userService={UserService}/>} />
 							<Route path='/info/recycling' component={HowToRecycleComponent} />
-							<Route path='/info/locations' component={LocationsInfoComponent} />
+							<Route path='/info/locations'
+							       render={(props) => <LocationsComponent {...props}
+							                                              locationService={LocationService} />} />
 							<Route path='/info/collection' component={CollectionInfoComponent} />
 							<Route path='/commercial-orders' render={
 								(props) => <CommercialOrdersComponent {...props}
+								                                      commercialOrderService={CommercialOrderService}
 								                                      updateOrdersCount={this.updateOrdersCount}/>
 							} />
 							<Route path='/commercial-order/create' component={CreateCommercialOrderComponent} />

@@ -24,6 +24,7 @@ export default class CreateLocationComponent extends Component {
 		};
 	}
 
+	/* istanbul ignore next */
 	componentDidMount() {
 		UserService.getUsers(true, null, 'name', (data, err) => {
 			if (err) {
@@ -38,6 +39,7 @@ export default class CreateLocationComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	handleCreate = _ => {
 		let location = this.state.location;
 		let newState = {};
@@ -93,6 +95,7 @@ export default class CreateLocationComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	handleAddressChange = e => {
 		let loc = this.state.location;
 		loc.address = e.target.value;
@@ -102,6 +105,7 @@ export default class CreateLocationComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	handleOpenTimeChange = e => {
 		let loc = this.state.location;
 		loc.open_time = e.target.value;
@@ -111,6 +115,7 @@ export default class CreateLocationComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	handleCloseTimeChange = e => {
 		let loc = this.state.location;
 		loc.close_time = e.target.value;
@@ -120,6 +125,7 @@ export default class CreateLocationComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	handlePricePerKgChange = e => {
 		let loc = this.state.location;
 		loc.price_per_kg = e.target.value;
@@ -129,6 +135,7 @@ export default class CreateLocationComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	handleOwnerChange = e => {
 		let loc = this.state.location;
 		loc.owner_id = e.target.value;
@@ -138,6 +145,7 @@ export default class CreateLocationComponent extends Component {
 		});
 	}
 
+	/* istanbul ignore next */
 	handleWasteChange = e => {
 		let location = this.state.location;
 		let value = e.target.value;

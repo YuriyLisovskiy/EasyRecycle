@@ -16,6 +16,7 @@ export default class UpdateAvatarComponent extends Component {
 		};
 	}
 
+	/* istanbul ignore next */
 	onChangeValue = (e) => {
 		if (e.target.files.length > 0) {
 			let file = e.target.files[0];
@@ -28,6 +29,7 @@ export default class UpdateAvatarComponent extends Component {
 		}
 	}
 
+	/* istanbul ignore next */
 	onClickSave = (_) => {
 		if (!this.state.isSaved) {
 			UserService.updateAvatar(this.state.user.id, this.state.selectedFile, (data, err) => {

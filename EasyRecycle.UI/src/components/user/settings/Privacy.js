@@ -6,6 +6,7 @@ import UserService from "../../../services/user";
 
 export default class PrivacySettingsComponent extends Component {
 
+	/* istanbul ignore next */
 	onToggleShowFullName = (value, handler) => {
 		UserService.editUser(
 			this.props.user.id, null, null, value, null, (data, err) => {
