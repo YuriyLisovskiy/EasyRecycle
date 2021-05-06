@@ -118,7 +118,7 @@ test('renders TOTAL POINTS ACCUMULATED: 10', () => {
 	}
 });
 
-test('renders TRANSACTIONS ARE ABSENT', () => {
+test('renders NO TRANSACTIONS', () => {
 	user.is_commercial = false;
 	let component = shallow(<ProfileComponent
 		match={{params: {}}}
@@ -136,6 +136,6 @@ test('renders TRANSACTIONS ARE ABSENT', () => {
 		loadingTransactions: false
 	});
 	render(component);
-	let element = screen.getByText(/TRANSACTIONS ARE ABSENT/i);
+	let element = screen.getByText(/NO TRANSACTIONS/i);
 	expect(element).toBeInTheDocument();
 });
