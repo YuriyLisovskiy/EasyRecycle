@@ -18,9 +18,9 @@ RUN apk update \
 
 # install dependencies
 COPY ./requirements.txt .
-COPY ./requirements-prod.txt .
+COPY ./requirements.prod.txt .
 RUN pip install -r requirements.txt && \
-    pip install -r requirements.txt
+    pip install -r requirements.prod.txt
 
 # copy project
 COPY . .
