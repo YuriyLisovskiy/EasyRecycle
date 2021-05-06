@@ -262,48 +262,54 @@ export default class ProfileComponent extends Component {
 										</div>
 										{
 											this.state.loadingOrders ? (<SpinnerComponent/>) : (
-												<div className="p-3 card">
-													<div className="table-responsive">
-														<table className="table">
-														<thead>
-														<tr>
-															<th>Type</th>
-															<th>Mass (kg)</th>
-															<th>Address</th>
-															<th>Date</th>
-															<th>Status</th>
-														</tr>
-														</thead>
-														<tbody>
-														{this.state.orders.map(order => <tr key={order.id}
-														                                    className={this.statusToRowClass[order.status]}>
-															<th className="align-middle">
-																<img className="d-inline mx-1 my-1"
-																     height={80}
-																     src={GarbageTypeToIcon[order.garbage_type]}
-																     alt={order.garbage_type}/>
-															</th>
-															<th className="align-middle">{order.mass}</th>
-															<th className="align-middle">{order.address}</th>
-															<th className="align-middle min-w-120">{order.date}</th>
-															<th className="align-middle min-w-120">
-																{this.statuses[order.status]}
-															</th>
-														</tr>)}
-														</tbody>
-													</table>
+												(this.state.orders && this.state.orders.length < 1) ? (
+													<div className="mx-auto text-center text-muted mt-5">
+														NO ORDERS
 													</div>
-													{
-														this.state.nextPageOfOrders &&
-														<div className="mx-auto text-center">
-															<button className="btn btn-outline-secondary"
-															        onClick={this.loadMoreOrders}>
-																{this.state.nextPageOrdersLoading &&
-																<span className="spinner-border spinner-border-sm"/>} Load More
-															</button>
+												) : (
+													<div className="p-3 card">
+														<div className="table-responsive">
+															<table className="table">
+															<thead>
+															<tr>
+																<th>Type</th>
+																<th>Mass (kg)</th>
+																<th>Address</th>
+																<th>Date</th>
+																<th>Status</th>
+															</tr>
+															</thead>
+															<tbody>
+															{this.state.orders.map(order => <tr key={order.id}
+															                                    className={this.statusToRowClass[order.status]}>
+																<th className="align-middle">
+																	<img className="d-inline mx-1 my-1"
+																	     height={80}
+																	     src={GarbageTypeToIcon[order.garbage_type]}
+																	     alt={order.garbage_type}/>
+																</th>
+																<th className="align-middle">{order.mass}</th>
+																<th className="align-middle">{order.address}</th>
+																<th className="align-middle min-w-120">{order.date}</th>
+																<th className="align-middle min-w-120">
+																	{this.statuses[order.status]}
+																</th>
+															</tr>)}
+															</tbody>
+														</table>
 														</div>
-													}
-												</div>
+														{
+															this.state.nextPageOfOrders &&
+															<div className="mx-auto text-center">
+																<button className="btn btn-outline-secondary"
+																        onClick={this.loadMoreOrders}>
+																	{this.state.nextPageOrdersLoading &&
+																	<span className="spinner-border spinner-border-sm"/>} Load More
+																</button>
+															</div>
+														}
+													</div>
+												)
 											)
 										}
 									</div>
@@ -314,9 +320,9 @@ export default class ProfileComponent extends Component {
 										</div>
 										{
 											this.state.loadingTransactions ? (<SpinnerComponent/>) : (
-												this.state.transactions.length < 1 ? (
+												(this.state.transactions && this.state.transactions.length < 1) ? (
 													<div className="mx-auto text-center text-muted mt-5">
-														TRANSACTIONS ARE ABSENT
+														NO TRANSACTIONS
 													</div>
 												) : (
 													<div className="p-3 card">
