@@ -8,15 +8,19 @@ configure({ adapter: new Adapter() });
 let user = {
 	id: 10,
 	is_commercial: true,
-	rating: 10
+	rating: 10,
+	avatar_info: {
+		pixels: [],
+		color: ''
+	}
 };
 
 let userService = () => {
 	return {
 		banUser: _ => {},
 		unbanUser: _ => {},
-		getUser: () => {},
-		getCurrentUser: () => {}
+		getUser: () => user,
+		getCurrentUser: () => user
 	};
 }
 
@@ -35,6 +39,7 @@ let commercialOrderService = () => {
 test('renders PROFILE', () => {
 	let component = shallow(<ProfileComponent
 		match={{params: {}}}
+		user={user}
 		userService={userService()}
 		transactionsService={transactionsService()}
 		commercialOrderService={commercialOrderService()}
@@ -53,6 +58,7 @@ test('renders PROFILE', () => {
 test('renders ORDERS', () => {
 	let component = shallow(<ProfileComponent
 		match={{params: {}}}
+		user={user}
 		userService={userService()}
 		transactionsService={transactionsService()}
 		commercialOrderService={commercialOrderService()}
@@ -84,6 +90,7 @@ test('renders TOTAL POINTS ACCUMULATED: 10', () => {
 	user.is_commercial = false;
 	let component = shallow(<ProfileComponent
 		match={{params: {}}}
+		user={user}
 		userService={userService()}
 		transactionsService={transactionsService()}
 		commercialOrderService={commercialOrderService()}
@@ -115,6 +122,7 @@ test('renders TRANSACTIONS ARE ABSENT', () => {
 	user.is_commercial = false;
 	let component = shallow(<ProfileComponent
 		match={{params: {}}}
+		user={user}
 		userService={userService()}
 		transactionsService={transactionsService()}
 		commercialOrderService={commercialOrderService()}
