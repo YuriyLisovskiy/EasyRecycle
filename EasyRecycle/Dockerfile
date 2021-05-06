@@ -22,9 +22,5 @@ COPY . .
 # collect static files
 RUN python manage.py collectstatic --noinput
 
-# add and run as non-root user
-RUN adduser -D backenduser
-USER backenduser
-
 # run gunicorn
-CMD gunicorn EasyRecycle.wsgi:application --bind 0.0.0.0:$PORT --timeout=300
+CMD exec gunicorn --bind 0.0.0.0:$PORT --timeout=300 EasyRecycle.wsgi:application
