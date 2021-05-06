@@ -16,8 +16,9 @@ jobs:
       with:
         python-version: 3.6
     - name: Setup Secrets
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
-        cd EasyRecycle/ && \
         heroku container:login && \
         heroku config:set DJANGO_SECRET_ADMIN_URL="${{ secrets.DJANGO_SECRET_ADMIN_URL }}" -a ${{ secrets.API_HEROKU_APP }} && \
         heroku config:set DJANGO_SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" -a ${{ secrets.API_HEROKU_APP }} && \
@@ -37,10 +38,8 @@ jobs:
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
-        cd EasyRecycle/ && \
         heroku container:login && \
-        heroku run python manage.py makemigrations -a ${{ secrets.API_HEROKU_APP }} && \
-        heroku run python manage.py migrate -a ${{ secrets.API_HEROKU_APP }}
+        heroku run python EasyRecycle/manage.py migrate -a ${{ secrets.API_HEROKU_APP }}
     - name: Build and Deploy the Image
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
