@@ -127,17 +127,13 @@ class UserService extends BaseService {
 	//    "avatar_link": <string> (full url),
 	//    "show_full_name": <bool>
 	//  }
-	updateAvatar = (id, avatar, handler) => {
-		let formData = new FormData();
-		if (avatar) {
-			formData.append('avatar', avatar);
-		}
+	updateAvatar = (id, pixels, color, handler) => {
+		console.log(pixels.join('') + color);
 
 		this.put({
 			url: this._URL_SELF + '/edit/avatar',
-			data: formData,
-			headers: {
-				'Content-Type': 'multipart/form-data'
+			data: {
+				avatar_info: pixels.join('') + color
 			}
 		}, handler);
 	}

@@ -31,6 +31,7 @@ import CreateLocationComponent from "./components/CreateLocation";
 import Footer from "./components/Footer";
 import LocationsComponent from "./components/info/LocationsInfo";
 import TransactionsService from "./services/transaction";
+import {drawAvatar} from "./utils/misc";
 
 export default class App extends Component {
 
@@ -46,6 +47,7 @@ export default class App extends Component {
 			scanQrCodeIsOpen: false,
 			ordersCount: 0
 		};
+		this.avatarCanvas = React.createRef();
 	}
 
 	/* istanbul ignore next */
@@ -58,6 +60,12 @@ export default class App extends Component {
 				this.setState({
 					currentUser: user
 				});
+				drawAvatar(
+					this.avatarCanvas,
+					this.state.currentUser.avatar_info.pixels,
+					this.state.currentUser.avatar_info.color,
+					25
+				);
 				this.updateOrdersCount();
 			}
 		});
@@ -82,6 +90,7 @@ export default class App extends Component {
 	makeSubSettingRoute = (subPath) => {
 		return <Route path={'/settings/' + subPath} render={
 			(routeProps) => <SettingsComponent {...routeProps}
+			                                   userService={UserService}
 											   updateAvatar={this.onUpdateAvatar}
 											   updateFullName={this.onUpdateFullName}
 											   activeKey={subPath}/>
@@ -99,14 +108,13 @@ export default class App extends Component {
 	}
 
 	/* istanbul ignore next */
-	onUpdateAvatar = (avatarLink) => {
+	onUpdateAvatar = (avatarInfo) => {
 		let user = this.state.currentUser;
-		if (user.avatar_link !== avatarLink) {
-			user.avatar_link = avatarLink;
-			this.setState({
-				user: user
-			});
-		}
+		user.avatar_info = avatarInfo;
+		this.setState({
+			currentUser: user
+		});
+		drawAvatar(this.avatarCanvas, avatarInfo.pixels, avatarInfo.color, 25);
 	}
 
 	/* istanbul ignore next */
@@ -220,9 +228,8 @@ export default class App extends Component {
 										     data-toggle="dropdown">
 											<div className="d-inline">
 												<div className="text-muted profile-photo d-inline">
-													<img src={user.avatar_link}
-													     alt="Avatar"
-													     className="avatar-picture mr-2"/>
+													<canvas className="avatar-picture mr-2 img-thumbnail"
+													        ref={this.avatarCanvas}/>
 													<div className="d-inline font-weight-bold">{user.username}</div>
 												</div>
 											</div>

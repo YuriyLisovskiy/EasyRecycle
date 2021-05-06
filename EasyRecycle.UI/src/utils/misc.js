@@ -102,3 +102,43 @@ export const GarbageTypeToIcon = {
 	"PA": "/paper-waste-bin.png",
 	"PL": "/plastic-waste-bin.png",
 };
+
+let drawFillRect = (ctx, info, style = {}) => {
+	const { x, y, w, h } = info;
+	const { backgroundColor = 'black' } = style;
+	ctx.beginPath();
+	ctx.fillStyle = backgroundColor;
+	ctx.fillRect(x, y, w, h);
+}
+
+export const drawAvatar = (canvas, pixels, color, size) => {
+	const canvasEle = canvas.current;
+	canvasEle.width = size;
+	canvasEle.height = size;
+	let step = size / 5;
+	let ctx = canvasEle.getContext("2d");
+	let idx = 0;
+	for (let x = 0; x < size; x += step) {
+		for (let y = 0; y < size; y += step) {
+			let pxVal = pixels[idx++];
+			if (pxVal % 2 === 0) {
+				drawFillRect(
+					ctx,
+					{x: x, y: y, w: step, h: step},
+					{backgroundColor: color}
+				);
+			}
+		}
+	}
+}
+
+export const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
+
+export const random_sequence = (min, max, n) => {
+	let res = [];
+	for (let i = 0; i < n; i++) {
+		res.push(random(min, max));
+	}
+
+	return res;
+}
