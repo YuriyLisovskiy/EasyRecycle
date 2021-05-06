@@ -127,21 +127,31 @@ export default class LocationsComponent extends Component {
 		let user = UserService.getCurrentUser();
 		return this.state.loading ? (<SpinnerComponent/>) : (
 			<div className="container">
-				<div className="row">
-					<h3 className="col-md-12 text-center mb-3">
-						LOCATIONS
-					</h3>
-				</div>
-				{this.makeRows(this.state.locations, user)}
 				{
-					this.state.nextPage &&
-					<div className="mx-auto text-center mt-3">
-						<button className="btn btn-outline-secondary"
-						        onClick={this.loadLocations}>
-							{this.state.nextPageLoading &&
-							<span className="spinner-border spinner-border-sm"/>} Load More
-						</button>
-					</div>
+					this.state.locations.length > 0 ? (
+						<div>
+							<div className="row">
+								<h3 className="col-md-12 text-center mb-3">
+									LOCATIONS
+								</h3>
+							</div>
+							{this.makeRows(this.state.locations, user)}
+							{
+								this.state.nextPage &&
+								<div className="mx-auto text-center mt-3">
+									<button className="btn btn-outline-secondary"
+									        onClick={this.loadLocations}>
+										{this.state.nextPageLoading &&
+										<span className="spinner-border spinner-border-sm"/>} Load More
+									</button>
+								</div>
+							}
+						</div>
+					) : (
+						<h5 className="text-muted text-center">
+							LOCATION ARE ABSENT
+						</h5>
+					)
 				}
 			</div>
 		);

@@ -224,13 +224,18 @@ export default class App extends Component {
 								{user ? (
 									<li className="nav-item dropdown d-inline">
 										<div id="navbardrop"
-										     className="nav-link dropdown-toggle select-none cursor-pointer"
+										     className="nav-link select-none cursor-pointer"
 										     data-toggle="dropdown">
 											<div className="d-inline">
 												<div className="text-muted profile-photo d-inline">
-													<canvas className="avatar-picture mr-2 img-thumbnail"
+													<canvas className="avatar-picture mr-2 img-thumbnail float-left"
 													        ref={this.avatarCanvas}/>
-													<div className="d-inline font-weight-bold">{user.username}</div>
+													<div className="d-inline font-weight-bold float-right mt-1">
+														{user.username}
+														<small className="ml-1">
+															<i className="fa fa-chevron-down" aria-hidden="true"/>
+														</small>
+													</div>
 												</div>
 											</div>
 										</div>
