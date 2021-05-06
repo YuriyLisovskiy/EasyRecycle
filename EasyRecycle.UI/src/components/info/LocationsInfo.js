@@ -149,7 +149,7 @@ export default class LocationsComponent extends Component {
 						</div>
 					) : (
 						<h5 className="text-muted text-center">
-							LOCATION ARE ABSENT
+							NO LOCATIONS
 						</h5>
 					)
 				}
