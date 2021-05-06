@@ -1,4 +1,4 @@
-name: Backend Deployment
+name: Continuous Delivery
 
 on:
   push:
@@ -6,7 +6,8 @@ on:
       - 'release'
 
 jobs:
-  build:
+  api:
+    name: "Deploy API"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -48,4 +49,27 @@ jobs:
         docker build -t registry.heroku.com/${{ secrets.API_HEROKU_APP }}/web . && \
         docker push registry.heroku.com/${{ secrets.API_HEROKU_APP }}/web && \
         heroku container:release -a ${{ secrets.API_HEROKU_APP }} web
+  ui:
+    name: "Deploy UI"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+    - name: Generate Env
+      run: |
+        cd EasyRecycle.UI/ && \
+        echo "API_URL_BASE=${{ secrets.API_HOST }}" > ./production.env && \
+        test -e ./production.env && echo ./production.env file created successfully || echo Failed to create ./production.env
+    - name: Build and Deploy the Image
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: |
+        cd EasyRecycle.UI/ && \
+        heroku container:login && \
+        docker build -t registry.heroku.com/${{ secrets.UI_HEROKU_APP }}/web . && \
+        docker push registry.heroku.com/${{ secrets.UI_HEROKU_APP }}/web && \
+        heroku container:release -a ${{ secrets.UI_HEROKU_APP }} web
 
