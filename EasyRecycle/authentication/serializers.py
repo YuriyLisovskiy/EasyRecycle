@@ -1,4 +1,4 @@
-from django.conf import settings
+import random
 from rest_framework import serializers
 
 from core.models import UserModel
@@ -8,17 +8,25 @@ from core.validators import (
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
-	avatar = serializers.SerializerMethodField()
+	avatar_info = serializers.SerializerMethodField()
 
-	def get_avatar(self, obj):
-		request = self.context.get('request', None)
-		if request and obj.avatar:
-			return request.build_absolute_uri(obj.avatar.url)
-
-		return settings.DEFAULT_NO_IMAGE_URL
+	def get_avatar_info(self, obj):
+		if obj.avatar_info:
+			pixels, color = obj.avatar_info.split('#')
+		else:
+			pixels, color = '1010101010101010101010101', '000000'
+		return {
+			'pixels': [int(x) for x in pixels],
+			'color': '#{}'.format(color)
+		}
 
 	def create(self, validated_data):
 		password = validated_data.pop('password', None)
+		pixels = ''.join([str(random.randint(0, 10)) for _ in range(25)])
+		validated_data['avatar_info'] = '{}#{}'.format(
+			pixels,
+			str(hex(random.randint(0, 16777215))).lstrip('0x')
+		)
 		instance = self.Meta.model(**validated_data)
 		if password is not None:
 			instance.set_password(password)
@@ -30,10 +38,10 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 		model = UserModel
 		fields = (
 			'id', 'username', 'email', 'password', 'first_name',
-			'last_name', 'avatar', 'is_superuser', 'rating'
+			'last_name', 'avatar_info', 'is_superuser', 'rating'
 		)
 		read_only_fields = (
-			'id', 'first_name', 'last_name', 'avatar', 'rating', 'is_superuser'
+			'id', 'first_name', 'last_name', 'avatar_info', 'rating', 'is_superuser'
 		)
 		extra_kwargs = {
 			'password': {'write_only': True},

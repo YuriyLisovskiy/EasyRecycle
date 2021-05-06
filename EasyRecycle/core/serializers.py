@@ -1,11 +1,11 @@
 from rest_framework import serializers
 
 from core.models import UserModel
-from core.utils import build_full_url
+from core.validators import AvatarFormatValidator
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):
-	avatar_link = serializers.SerializerMethodField()
+	avatar_info = serializers.SerializerMethodField()
 	is_banned = serializers.SerializerMethodField()
 
 	def __init__(self, *args, **kwargs):
@@ -17,11 +17,15 @@ class UserDetailsSerializer(serializers.ModelSerializer):
 		request = self.context.get('request', None)
 		return request and request.user.is_authenticated, request
 
-	def get_avatar_link(self, obj):
-		return build_full_url(
-			self.context.get('request', None),
-			obj.avatar
-		)
+	def get_avatar_info(self, obj):
+		if obj.avatar_info:
+			pixels, color = obj.avatar_info.split('#')
+		else:
+			pixels, color = '1010101010101010101010101', '000000'
+		return {
+			'pixels': [int(x) for x in pixels],
+			'color': '#{}'.format(color)
+		}
 
 	@staticmethod
 	def get_is_banned(obj):
@@ -31,7 +35,7 @@ class UserDetailsSerializer(serializers.ModelSerializer):
 		model = UserModel
 		fields = (
 			'id', 'first_name', 'last_name', 'username', 'email',
-			'avatar_link', 'is_superuser', 'rating', 'is_banned',
+			'avatar_info', 'is_superuser', 'rating', 'is_banned',
 			'is_garbage_collector', 'is_commercial', 'show_full_name',
 		)
 
@@ -46,20 +50,16 @@ class EditSelfUserSerializer(serializers.ModelSerializer):
 
 
 class EditSelfUserAvatarSerializer(serializers.ModelSerializer):
-	avatar_link = serializers.SerializerMethodField()
-
-	def get_avatar_link(self, obj):
-		return build_full_url(
-			self.context.get('request', None),
-			obj.avatar
-		)
+	avatar_info = serializers.CharField(max_length=32)
 
 	class Meta:
 		model = UserModel
 		fields = (
-			'avatar', 'avatar_link'
+			'avatar_info',
 		)
-		read_only_fields = ('avatar_link',)
 		extra_kwargs = {
-			'avatar': {'write_only': True}
+			'avatar_info': {'write_only': True}
 		}
+		validators = (
+			AvatarFormatValidator(),
+		)

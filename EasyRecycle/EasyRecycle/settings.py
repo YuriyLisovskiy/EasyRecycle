@@ -131,9 +131,6 @@ USE_TZ = True
 STATIC_ROOT = BASE_DIR / 'static-root'
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = BASE_DIR / 'media-root'
-MEDIA_URL = '/media/'
-
 AUTH_USER_MODEL = 'core.UserModel'
 
 REST_FRAMEWORK = {
