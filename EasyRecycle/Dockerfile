@@ -1,25 +1,19 @@
 # pull official base image
-FROM python:3.7-alpine
+# https://hub.docker.com/_/python
+FROM python:3.7-buster
+
+# Allow statements and log messages to immediately appear in the Knative logs
+ENV PYTHONUNBUFFERED True
 
 # set work directory
 WORKDIR /app
 
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV DEBUG 0
-
-# install psycopg2
-RUN apk update \
-    && apk add --virtual build-deps gcc python3-dev musl-dev \
-    && apk add postgresql-dev \
-    && pip install psycopg2 \
-    && apk del build-deps
-
-# install dependencies
 COPY ./requirements.txt .
 COPY ./requirements.prod.txt .
-RUN pip install -r requirements.txt && \
+
+# install dependencies
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install -r requirements.txt && \
     pip install -r requirements.prod.txt
 
 # copy project
