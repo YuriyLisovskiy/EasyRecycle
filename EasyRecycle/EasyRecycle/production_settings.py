@@ -13,7 +13,7 @@ ALLOWED_HOSTS = [
 
 DEBUG = os.getenv('DJANGO_DEBUG', 'false').lower() == 'true'
 
-DB_CERT_DIR = BASE_DIR / 'cert'
+# DB_CERT_DIR = BASE_DIR / 'cert'
 
 DATABASES = {
 	'default': {
@@ -22,12 +22,12 @@ DATABASES = {
 		'NAME': os.getenv('DATABASE_NAME', ''),
 		'USER': os.getenv('DATABASE_USER', ''),
 		'PASSWORD': os.getenv('DATABASE_PASSWORD', ''),
-		'OPTIONS': {
-			'sslmode': os.getenv('DATABASE_SSL_MODE', ''),
-			'sslrootcert': str(DB_CERT_DIR / 'server-ca.pem'),
-			'sslcert': str(DB_CERT_DIR / 'client-cert.pem'),
-			'sslkey': str(DB_CERT_DIR / 'client-key.pem'),
-		},
+		# 'OPTIONS': {
+		# 	'sslmode': os.getenv('DATABASE_SSL_MODE', ''),
+		# 	'sslrootcert': str(DB_CERT_DIR / 'server-ca.pem'),
+		# 	'sslcert': str(DB_CERT_DIR / 'client-cert.pem'),
+		# 	'sslkey': str(DB_CERT_DIR / 'client-key.pem'),
+		# },
 	}
 }
 
@@ -38,3 +38,18 @@ if whitelist != '':
 	]
 else:
 	CORS_ORIGIN_WHITELIST = []
+
+MIDDLEWARE = [
+	'corsheaders.middleware.CorsMiddleware',
+	'django.middleware.security.SecurityMiddleware',
+	'whitenoise.middleware.WhiteNoiseMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

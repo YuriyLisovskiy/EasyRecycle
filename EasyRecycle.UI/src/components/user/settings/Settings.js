@@ -11,6 +11,7 @@ export default class SettingsComponent extends Component {
 
 	constructor(props) {
 		super(props);
+		this.userService = this.props.userService;
 		this.state = {
 			user: UserService.getCurrentUser()
 		};
@@ -36,7 +37,8 @@ export default class SettingsComponent extends Component {
 							<Tab eventKey="profile" title="Profile" tabClassName="text-secondary">
 								<ProfileSettingsComponent user={this.state.user}
 								                          updateFullName={this.props.updateFullName}
-								                          updateAvatar={this.props.updateAvatar}/>
+								                          updateAvatar={this.props.updateAvatar}
+								                          userService={this.userService}/>
 							</Tab>
 							<Tab eventKey="privacy" title="Privacy" tabClassName="text-secondary">
 								<PrivacySettingsComponent user={this.state.user}/>

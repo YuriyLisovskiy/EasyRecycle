@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import PasswordVerificationComponent from "./PasswordVerification";
 import PropTypes from "prop-types";
 import SettingInputComponent from "./SettingInput";
-import UserService from "../../../services/user";
 import {getErrorMessage, strIsEmpty} from "../../../utils/misc";
 import UpdateAvatarComponent from "./UpdateAvatar";
 
@@ -10,6 +9,7 @@ export default class ProfileSettingsComponent extends Component {
 
 	constructor(props) {
 		super(props);
+		this.userService = this.props.userService;
 		this.state = {
 			user: this.props.user
 		};
@@ -47,7 +47,7 @@ export default class ProfileSettingsComponent extends Component {
 			else {
 				let user = this.state.user;
 				user[field] = text;
-				UserService._setCurrentUser(user);
+				this.userService._setCurrentUser(user);
 				this.setState({
 					user: user
 				});
@@ -64,14 +64,14 @@ export default class ProfileSettingsComponent extends Component {
 
 	/* istanbul ignore next */
 	onClickSaveFirstName = (text, handler) => {
-		UserService.editUser(
+		this.userService.editUser(
 			this.state.user.id, text, null, null, null, this.makeSaveHandler(text, handler, 'first_name')
 		);
 	}
 
 	/* istanbul ignore next */
 	onClickSaveLastName = (text, handler) => {
-		UserService.editUser(
+		this.userService.editUser(
 			this.state.user.id, null, text, null, null, this.makeSaveHandler(text, handler, 'last_name')
 		);
 	}
@@ -99,10 +99,12 @@ export default class ProfileSettingsComponent extends Component {
 			</div>
 			<div className="row mt-4">
 				<div className="col-12 border-bottom my-4">
-					<small className="text-muted font-weight-bold">IMAGES</small>
+					<small className="text-muted font-weight-bold">IMAGE</small>
 				</div>
 				<div className="col-12">
-					<UpdateAvatarComponent user={this.state.user} updateAvatar={this.props.updateAvatar}/>
+					<UpdateAvatarComponent user={this.state.user}
+					                       updateAvatar={this.props.updateAvatar}
+					                       userService={this.userService}/>
 				</div>
 			</div>
 		</div>;

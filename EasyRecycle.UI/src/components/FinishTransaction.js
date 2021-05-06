@@ -59,6 +59,7 @@ export default class FinishTransactionComponent extends Component {
 			case "PL":
 				result *= 5;
 				break;
+			default:break;
 		}
 
 		return result;

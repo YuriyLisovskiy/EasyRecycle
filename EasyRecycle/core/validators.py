@@ -95,3 +95,23 @@ class PasswordValidator(ValidatorBase):
 			raise ValidationError({
 				self.password_key: self.len_error_message.format(self.min_len)
 			})
+
+
+class AvatarFormatValidator(ValidatorBase):
+	avatar_key = 'avatar_info'
+	error_message = 'Avatar info must be in format "pixels#color", ' \
+		'where "pixels" is binary string, color is hex value; got "{}"'
+
+	def __init__(self, key=None):
+		if key:
+			self.avatar_key = key
+
+		super(AvatarFormatValidator, self).__init__([self.avatar_key])
+
+	def perform_validation(self, attrs):
+		avatar_info = attrs.get(self.avatar_key, '')
+		parts = avatar_info.split('#')
+		if len(parts) != 2:
+			raise ValidationError({
+				self.avatar_key: self.error_message.format(avatar_info)
+			})

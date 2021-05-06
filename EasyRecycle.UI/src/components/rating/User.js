@@ -1,6 +1,21 @@
 import React, {Component} from "react";
+import {drawAvatar} from "../../utils/misc";
 
 export default class UserComponent extends Component {
+
+	constructor(props) {
+		super(props);
+		this.avatarCanvas = React.createRef();
+	}
+
+	componentDidMount() {
+		drawAvatar(
+			this.avatarCanvas,
+			this.props.user.avatar_info.pixels,
+			this.props.user.avatar_info.color,
+			60
+		);
+	}
 
 	getBadgeColor = (idx) => {
 		switch (idx) {
@@ -39,9 +54,8 @@ export default class UserComponent extends Component {
 					}
 				</div>
 				<div className="col-md-1 my-2 ml-3 text-center justify-content-center align-self-center">
-					<img src={user.avatar_link}
-					     alt="Avatar"
-					     className="img-fluid" width={50}/>
+					<canvas className="img-fluid img-thumbnail"
+					        ref={this.avatarCanvas}/>
 				</div>
 				<div className="col-md-5">
 					{

@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {GarbageTypeToIcon, getErrorMessage} from "../../utils/misc";
+import {drawAvatar, GarbageTypeToIcon, getErrorMessage} from "../../utils/misc";
 import SpinnerComponent from "../Spinner";
 import Errors from "../Errors";
 
@@ -29,13 +29,14 @@ export default class ProfileComponent extends Component {
 			'B': 'table-info',
 			'C': 'table-danger',
 			'D': 'table-success'
-		}
+		};
 		this.statuses = {
 			'A': 'Queued',
 			'B': 'In Progress',
 			'C': 'Rejected',
 			'D': 'Done'
-		}
+		};
+		this.avatarCanvas = React.createRef();
 	}
 
 	/* istanbul ignore next */
@@ -84,6 +85,13 @@ export default class ProfileComponent extends Component {
 					user: user,
 					loading: false
 				});
+
+				drawAvatar(
+					this.avatarCanvas,
+					this.state.user.avatar_info.pixels,
+					this.state.user.avatar_info.color,
+					250
+				);
 				if (user.is_commercial) {
 					this.loadMoreOrders();
 				}
@@ -207,10 +215,10 @@ export default class ProfileComponent extends Component {
 				this.state.loading ? (<SpinnerComponent/>) : (
 					this.state.notFound ? (<Errors.NotFound/>) : (
 						<div className="row">
-							<div className="col-md-4">
+							<div className="col-md-3">
 								<div className="mx-auto text-center text-muted mb-2">PROFILE</div>
-								<img src={user.avatar_link} alt="Avatar"
-								     className="img-thumbnail mx-auto d-block mb-2"/>
+								<canvas className="img-thumbnail mx-auto d-block mb-2"
+								        ref={this.avatarCanvas}/>
 								{
 									this.state.currentUser && this.state.currentUser.id !== user.id &&
 									<div>
@@ -236,9 +244,9 @@ export default class ProfileComponent extends Component {
 									<div className="col-sm-12">
 									{
 										hasFirstAndLastName ? (
-											<h4 className="mb-2 text-center">
+											<h5 className="mb-2 text-center">
 												{user.first_name} {user.last_name}
-											</h4>
+											</h5>
 										) : (
 											<h5 className="text-center">{user.username}</h5>
 										)
@@ -246,7 +254,7 @@ export default class ProfileComponent extends Component {
 									</div>
 								</div>
 							</div>
-							<div className="col-md-8">
+							<div className="col-md-9">
 								{user.is_commercial ? (
 									<div>
 										<div className="mx-auto text-center text-muted mb-2">
@@ -255,7 +263,8 @@ export default class ProfileComponent extends Component {
 										{
 											this.state.loadingOrders ? (<SpinnerComponent/>) : (
 												<div className="p-3 card">
-													<table className="table">
+													<div className="table-responsive">
+														<table className="table">
 														<thead>
 														<tr>
 															<th>Type</th>
@@ -283,6 +292,7 @@ export default class ProfileComponent extends Component {
 														</tr>)}
 														</tbody>
 													</table>
+													</div>
 													{
 														this.state.nextPageOfOrders &&
 														<div className="mx-auto text-center">

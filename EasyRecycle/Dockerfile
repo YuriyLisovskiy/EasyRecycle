@@ -1,27 +1,36 @@
-# The official lightweight Python image.
-# https://hub.docker.com/_/python
-FROM python:3.7-buster
+# pull official base image
+FROM python:3.7-alpine
 
-# Allow statements and log messages to immediately appear in the Knative logs
-ENV PYTHONUNBUFFERED True
+# set work directory
+WORKDIR /app
 
-ENV APP_HOME /app
-WORKDIR $APP_HOME
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV DEBUG 0
 
-COPY ./requirements.txt ./
-COPY ./requirements.prod.txt ./
+# install psycopg2
+RUN apk update \
+    && apk add --virtual build-deps gcc python3-dev musl-dev \
+    && apk add postgresql-dev \
+    && pip install psycopg2 \
+    && apk del build-deps
 
-# Install production dependencies.
-RUN pip install --upgrade pip setuptools wheel \
- && pip install -r requirements.txt \
- && pip install -r requirements-prod.txt
+# install dependencies
+COPY ./requirements.txt .
+COPY ./requirements-prod.txt .
+RUN pip install -r requirements.txt && \
+    pip install -r requirements.txt
 
-# Copy local code to the container image.
-COPY . ./
+# copy project
+COPY . .
 
-# Change client key permission.
-#RUN chmod 0600 /app/cert/client-key.pem
+# collect static files
+RUN python manage.py collectstatic --noinput
 
-# For environments with multiple CPU cores, increase the number of workers
-# to be equal to the cores available.
-CMD exec gunicorn --bind :$PORT --workers=1 --threads=8 --timeout=300 EasyRecycle.wsgi
+# add and run as non-root user
+RUN adduser -D backenduser
+USER backenduser
+
+# run gunicorn
+CMD gunicorn EasyRecycle.wsgi:application --bind 0.0.0.0:$PORT --timeout=300

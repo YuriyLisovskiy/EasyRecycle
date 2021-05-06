@@ -5,7 +5,11 @@ import UserService from "../../../../services/user";
 test('renders ACCOUNT PREFERENCES', () => {
 	let user = {
 		id: 1,
-		email: 'email@email.com'
+		email: 'email@email.com',
+		avatar_info: {
+			pixels: [],
+			color: ''
+		}
 	};
 	UserService._setCurrentUserData(user, '1', '2');
 	render(<AccountSettingsComponent user={user} />);

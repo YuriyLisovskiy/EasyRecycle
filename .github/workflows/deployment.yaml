@@ -1,0 +1,103 @@
+name: Continuous Delivery
+
+on:
+  push:
+    branches:
+      - 'release'
+
+jobs:
+  api:
+    name: "Deploy API"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+    - name: Setup Secrets
+      run: |
+        cd EasyRecycle/ && \
+        heroku config:set DJANGO_SECRET_ADMIN_URL=${{ secrets.DJANGO_SECRET_ADMIN_URL }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set DJANGO_DEBUG=${{ secrets.DJANGO_DEBUG }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set DATABASE_HOST=${{ secrets.DJANGO_DATABASE_HOST }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set DATABASE_NAME=${{ secrets.DJANGO_DATABASE_NAME }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set DATABASE_USER=${{ secrets.DJANGO_DATABASE_USER }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set DATABASE_PASSWORD=${{ secrets.DJANGO_DATABASE_PASSWORD }} -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku config:set CORS_ORIGIN_WHITELIST=${{ secrets.DJANGO_CORS_ORIGIN_WHITELIST }} -a ${{ secrets.API_HEROKU_APP }}
+    - name: Generate Local Settings
+      run: |
+        mv EasyRecycle/EasyRecycle/production_settings.py EasyRecycle/EasyRecycle/local_settings.py && \
+        test -e EasyRecycle/EasyRecycle/local_settings.py && echo EasyRecycle/EasyRecycle/local_settings.py file exists || echo EasyRecycle/EasyRecycle/local_settings.py file not found && \
+        cat EasyRecycle/EasyRecycle/local_settings.py
+    - name: Migrate The Datatabse
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: |
+        cd EasyRecycle/ && \
+        heroku container:login && \
+        heroku run python manage.py makemigrations -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku run python manage.py migrate -a ${{ secrets.API_HEROKU_APP }}
+    - name: Build and Deploy the Image
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: |
+        cd EasyRecycle/ && \
+        heroku container:login && \
+        docker build -t registry.heroku.com/${{ secrets.API_HEROKU_APP }}/web . && \
+        docker push registry.heroku.com/${{ secrets.API_HEROKU_APP }}/web && \
+        heroku container:release -a ${{ secrets.API_HEROKU_APP }} web
+  ui:
+    name: "Deploy UI"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9
+      with:
+          versionSpec: '5.1.x'
+    - name: Use GitVersion
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.9
+    - name: Generate Env
+      run: |
+        cd EasyRecycle.UI/ && \
+        echo "API_URL_BASE=${{ secrets.API_HOST }}" > ./production.env && \
+        test -e ./production.env && echo ./production.env file created successfully || echo Failed to create ./production.env
+    - name: Build and Deploy the Image
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: |
+        cd EasyRecycle.UI/ && \
+        heroku container:login && \
+        docker build -t registry.heroku.com/${{ secrets.UI_HEROKU_APP }}/web . && \
+        docker push registry.heroku.com/${{ secrets.UI_HEROKU_APP }}/web && \
+        heroku container:release -a ${{ secrets.UI_HEROKU_APP }} web
+  release:
+    name: "Create Release"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9
+      with:
+        versionSpec: '5.1.x'
+    - name: Use GitVersion
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.9
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: v${{ steps.gitversion.outputs.majorMinorPatch }}-alpha
+        release_name: Release v${{ steps.gitversion.outputs.majorMinorPatch }}-alpha
+        draft: false
+        prerelease: true
+
