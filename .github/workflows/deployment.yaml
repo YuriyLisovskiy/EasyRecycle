@@ -58,6 +58,13 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.6
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9
+      with:
+          versionSpec: '5.1.x'
+    - name: Use GitVersion
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.9
     - name: Generate Env
       run: |
         cd EasyRecycle.UI/ && \
@@ -72,4 +79,25 @@ jobs:
         docker build -t registry.heroku.com/${{ secrets.UI_HEROKU_APP }}/web . && \
         docker push registry.heroku.com/${{ secrets.UI_HEROKU_APP }}/web && \
         heroku container:release -a ${{ secrets.UI_HEROKU_APP }} web
+  release:
+    name: "Create Release"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9
+      with:
+        versionSpec: '5.1.x'
+    - name: Use GitVersion
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.9
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: v${{ steps.gitversion.outputs.majorMinorPatch }}-alpha
+        release_name: Release v${{ steps.gitversion.outputs.majorMinorPatch }}-alpha
+        draft: false
+        prerelease: true
 
