@@ -6,11 +6,11 @@
 
 # Development
 #### Frontend: [site](https://limitless-castle-14995.herokuapp.com)
-#### Backend: [administration](https://fierce-hamlet-47088.herokuapp.com/QJFvet49wNpcRHzatDbshqCDn4EZabUL)
+#### Backend: [administration](https://fierce-hamlet-47088.herokuapp.com/WXGxysX5MmGNtPjGk5aS8T6nz5mvwPbT)
 
 # Production
 #### Frontend: [site](https://easyrecycle.herokuapp.com)
-#### Backend: [administration](https://calm-headland-92846.herokuapp.com/f0a3fce9cfbb4d0d8ba84151302efcac)
+#### Backend: [administration](https://calm-headland-92846.herokuapp.com/A5samhxXUKxr78fdEHvNaEANYfvwzb3C)
 
 ### Team:
 * [Olena Shipka](https://github.com/oshipka)
