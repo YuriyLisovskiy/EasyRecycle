@@ -16,6 +16,8 @@ jobs:
         python-version: 3.6
     - name: Update the Version
       run: |
+        git config --local user.email "yuralisovskiy98@gmail.com"
+        git config --local user.name "CI"
         pip install -r requirements.txt
         set -x
         bump2version $(bash ./deploy/get_version_part_from_commit.sh)
