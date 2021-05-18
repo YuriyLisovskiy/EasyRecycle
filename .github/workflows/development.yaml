@@ -3,7 +3,7 @@ name: Continuous Delivery (Development)
 on:
   push:
     branches:
-      - 'release'
+      - 'dev'
 
 jobs:
   deploy:
