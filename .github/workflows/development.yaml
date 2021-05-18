@@ -6,8 +6,7 @@ on:
       - 'dev'
 
 jobs:
-  api:
-    name: "Deploy API"
+  deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -15,7 +14,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.6
-    - name: Setup Secrets
+    - name: (API) Setup Secrets
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
@@ -29,18 +28,25 @@ jobs:
         heroku config:set DATABASE_USER="${{ secrets.DEV_DJANGO_DATABASE_USER }}" -a ${{ secrets.DEV_API_HEROKU_APP }} && \
         heroku config:set DATABASE_PASSWORD="${{ secrets.DEV_DJANGO_DATABASE_PASSWORD }}" -a ${{ secrets.DEV_API_HEROKU_APP }} && \
         heroku config:set CORS_ORIGIN_WHITELIST="${{ secrets.DEV_DJANGO_CORS_ORIGIN_WHITELIST }}" -a ${{ secrets.DEV_API_HEROKU_APP }}
-    - name: Generate Local Settings
+    - name: (API) Generate Local Settings
       run: |
         mv EasyRecycle/EasyRecycle/production_settings.py EasyRecycle/EasyRecycle/local_settings.py && \
         test -e EasyRecycle/EasyRecycle/local_settings.py && echo EasyRecycle/EasyRecycle/local_settings.py file exists || echo EasyRecycle/EasyRecycle/local_settings.py file not found && \
         cat EasyRecycle/EasyRecycle/local_settings.py
-    - name: Migrate The Datatabse
+    - name: (API) Migrate The Datatabse
       env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        DJANGO_SECRET_KEY: ${{ secrets.DEV_DJANGO_SECRET_KEY }}
+        DATABASE_HOST: ${{ secrets.DEV_DJANGO_DATABASE_HOST }}
+        DATABASE_NAME: ${{ secrets.DEV_DJANGO_DATABASE_NAME }}
+        DATABASE_USER: ${{ secrets.DEV_DJANGO_DATABASE_USER }}
+        DATABASE_PASSWORD: ${{ secrets.DEV_DJANGO_DATABASE_PASSWORD }}
       run: |
-        heroku container:login && \
-        heroku run python EasyRecycle/manage.py migrate -a ${{ secrets.DEV_API_HEROKU_APP }}
-    - name: Build and Deploy the Image
+        cd EasyRecycle/ && \
+        python3 -m pip install --upgrade pip && \
+        pip install -r requirements.txt && \
+        pip install -r requirements.prod.txt && \
+        python manage.py migrate
+    - name: (API) Build and Deploy the Image
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
@@ -49,21 +55,12 @@ jobs:
         docker build -t registry.heroku.com/${{ secrets.DEV_API_HEROKU_APP }}/web . && \
         docker push registry.heroku.com/${{ secrets.DEV_API_HEROKU_APP }}/web && \
         heroku container:release -a ${{ secrets.DEV_API_HEROKU_APP }} web
-  ui:
-    name: "Deploy UI"
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.6
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.6
-    - name: Generate Env
+    - name: (UI) Generate Env
       run: |
         cd EasyRecycle.UI/ && \
         echo "API_URL_BASE=${{ secrets.DEV_API_HOST }}" > ./production.env && \
         test -e ./production.env && echo ./production.env file created successfully || echo Failed to create ./production.env
-    - name: Build and Deploy the Image
+    - name: (UI) Build and Deploy the Image
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
