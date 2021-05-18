@@ -15,13 +15,14 @@ jobs:
       with:
         python-version: 3.6
     - name: Update the Version
+      id: bump2version
       run: |
         git config --local user.email "yuralisovskiy98@gmail.com"
         git config --local user.name "CI"
         pip install -r requirements.txt
         set -x
         bump2version $(bash ./deploy/get_version_part_from_commit.sh)
-        echo "APP_VERSION=$(cat VERSION)" >> $GITHUB_ENV
+        echo ::set-output name=app_version::$(cat VERSION)
     - name: (API) Setup Secrets
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
@@ -69,7 +70,7 @@ jobs:
       run: |
         cd EasyRecycle.UI/
         echo "API_URL_BASE=${{ secrets.API_HOST }}" > ./production.env
-        echo "VERSION=$APP_VERSION" >> ./production.env
+        echo "VERSION=${{ steps.bump2version.outputs.app_version }}" >> ./production.env
         test -e ./production.env && echo ./production.env file created successfully || echo Failed to create ./production.env
         cd ../
     - name: (UI) Build and Deploy the Image
@@ -85,10 +86,11 @@ jobs:
     - name: Push the commits
       run: |
         git push
-    - name: Create a New Release
-      uses: ncipollo/release-action@v1
+    - name: Create Release
+      uses: aaiezza/create-release@master
       with:
-        prerelease: true
-        tag: v$APP_VERSION
-        token: ${{ secrets.GITHUB_TOKEN }}
+        release_branch: release
+        tag: v${{ steps.bump2version.outputs.app_version }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
