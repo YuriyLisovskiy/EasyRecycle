@@ -61,7 +61,7 @@ jobs:
       run: |
         pip install -r requirements.txt
         set -x
-        bump2version $(./deploy/get_version_part_from_commit.sh)
+        bump2version $(bash ./deploy/get_version_part_from_commit.sh)
         echo "APP_VERSION=$(cat VERSION)" >> $GITHUB_ENV
     - name: (UI) Generate Env
       run: |
