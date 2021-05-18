@@ -58,8 +58,8 @@ jobs:
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.9
       with:
-        versionSpec: '${{ secrets.VERSION_SPEC }}'
-        includePrerelease: ${{ secrets.INCLUDE_PRERELEASE }}
+        versionSpec: '5.x'
+        includePrerelease: false
     - name: Determine Version
       id: gitversion
       uses: gittools/actions/gitversion/execute@v0.9.9
