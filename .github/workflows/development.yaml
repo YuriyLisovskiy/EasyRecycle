@@ -18,20 +18,20 @@ jobs:
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
-        heroku container:login && \
-        heroku config:set DJANGO_SECRET_ADMIN_URL="${{ secrets.DEV_DJANGO_SECRET_ADMIN_URL }}" -a ${{ secrets.DEV_API_HEROKU_APP }} && \
-        heroku config:set DJANGO_SECRET_KEY="${{ secrets.DEV_DJANGO_SECRET_KEY }}" -a ${{ secrets.DEV_API_HEROKU_APP }} && \
-        heroku config:set DJANGO_ALLOWED_HOSTS="${{ secrets.DEV_DJANGO_ALLOWED_HOSTS }}" -a ${{ secrets.DEV_API_HEROKU_APP }} && \
-        heroku config:set DJANGO_DEBUG="${{ secrets.DEV_DJANGO_DEBUG }}" -a ${{ secrets.DEV_API_HEROKU_APP }} && \
-        heroku config:set DATABASE_HOST="${{ secrets.DEV_DJANGO_DATABASE_HOST }}" -a ${{ secrets.DEV_API_HEROKU_APP }} && \
-        heroku config:set DATABASE_NAME="${{ secrets.DEV_DJANGO_DATABASE_NAME }}" -a ${{ secrets.DEV_API_HEROKU_APP }} && \
-        heroku config:set DATABASE_USER="${{ secrets.DEV_DJANGO_DATABASE_USER }}" -a ${{ secrets.DEV_API_HEROKU_APP }} && \
-        heroku config:set DATABASE_PASSWORD="${{ secrets.DEV_DJANGO_DATABASE_PASSWORD }}" -a ${{ secrets.DEV_API_HEROKU_APP }} && \
+        heroku container:login
+        heroku config:set DJANGO_SECRET_ADMIN_URL="${{ secrets.DEV_DJANGO_SECRET_ADMIN_URL }}" -a ${{ secrets.DEV_API_HEROKU_APP }}
+        heroku config:set DJANGO_SECRET_KEY="${{ secrets.DEV_DJANGO_SECRET_KEY }}" -a ${{ secrets.DEV_API_HEROKU_APP }}
+        heroku config:set DJANGO_ALLOWED_HOSTS="${{ secrets.DEV_DJANGO_ALLOWED_HOSTS }}" -a ${{ secrets.DEV_API_HEROKU_APP }}
+        heroku config:set DJANGO_DEBUG="${{ secrets.DEV_DJANGO_DEBUG }}" -a ${{ secrets.DEV_API_HEROKU_APP }}
+        heroku config:set DATABASE_HOST="${{ secrets.DEV_DJANGO_DATABASE_HOST }}" -a ${{ secrets.DEV_API_HEROKU_APP }}
+        heroku config:set DATABASE_NAME="${{ secrets.DEV_DJANGO_DATABASE_NAME }}" -a ${{ secrets.DEV_API_HEROKU_APP }}
+        heroku config:set DATABASE_USER="${{ secrets.DEV_DJANGO_DATABASE_USER }}" -a ${{ secrets.DEV_API_HEROKU_APP }}
+        heroku config:set DATABASE_PASSWORD="${{ secrets.DEV_DJANGO_DATABASE_PASSWORD }}" -a ${{ secrets.DEV_API_HEROKU_APP }}
         heroku config:set CORS_ORIGIN_WHITELIST="${{ secrets.DEV_DJANGO_CORS_ORIGIN_WHITELIST }}" -a ${{ secrets.DEV_API_HEROKU_APP }}
     - name: (API) Generate Local Settings
       run: |
-        mv EasyRecycle/EasyRecycle/production_settings.py EasyRecycle/EasyRecycle/local_settings.py && \
-        test -e EasyRecycle/EasyRecycle/local_settings.py && echo EasyRecycle/EasyRecycle/local_settings.py file exists || echo EasyRecycle/EasyRecycle/local_settings.py file not found && \
+        mv EasyRecycle/EasyRecycle/production_settings.py EasyRecycle/EasyRecycle/local_settings.py
+        test -e EasyRecycle/EasyRecycle/local_settings.py && echo EasyRecycle/EasyRecycle/local_settings.py file exists || echo EasyRecycle/EasyRecycle/local_settings.py file not found
         cat EasyRecycle/EasyRecycle/local_settings.py
     - name: (API) Migrate The Datatabse
       env:
@@ -41,32 +41,32 @@ jobs:
         DATABASE_USER: ${{ secrets.DEV_DJANGO_DATABASE_USER }}
         DATABASE_PASSWORD: ${{ secrets.DEV_DJANGO_DATABASE_PASSWORD }}
       run: |
-        cd EasyRecycle/ && \
-        python3 -m pip install --upgrade pip && \
-        pip install -r requirements.txt && \
-        pip install -r requirements.prod.txt && \
+        cd EasyRecycle/
+        python3 -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements.prod.txt
         python manage.py migrate
     - name: (API) Build and Deploy the Image
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
-        cd EasyRecycle/ && \
-        heroku container:login && \
-        docker build -t registry.heroku.com/${{ secrets.DEV_API_HEROKU_APP }}/web . && \
-        docker push registry.heroku.com/${{ secrets.DEV_API_HEROKU_APP }}/web && \
+        cd EasyRecycle/
+        heroku container:login
+        docker build -t registry.heroku.com/${{ secrets.DEV_API_HEROKU_APP }}/web .
+        docker push registry.heroku.com/${{ secrets.DEV_API_HEROKU_APP }}/web
         heroku container:release -a ${{ secrets.DEV_API_HEROKU_APP }} web
     - name: (UI) Generate Env
       run: |
-        cd EasyRecycle.UI/ && \
-        echo "API_URL_BASE=${{ secrets.DEV_API_HOST }}" > ./production.env && \
+        cd EasyRecycle.UI/
+        echo "API_URL_BASE=${{ secrets.DEV_API_HOST }}" > ./production.env
         test -e ./production.env && echo ./production.env file created successfully || echo Failed to create ./production.env
     - name: (UI) Build and Deploy the Image
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
-        cd EasyRecycle.UI/ && \
-        heroku container:login && \
-        docker build -t registry.heroku.com/${{ secrets.DEV_UI_HEROKU_APP }}/web . && \
-        docker push registry.heroku.com/${{ secrets.DEV_UI_HEROKU_APP }}/web && \
+        cd EasyRecycle.UI/
+        heroku container:login
+        docker build -t registry.heroku.com/${{ secrets.DEV_UI_HEROKU_APP }}/web .
+        docker push registry.heroku.com/${{ secrets.DEV_UI_HEROKU_APP }}/web
         heroku container:release -a ${{ secrets.DEV_UI_HEROKU_APP }} web
 

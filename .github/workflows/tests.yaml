@@ -17,20 +17,20 @@ jobs:
         python-version: 3.6
     - name: Install dependencies
       run: |
-        cd EasyRecycle/ && \
-        python -m pip install --upgrade pip && \
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && \
+        cd EasyRecycle/
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f requirements.dev.txt ]; then pip install -r requirements.dev.txt; fi
     - name: Run tests
       if: github.ref != 'refs/heads/dev'
       run: |
-        cd EasyRecycle/ && \
+        cd EasyRecycle/
         python3 manage.py test
     - name: Run tests with coverage report
       if: github.ref == 'refs/heads/dev'
       run: |
-        cd EasyRecycle/ && \
-        coverage run manage.py test && \
+        cd EasyRecycle/
+        coverage run manage.py test
         coverage xml
     - name: Upload coverage to Codecov
       if: github.ref == 'refs/heads/dev'
@@ -53,18 +53,18 @@ jobs:
         node-version: '15'
     - name: Install dependencies
       run: |
-        cd EasyRecycle.UI/ && \
+        cd EasyRecycle.UI/
         npm install
     - name: Run tests
       if: github.ref != 'refs/heads/dev'
       run: |
-        cd EasyRecycle.UI/ && \
+        cd EasyRecycle.UI/
         npm test
     - name: Run tests with coverage report
       if: github.ref == 'refs/heads/dev'
       run: |
-        cd EasyRecycle.UI/ && \
-        npm install && \
+        cd EasyRecycle.UI/
+        npm install
         npm test -- --coverage --watchAll=false
     - name: Upload coverage to Codecov
       if: github.ref == 'refs/heads/dev'

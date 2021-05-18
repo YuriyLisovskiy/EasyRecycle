@@ -18,20 +18,20 @@ jobs:
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
-        heroku container:login && \
-        heroku config:set DJANGO_SECRET_ADMIN_URL="${{ secrets.DJANGO_SECRET_ADMIN_URL }}" -a ${{ secrets.API_HEROKU_APP }} && \
-        heroku config:set DJANGO_SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" -a ${{ secrets.API_HEROKU_APP }} && \
-        heroku config:set DJANGO_ALLOWED_HOSTS="${{ secrets.DJANGO_ALLOWED_HOSTS }}" -a ${{ secrets.API_HEROKU_APP }} && \
-        heroku config:set DJANGO_DEBUG="${{ secrets.DJANGO_DEBUG }}" -a ${{ secrets.API_HEROKU_APP }} && \
-        heroku config:set DATABASE_HOST="${{ secrets.DJANGO_DATABASE_HOST }}" -a ${{ secrets.API_HEROKU_APP }} && \
-        heroku config:set DATABASE_NAME="${{ secrets.DJANGO_DATABASE_NAME }}" -a ${{ secrets.API_HEROKU_APP }} && \
-        heroku config:set DATABASE_USER="${{ secrets.DJANGO_DATABASE_USER }}" -a ${{ secrets.API_HEROKU_APP }} && \
-        heroku config:set DATABASE_PASSWORD="${{ secrets.DJANGO_DATABASE_PASSWORD }}" -a ${{ secrets.API_HEROKU_APP }} && \
+        heroku container:login
+        heroku config:set DJANGO_SECRET_ADMIN_URL="${{ secrets.DJANGO_SECRET_ADMIN_URL }}" -a ${{ secrets.API_HEROKU_APP }}
+        heroku config:set DJANGO_SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" -a ${{ secrets.API_HEROKU_APP }}
+        heroku config:set DJANGO_ALLOWED_HOSTS="${{ secrets.DJANGO_ALLOWED_HOSTS }}" -a ${{ secrets.API_HEROKU_APP }}
+        heroku config:set DJANGO_DEBUG="${{ secrets.DJANGO_DEBUG }}" -a ${{ secrets.API_HEROKU_APP }}
+        heroku config:set DATABASE_HOST="${{ secrets.DJANGO_DATABASE_HOST }}" -a ${{ secrets.API_HEROKU_APP }}
+        heroku config:set DATABASE_NAME="${{ secrets.DJANGO_DATABASE_NAME }}" -a ${{ secrets.API_HEROKU_APP }}
+        heroku config:set DATABASE_USER="${{ secrets.DJANGO_DATABASE_USER }}" -a ${{ secrets.API_HEROKU_APP }}
+        heroku config:set DATABASE_PASSWORD="${{ secrets.DJANGO_DATABASE_PASSWORD }}" -a ${{ secrets.API_HEROKU_APP }}
         heroku config:set CORS_ORIGIN_WHITELIST="${{ secrets.DJANGO_CORS_ORIGIN_WHITELIST }}" -a ${{ secrets.API_HEROKU_APP }}
     - name: (API) Generate Local Settings
       run: |
-        mv EasyRecycle/EasyRecycle/production_settings.py EasyRecycle/EasyRecycle/local_settings.py && \
-        test -e EasyRecycle/EasyRecycle/local_settings.py && echo EasyRecycle/EasyRecycle/local_settings.py file exists || echo EasyRecycle/EasyRecycle/local_settings.py file not found && \
+        mv EasyRecycle/EasyRecycle/production_settings.py EasyRecycle/EasyRecycle/local_settings.py
+        test -e EasyRecycle/EasyRecycle/local_settings.py && echo EasyRecycle/EasyRecycle/local_settings.py file exists || echo EasyRecycle/EasyRecycle/local_settings.py file not found
         cat EasyRecycle/EasyRecycle/local_settings.py
     - name: (API) Migrate The Datatabse
       env:
@@ -41,51 +41,52 @@ jobs:
         DATABASE_USER: ${{ secrets.DJANGO_DATABASE_USER }}
         DATABASE_PASSWORD: ${{ secrets.DJANGO_DATABASE_PASSWORD }}
       run: |
-        cd EasyRecycle/ && \
-        python3 -m pip install --upgrade pip && \
-        pip install -r requirements.txt && \
-        pip install -r requirements.prod.txt && \
-        python manage.py migrate && \
+        cd EasyRecycle/
+        python3 -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements.prod.txt
+        python manage.py migrate
         cd ../
     - name: (API) Build and Deploy the Image
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
-        cd EasyRecycle/ && \
-        heroku container:login && \
-        docker build -t registry.heroku.com/${{ secrets.API_HEROKU_APP }}/web . && \
-        docker push registry.heroku.com/${{ secrets.API_HEROKU_APP }}/web && \
-        heroku container:release -a ${{ secrets.API_HEROKU_APP }} web && \
+        cd EasyRecycle/
+        heroku container:login
+        docker build -t registry.heroku.com/${{ secrets.API_HEROKU_APP }}/web .
+        docker push registry.heroku.com/${{ secrets.API_HEROKU_APP }}/web
+        heroku container:release -a ${{ secrets.API_HEROKU_APP }} web
         cd ../
-    - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.9
-      with:
-        versionSpec: '5.x'
-        includePrerelease: false
-    - name: Determine Version
-      id: gitversion
-      uses: gittools/actions/gitversion/execute@v0.9.9
+    - name: Update the version
+      run: |
+        pip install -r requirements.txt
+        set -x
+        bump2version $(./deploy/get_version_part_from_commit.sh)
+        echo "APP_VERSION=$(cat VERSION)" >> $GITHUB_ENV
     - name: (UI) Generate Env
       run: |
-        cd EasyRecycle.UI/ && \
-        echo "API_URL_BASE=${{ secrets.API_HOST }}" > ./production.env && \
-        echo "VERSION=${{ steps.gitversion.outputs.semVer }}" >> ./production.env && \
-        test -e ./production.env && echo ./production.env file created successfully || echo Failed to create ./production.env && \
+        cd EasyRecycle.UI/
+        echo "API_URL_BASE=${{ secrets.API_HOST }}" > ./production.env
+        echo "VERSION=$APP_VERSION" >> ./production.env
+        test -e ./production.env && echo ./production.env file created successfully || echo Failed to create ./production.env
         cd ../
     - name: (UI) Build and Deploy the Image
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
-        cd EasyRecycle.UI/ && \
-        heroku container:login && \
-        docker build -t registry.heroku.com/${{ secrets.UI_HEROKU_APP }}/web . && \
-        docker push registry.heroku.com/${{ secrets.UI_HEROKU_APP }}/web && \
-        heroku container:release -a ${{ secrets.UI_HEROKU_APP }} web && \
+        cd EasyRecycle.UI/
+        heroku container:login
+        docker build -t registry.heroku.com/${{ secrets.UI_HEROKU_APP }}/web .
+        docker push registry.heroku.com/${{ secrets.UI_HEROKU_APP }}/web
+        heroku container:release -a ${{ secrets.UI_HEROKU_APP }} web
         cd ../
+    - name: Push the commits
+      run: |
+        git push
     - name: Create a New Release
       uses: ncipollo/release-action@v1
       with:
         prerelease: true
-        tag: v${{ steps.gitversion.outputs.semVer }}
+        tag: v$APP_VERSION
         token: ${{ secrets.GITHUB_TOKEN }}
 
