@@ -45,7 +45,8 @@ jobs:
         python3 -m pip install --upgrade pip && \
         pip install -r requirements.txt && \
         pip install -r requirements.prod.txt && \
-        python manage.py migrate
+        python manage.py migrate && \
+        cd ../
     - name: (API) Build and Deploy the Image
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
@@ -54,7 +55,8 @@ jobs:
         heroku container:login && \
         docker build -t registry.heroku.com/${{ secrets.API_HEROKU_APP }}/web . && \
         docker push registry.heroku.com/${{ secrets.API_HEROKU_APP }}/web && \
-        heroku container:release -a ${{ secrets.API_HEROKU_APP }} web
+        heroku container:release -a ${{ secrets.API_HEROKU_APP }} web && \
+        cd ../
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.9
       with:
@@ -68,7 +70,8 @@ jobs:
         cd EasyRecycle.UI/ && \
         echo "API_URL_BASE=${{ secrets.API_HOST }}" > ./production.env && \
         echo "VERSION=${{ steps.gitversion.outputs.semVer }}" >> ./production.env && \
-        test -e ./production.env && echo ./production.env file created successfully || echo Failed to create ./production.env
+        test -e ./production.env && echo ./production.env file created successfully || echo Failed to create ./production.env && \
+        cd ../
     - name: (UI) Build and Deploy the Image
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
@@ -77,7 +80,8 @@ jobs:
         heroku container:login && \
         docker build -t registry.heroku.com/${{ secrets.UI_HEROKU_APP }}/web . && \
         docker push registry.heroku.com/${{ secrets.UI_HEROKU_APP }}/web && \
-        heroku container:release -a ${{ secrets.UI_HEROKU_APP }} web
+        heroku container:release -a ${{ secrets.UI_HEROKU_APP }} web && \
+        cd ../
     - name: Create a New Release
       uses: ncipollo/release-action@v1
       with:
