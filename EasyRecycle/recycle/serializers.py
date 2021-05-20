@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from recycle.models import Location, CommercialRequest, Transaction
-from recycle.validators import IsGarbageCollectorValidator, IsCommercialValidator
+from recycle.validators import IsGarbageCollectorValidator, IsCommercialValidator, DateIsNotPast
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -107,7 +107,7 @@ class CreateCommercialOrderSerializer(serializers.ModelSerializer):
 			'id', 'address', 'date', 'garbage_type', 'mass', 'status', 'location', 'user'
 		)
 		validators = (
-			IsCommercialValidator('user'),
+			IsCommercialValidator('user'), DateIsNotPast('date')
 		)
 
 
