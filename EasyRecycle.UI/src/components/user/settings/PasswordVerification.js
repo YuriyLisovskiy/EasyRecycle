@@ -23,6 +23,10 @@ export default class PasswordVerificationComponent extends Component {
 		});
 	}
 
+	componentWillUnmount() {
+
+	}
+
 	/* istanbul ignore next */
 	onChangePassword = (e) => {
 		this.setState({
@@ -54,6 +58,7 @@ export default class PasswordVerificationComponent extends Component {
 				});
 				this._inputRef.current.value = "";
 			});
+			this.props.onRequestClose();
 		}
 		else {
 			this.setState({

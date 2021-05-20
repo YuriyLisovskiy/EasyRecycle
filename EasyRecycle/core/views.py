@@ -145,6 +145,9 @@ class EditSelfEmailAPIView(APIView, UpdateUserModelMixin, APIViewValidationMixin
 		except ValidationError:
 			raise exceptions.ValidationError('Email is not valid.')
 
+		if UserModel.objects.filter(email=email).exists():
+			raise exceptions.ValidationError('User with this email address already exists.')
+
 		instance.email = email
 		instance.save()
 		return Response(data={'email': email}, status=200)

@@ -1,3 +1,5 @@
+import datetime
+
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework.exceptions import ValidationError
@@ -31,4 +33,18 @@ class IsCommercialValidator(ValidatorBase):
 	def perform_validation(self, attrs):
 		if self.user_field in attrs:
 			if not attrs[self.user_field].is_commercial:
+				raise ValidationError(self.error_message)
+
+
+class DateIsNotPast(ValidatorBase):
+	error_message = _('Today or future date is required.')
+
+	def __init__(self, field):
+		self.date_field = field
+		super().__init__([field])
+
+	def perform_validation(self, attrs):
+		if self.date_field in attrs:
+			today = datetime.datetime.today().date()
+			if attrs[self.date_field] < today:
 				raise ValidationError(self.error_message)

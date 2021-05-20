@@ -64,7 +64,10 @@ export default class CreateCommercialOrderComponent extends Component {
 		}
 
 		if (order.date === '') {
-			newState.dateError = 'This field is required.';
+			if (!this.state.dateError) {
+				newState.dateError = 'This field is required.';
+			}
+
 			hasErrors = true;
 		}
 
@@ -112,12 +115,21 @@ export default class CreateCommercialOrderComponent extends Component {
 
 	/* istanbul ignore next */
 	handleDateChange = e => {
-		let order = this.state.order;
-		order.date = e.target.value;
-		this.setState({
-			order: order,
-			dateError: undefined
-		});
+		let now = new Date();
+		now.setHours(0, 0, 0, 0);
+		if (Date.parse(e.target.value) < now) {
+			this.setState({
+				dateError: 'Date is not valid. Please enter present date.'
+			});
+		}
+		else {
+			let order = this.state.order;
+			order.date = e.target.value;
+			this.setState({
+				order: order,
+				dateError: undefined
+			});
+		}
 	}
 
 	/* istanbul ignore next */
