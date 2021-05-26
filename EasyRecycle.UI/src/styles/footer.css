@@ -1,0 +1,7 @@
+.content {
+    min-height: calc(100vh - 50px);
+}
+.footer {
+    margin-top: 18px;
+    background-color: #f8f9fa;
+}

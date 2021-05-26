@@ -1,0 +1,11 @@
+[run]
+omit =
+   venv/*
+   manage.py
+   */__init__.py
+   EasyRecycle/*settings.py
+   EasyRecycle/asgi.py
+   EasyRecycle/wsgi.py
+   */urls.py
+   tests/*
+   */migrations/*

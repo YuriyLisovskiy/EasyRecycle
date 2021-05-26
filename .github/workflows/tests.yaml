@@ -1,0 +1,79 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - 'dev'
+
+jobs:
+  api:
+    name: "API Tests"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+    - name: Install dependencies
+      run: |
+        cd EasyRecycle/
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        if [ -f requirements.dev.txt ]; then pip install -r requirements.dev.txt; fi
+    - name: Run tests
+      if: github.ref != 'refs/heads/dev'
+      run: |
+        cd EasyRecycle/
+        python3 manage.py test
+    - name: Run tests with coverage report
+      if: github.ref == 'refs/heads/dev'
+      run: |
+        cd EasyRecycle/
+        coverage run manage.py test
+        coverage xml
+    - name: Upload coverage to Codecov
+      if: github.ref == 'refs/heads/dev'
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./EasyRecycle/coverage.xml
+        flags: backend
+        name: backend
+        fail_ci_if_error: true
+        verbose: true
+  ui:
+    name: "UI Tests"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '15'
+    - name: Install dependencies
+      run: |
+        cd EasyRecycle.UI/
+        npm install
+    - name: Run tests
+      if: github.ref != 'refs/heads/dev'
+      run: |
+        cd EasyRecycle.UI/
+        npm test
+    - name: Run tests with coverage report
+      if: github.ref == 'refs/heads/dev'
+      run: |
+        cd EasyRecycle.UI/
+        npm install
+        npm test -- --coverage --watchAll=false
+    - name: Upload coverage to Codecov
+      if: github.ref == 'refs/heads/dev'
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./EasyRecycle.UI/coverage/cobertura-coverage.xml
+        flags: frontend
+        name: frontend
+        fail_ci_if_error: true
+        verbose: true
+
